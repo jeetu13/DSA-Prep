@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Part 3 — Binary Search, Recursion, Backtracking</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07090f;--surface:#0d1117;--card:#111827;--card2:#0f1923;--border:#1e2d3d;--accent:#10b981;--accent2:#f59e0b;--accent3:#a78bfa;--danger:#ef4444;--cyan:#00e5ff;--pink:#f472b6;--orange:#fb923c;--text:#e2e8f0;--muted:#64748b;--code-bg:#060d14}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh}
+header{background:linear-gradient(135deg,#07090f 0%,#0d1a14 60%,#07090f 100%);border-bottom:1px solid var(--border);padding:2rem 2rem 1.5rem;position:relative;overflow:hidden}
+header::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(16,185,129,.07) 0%,transparent 65%);pointer-events:none}
+.hbadge{display:inline-flex;align-items:center;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.3rem .8rem;border-radius:2px;letter-spacing:.12em;margin-bottom:.9rem}
+h1{font-size:clamp(1.7rem,4vw,2.6rem);font-weight:800;letter-spacing:-.03em;line-height:1.1}
+h1 em{color:var(--accent);font-style:normal}
+h1 small{display:block;font-size:.45em;font-weight:400;color:var(--muted);margin-top:.3rem}
+.hpills{margin-top:1rem;display:flex;gap:.6rem;flex-wrap:wrap}
+.pill{background:var(--surface);border:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.2rem .65rem;border-radius:3px;color:var(--muted)}
+nav{display:flex;gap:.25rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:100}
+nav::-webkit-scrollbar{display:none}
+.nb{background:none;border:1px solid transparent;color:var(--muted);font-family:'Outfit',sans-serif;font-size:.78rem;font-weight:600;padding:.4rem 1rem;border-radius:4px;cursor:pointer;white-space:nowrap;transition:all .18s}
+.nb:hover{color:var(--text);border-color:var(--border)}
+.nb.active{color:var(--accent);border-color:var(--accent);background:rgba(16,185,129,.07)}
+main{max-width:980px;margin:0 auto;padding:2rem}
+.sec{display:none}.sec.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.stitle{font-size:1.5rem;font-weight:800;margin-bottom:.4rem;letter-spacing:-.02em}
+.stitle em{color:var(--accent);font-style:normal}
+.ssub{color:var(--muted);font-size:.85rem;margin-bottom:1.5rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.4rem;margin-bottom:1rem}
+.tag{font-family:'JetBrains Mono',monospace;font-size:.63rem;font-weight:700;padding:.18rem .55rem;border-radius:3px;letter-spacing:.08em;text-transform:uppercase}
+.easy{background:rgba(16,185,129,.15);color:var(--accent);border:1px solid rgba(16,185,129,.3)}
+.medium{background:rgba(245,158,11,.15);color:var(--accent2);border:1px solid rgba(245,158,11,.3)}
+.hard{background:rgba(239,68,68,.15);color:var(--danger);border:1px solid rgba(239,68,68,.3)}
+.ptag{background:rgba(16,185,129,.1);color:var(--accent);border:1px solid rgba(16,185,129,.2);font-family:'JetBrains Mono',monospace;font-size:.63rem;padding:.18rem .55rem;border-radius:3px}
+.qa{border:1px solid var(--border);border-radius:8px;margin-bottom:.6rem;overflow:hidden}
+.qq{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.2rem;cursor:pointer;background:var(--card2);transition:background .15s;gap:1rem}
+.qq:hover{background:#131e2d}.qq h3{font-size:.92rem;font-weight:600;line-height:1.4}
+.qarr{color:var(--muted);font-size:.75rem;flex-shrink:0;transition:transform .2s}
+.qa.open .qarr{transform:rotate(180deg)}
+.qa-body{display:none;padding:1.2rem;border-top:1px solid var(--border);background:var(--card)}
+.qa.open .qa-body{display:block}
+pre{background:var(--code-bg);border:1px solid #1a2535;border-radius:6px;padding:1.1rem 1.2rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.65;margin:.75rem 0;white-space:pre}
+.kw{color:#ff7b72}.type{color:#79c0ff}.fn{color:#d2a8ff}.str{color:#a5d6ff}.num{color:#f2cc60}.cmt{color:#4a6174;font-style:italic}
+.iobox{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:.75rem 0}
+.io-in,.io-out{background:var(--code-bg);border-radius:5px;padding:.65rem .9rem;font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:1.5;border:1px solid #1a2535}
+.iolabel{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem;font-weight:700}
+.io-in .iolabel{color:var(--accent)}.io-out .iolabel{color:var(--accent3)}
+.tip{background:rgba(16,185,129,.05);border-left:3px solid var(--accent);padding:.7rem 1rem;border-radius:0 5px 5px 0;margin:.75rem 0;font-size:.83rem;color:#94a3b8}
+.warn{background:rgba(245,158,11,.05);border-left:3px solid var(--accent2);padding:.7rem 1rem;border-radius:0 5px 5px 0;margin:.75rem 0;font-size:.83rem;color:#94a3b8}
+.note{background:rgba(167,139,250,.05);border-left:3px solid var(--accent3);padding:.7rem 1rem;border-radius:0 5px 5px 0;margin:.75rem 0;font-size:.83rem;color:#94a3b8}
+.logic{background:rgba(16,185,129,.04);border:1px solid rgba(16,185,129,.15);border-radius:8px;padding:1rem;margin-bottom:.9rem}
+.logic-title{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--accent);font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.7rem}
+.logic-step{font-size:.82rem;color:#94a3b8;margin-bottom:.45rem;line-height:1.5;padding-left:.5rem;border-left:2px solid rgba(16,185,129,.2)}
+.logic-step .lstep{color:var(--text);font-weight:600;margin-right:.4rem}
+.logic-pattern{margin-top:.75rem;padding:.5rem .75rem;background:rgba(16,185,129,.1);border-radius:4px;font-size:.78rem;color:var(--accent);border:1px solid rgba(16,185,129,.2)}
+.cx-wrap{display:inline-flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap}
+.cx{font-family:'JetBrains Mono',monospace;font-size:.67rem;padding:.15rem .5rem;border-radius:3px}
+.cxt{background:rgba(16,185,129,.1);color:var(--accent);border:1px solid rgba(16,185,129,.2)}
+.cxs{background:rgba(245,158,11,.1);color:var(--accent2);border:1px solid rgba(245,158,11,.2)}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.6rem;margin-bottom:1.5rem}
+.pc{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.8rem}
+.plabel{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.5rem;font-family:'JetBrains Mono',monospace}
+.pbwrap{background:#1a2535;border-radius:10px;height:5px;overflow:hidden;margin-bottom:.35rem}
+.pb{height:100%;border-radius:10px;transition:width .4s ease;width:0%}
+.pval{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--accent)}
+.cklist{list-style:none;padding:0}
+.cklist li{display:flex;align-items:flex-start;gap:.75rem;padding:.55rem 0;border-bottom:1px solid rgba(30,45,69,.5);cursor:pointer}
+.cklist li:last-child{border-bottom:none}
+.chk{width:17px;height:17px;border:2px solid var(--border);border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-top:2px;font-size:.65rem;color:transparent}
+.cklist li.done .chk{background:var(--accent);border-color:var(--accent);color:#fff}
+.cklist li.done .chk::after{content:'✓'}
+.cklist li.done .chlabel{text-decoration:line-through;color:var(--muted)}
+.chlabel{font-size:.83rem;line-height:1.45}
+.tl{position:relative;padding-left:1.8rem}
+.tl::before{content:'';position:absolute;left:.35rem;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),var(--accent2),var(--accent3))}
+.tli{position:relative;margin-bottom:1.75rem}
+.tldot{position:absolute;left:-1.6rem;top:.25rem;width:11px;height:11px;border-radius:50%;border:2px solid var(--bg)}
+.tlday{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--accent);font-weight:700;margin-bottom:.2rem}
+.tltitle{font-size:.92rem;font-weight:700;margin-bottom:.6rem}
+table{width:100%;border-collapse:collapse;font-size:.8rem;margin:.75rem 0}
+th{background:var(--surface);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.55rem .75rem;text-align:left;border:1px solid var(--border)}
+td{padding:.5rem .75rem;border:1px solid var(--border);color:#94a3b8;vertical-align:top}
+tr:nth-child(even) td{background:rgba(13,25,35,.5)}
+.tree-vis{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:#94a3b8;background:var(--code-bg);border:1px solid #1a2535;border-radius:6px;padding:1rem;margin:.75rem 0;line-height:1.8}
+@media(max-width:640px){main{padding:1rem}header{padding:1.5rem 1rem 1rem}nav{padding:.5rem .75rem}.iobox{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="hbadge">&#9654; DSA MASTER SHEET &middot; PART 3 OF 6</div>
+  <h1><em>Binary Search</em> &amp; Recursion<small>Search Space Reduction &middot; Divide &amp; Conquer &middot; Backtracking &middot; Decision Trees</small></h1>
+  <div class="hpills">
+    <span class="pill">15 Problems</span><span class="pill">3 Patterns</span>
+    <span class="pill">Java &middot; Dry Runs</span><span class="pill">Logic Building</span><span class="pill">Part 3 / 6</span>
+  </div>
+</header>
+<nav>
+  <button class="nb active" onclick="show('overview',this)">Overview</button>
+  <button class="nb" onclick="show('bsearch',this)">Binary Search</button>
+  <button class="nb" onclick="show('recursion',this)">Recursion</button>
+  <button class="nb" onclick="show('backtrack',this)">Backtracking</button>
+  <button class="nb" onclick="show('tracker',this)">&#128203; Progress</button>
+</nav>
+<main>
+
+<!-- OVERVIEW -->
+<div id="overview" class="sec active">
+  <div class="stitle">Part 3 <em>Overview</em></div>
+  <div class="ssub">Think in halves. Think recursively. These patterns transform exponential brute force into elegant O(log N) and O(N) solutions.</div>
+  <div class="card">
+    <h3 style="font-size:.95rem;margin-bottom:.75rem">&#129504; Mental Models</h3>
+    <table>
+      <tr><th>Pattern</th><th>When to use</th><th>Key question to ask</th><th>Time</th></tr>
+      <tr><td><strong>Binary Search</strong></td><td>Sorted array, monotonic function, "find minimum that satisfies"</td><td><em>"Can I eliminate half the search space?"</em></td><td>O(log N)</td></tr>
+      <tr><td><strong>Recursion / D&amp;C</strong></td><td>Problem breaks into smaller same-shaped subproblems</td><td><em>"What's the base case? What's one level of work?"</em></td><td>Varies</td></tr>
+      <tr><td><strong>Backtracking</strong></td><td>All combinations/permutations/subsets, constraint satisfaction</td><td><em>"Choose, explore, un-choose"</em></td><td>Exponential but pruned</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h3 style="font-size:.95rem;margin-bottom:.6rem">&#128218; Series Roadmap</h3>
+    <table>
+      <tr><th>Part</th><th>Topics</th><th>Status</th></tr>
+      <tr><td>Part 1</td><td>Arrays, Strings, Two Pointers, Sliding Window, Prefix Sum</td><td style="color:#10b981">&#10003; Done (20p)</td></tr>
+      <tr><td>Part 2</td><td>Linked List, Stack, Queue, Monotonic Stack</td><td style="color:#10b981">&#10003; Done (15p)</td></tr>
+      <tr><td><strong>Part 3</strong></td><td>Binary Search, Recursion, Backtracking</td><td style="color:var(--accent)">&#9654; YOU ARE HERE</td></tr>
+      <tr><td>Part 4</td><td>Binary Tree, BST</td><td style="color:var(--muted)">Upcoming</td></tr>
+      <tr><td>Part 5</td><td>Graphs, Heaps, Greedy</td><td style="color:var(--muted)">Upcoming</td></tr>
+      <tr><td>Part 6</td><td>Dynamic Programming</td><td style="color:var(--muted)">Upcoming</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- BINARY SEARCH -->
+<div id="bsearch" class="sec">
+  <div class="stitle"><em>Binary Search</em></div>
+  <div class="ssub">Not just for finding elements — binary search applies to any monotonic function or decision space. Master the 3 templates.</div>
+  <div class="card">
+    <h3 style="font-size:.9rem;margin-bottom:.6rem">&#127381; 3 Templates</h3>
+    <table>
+      <tr><th>Template</th><th>Termination</th><th>Use for</th></tr>
+      <tr><td><code>while(l &lt;= r)</code></td><td>l &gt; r (empty space)</td><td>Find exact match</td></tr>
+      <tr><td><code>while(l &lt; r)</code></td><td>l == r (converges)</td><td>Find leftmost/rightmost valid</td></tr>
+      <tr><td><code>while(l+1 &lt; r)</code></td><td>l,r adjacent</td><td>Find boundary between false/true</td></tr>
+    </table>
+  </div>
+
+  <!-- P1: Classic Binary Search -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">Classic BS</span><h3>1. Binary Search — Find Target in Sorted Array</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Core idea:</span> In a sorted array, if target &lt; mid, it must be in the LEFT half. If target &gt; mid, RIGHT half. Eliminate half each step.</div>
+      <div class="logic-step"><span class="lstep">Loop invariant:</span> Target is always within [l, r]. Keep narrowing until found or exhausted.</div>
+      <div class="logic-step"><span class="lstep">Overflow bug:</span> Never use <code>mid = (l+r)/2</code> for large arrays — l+r can overflow int. Use <code>mid = l + (r-l)/2</code>.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Halve the search space each step"</strong> &#8594; Binary search O(log N)</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>nums=[-1,0,3,5,9,12], target=9</div>
+      <div class="io-out"><div class="iolabel">Output</div>4 (index of 9)</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: [-1,0,3,5,9,12], target=9
+//   l=0, r=5, mid=2 → nums[2]=3 < 9 → search RIGHT → l=3
+//   l=3, r=5, mid=4 → nums[4]=9 == 9 → return 4 ✓
+//
+// DRY RUN 2: target=2 (not present)
+//   l=0,r=5, mid=2, nums[2]=3 > 2 → r=1
+//   l=0,r=1, mid=0, nums[0]=-1 < 2 → l=1
+//   l=1,r=1, mid=1, nums[1]=0 < 2 → l=2
+//   l=2 > r=1 → return -1 ✓</span>
+
+<span class="kw">public int</span> <span class="fn">search</span>(<span class="kw">int</span>[] nums, <span class="kw">int</span> target) {
+    <span class="kw">int</span> l = <span class="num">0</span>, r = nums.length - <span class="num">1</span>;
+    <span class="kw">while</span> (l &lt;= r) {
+        <span class="kw">int</span> mid = l + (r - l) / <span class="num">2</span>; <span class="cmt">// avoids int overflow</span>
+        <span class="kw">if</span>      (nums[mid] == target) <span class="kw">return</span> mid;
+        <span class="kw">else if</span> (nums[mid] &lt;  target) l = mid + <span class="num">1</span>; <span class="cmt">// target in right half</span>
+        <span class="kw">else</span>                          r = mid - <span class="num">1</span>; <span class="cmt">// target in left half</span>
+    }
+    <span class="kw">return</span> -<span class="num">1</span>;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(log N)</span><span class="cx cxs">Space: O(1)</span></div>
+  </div></div>
+
+  <!-- P2: Search in Rotated Sorted Array -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">BS on Rotated Array</span><h3>2. Search in Rotated Sorted Array</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Key insight:</span> Even after rotation, ONE of the two halves [l,mid] or [mid,r] is always sorted. Identify which half is sorted, check if target lies in it, binary search accordingly.</div>
+      <div class="logic-step"><span class="lstep">How to know which half is sorted:</span> If nums[l] &le; nums[mid], left half is sorted. Otherwise right half is sorted.</div>
+      <div class="logic-step"><span class="lstep">Decision:</span> If target is within the sorted half → search there. Else → search the other half.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Rotated = one sorted half always"</strong> &#8594; Identify sorted half, decide which to search</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>nums=[4,5,6,7,0,1,2], target=0</div>
+      <div class="io-out"><div class="iolabel">Output</div>4</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: [4,5,6,7,0,1,2], target=0
+//   l=0,r=6, mid=3(val=7)
+//   nums[l=4] <= nums[mid=7] → LEFT half [4,5,6,7] is sorted
+//   target=0, is 0 in [4..7]? NO → search RIGHT: l=4
+//   l=4,r=6, mid=5(val=1)
+//   nums[l=0] <= nums[mid=1] → LEFT half [0,1] is sorted
+//   target=0, is 0 in [0..1]? YES → search LEFT: r=4
+//   l=4,r=4, mid=4(val=0) == target → return 4 ✓</span>
+
+<span class="kw">public int</span> <span class="fn">search</span>(<span class="kw">int</span>[] nums, <span class="kw">int</span> target) {
+    <span class="kw">int</span> l = <span class="num">0</span>, r = nums.length - <span class="num">1</span>;
+    <span class="kw">while</span> (l &lt;= r) {
+        <span class="kw">int</span> mid = l + (r - l) / <span class="num">2</span>;
+        <span class="kw">if</span> (nums[mid] == target) <span class="kw">return</span> mid;
+        <span class="kw">if</span> (nums[l] &lt;= nums[mid]) {           <span class="cmt">// left half is sorted</span>
+            <span class="kw">if</span> (target &gt;= nums[l] &amp;&amp; target &lt; nums[mid]) r = mid - <span class="num">1</span>;
+            <span class="kw">else</span> l = mid + <span class="num">1</span>;
+        } <span class="kw">else</span> {                               <span class="cmt">// right half is sorted</span>
+            <span class="kw">if</span> (target &gt; nums[mid] &amp;&amp; target &lt;= nums[r]) l = mid + <span class="num">1</span>;
+            <span class="kw">else</span> r = mid - <span class="num">1</span>;
+        }
+    }
+    <span class="kw">return</span> -<span class="num">1</span>;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(log N)</span><span class="cx cxs">Space: O(1)</span></div>
+  </div></div>
+
+  <!-- P3: Find Minimum in Rotated Sorted Array -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">BS Boundary</span><h3>3. Find Minimum in Rotated Sorted Array</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Observation:</span> The minimum is at the rotation point — the only place where arr[i] &lt; arr[i-1]. Before rotation point: values are large. After: values are small.</div>
+      <div class="logic-step"><span class="lstep">Binary search on the "pivot":</span> If nums[mid] &gt; nums[r], the minimum is in the RIGHT half (mid+1 to r). If nums[mid] &le; nums[r], minimum is in LEFT half including mid.</div>
+      <div class="logic-step"><span class="lstep">Converge to l==r</span> which is the minimum.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Find pivot/boundary in rotated sorted"</strong> &#8594; Compare mid to right endpoint</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>nums=[3,4,5,1,2]</div>
+      <div class="io-out"><div class="iolabel">Output</div>1</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: [3,4,5,1,2]
+//   l=0,r=4, mid=2(val=5). nums[mid=5] > nums[r=2] → min in RIGHT → l=3
+//   l=3,r=4, mid=3(val=1). nums[mid=1] <= nums[r=2] → min in [l..mid] → r=3
+//   l=3,r=3 → return nums[3]=1 ✓</span>
+
+<span class="kw">public int</span> <span class="fn">findMin</span>(<span class="kw">int</span>[] nums) {
+    <span class="kw">int</span> l = <span class="num">0</span>, r = nums.length - <span class="num">1</span>;
+    <span class="kw">while</span> (l &lt; r) {
+        <span class="kw">int</span> mid = l + (r - l) / <span class="num">2</span>;
+        <span class="kw">if</span> (nums[mid] &gt; nums[r]) l = mid + <span class="num">1</span>; <span class="cmt">// min is in right half</span>
+        <span class="kw">else</span>                     r = mid;      <span class="cmt">// mid could be the min</span>
+    }
+    <span class="kw">return</span> nums[l];
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(log N)</span><span class="cx cxs">Space: O(1)</span></div>
+  </div></div>
+
+  <!-- P4: First Bad Version -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">BS on Answer Space</span><h3>4. First Bad Version</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Problem shape:</span> Versions look like: [G,G,G,G,B,B,B]. Find the FIRST B (bad). This is a classic "find leftmost true in a boolean array" pattern.</div>
+      <div class="logic-step"><span class="lstep">Binary search on answer:</span> Check mid. If bad, answer could be mid or earlier → r=mid. If good, answer must be later → l=mid+1.</div>
+      <div class="logic-step"><span class="lstep">Template:</span> Use while(l &lt; r) with r=mid (not mid-1) to converge safely.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Find first/leftmost that satisfies condition"</strong> &#8594; BS on answer space, r=mid</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>n=5, bad=4 → [G,G,G,B,B]</div>
+      <div class="io-out"><div class="iolabel">Output</div>4</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: n=5, bad starts at 4 → versions=[G,G,G,B,B] (1-indexed)
+//   l=1,r=5, mid=3. isBadVersion(3)=false → l=4
+//   l=4,r=5, mid=4. isBadVersion(4)=true  → r=4
+//   l=4,r=4 → return 4 ✓</span>
+
+<span class="kw">public int</span> <span class="fn">firstBadVersion</span>(<span class="kw">int</span> n) {
+    <span class="kw">int</span> l = <span class="num">1</span>, r = n;
+    <span class="kw">while</span> (l &lt; r) {                          <span class="cmt">// converges to single answer</span>
+        <span class="kw">int</span> mid = l + (r - l) / <span class="num">2</span>;
+        <span class="kw">if</span> (<span class="fn">isBadVersion</span>(mid)) r = mid;       <span class="cmt">// mid could be first bad</span>
+        <span class="kw">else</span>                   l = mid + <span class="num">1</span>; <span class="cmt">// mid is good, look right</span>
+    }
+    <span class="kw">return</span> l;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(log N)</span><span class="cx cxs">Space: O(1)</span></div>
+  </div></div>
+
+  <!-- P5: Koko Eating Bananas -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">BS on Answer Value</span><h3>5. Koko Eating Bananas — Minimum Speed</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Key insight:</span> "Find minimum speed k such that Koko can eat all bananas in h hours." The function canFinish(k) is monotonic: if she can finish at speed k, she can finish at any speed &gt; k.</div>
+      <div class="logic-step"><span class="lstep">Binary search on the ANSWER (k):</span> Search space = [1, max(piles)]. Binary search for the minimum k where canFinish(k) is true.</div>
+      <div class="logic-step"><span class="lstep">This is the most powerful BS pattern:</span> Whenever you see "find minimum X such that condition holds" → binary search on X.</div>
+      <div class="logic-step"><span class="lstep">canFinish(k):</span> Hours needed = sum of ceil(pile/k) for all piles. If &le; h → can finish.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Minimum X satisfying monotonic condition"</strong> &#8594; Binary search on answer space</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>piles=[3,6,7,11], h=8</div>
+      <div class="io-out"><div class="iolabel">Output</div>4 (min speed)</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: piles=[3,6,7,11], h=8
+// Search space: k in [1,11]
+//   l=1,r=11, mid=6: hours=ceil(3/6)+ceil(6/6)+ceil(7/6)+ceil(11/6)=1+1+2+2=6 ≤8 → r=6
+//   l=1,r=6,  mid=3: hours=1+2+3+4=10 > 8 → l=4
+//   l=4,r=6,  mid=5: hours=1+2+2+3=8 ≤8 → r=5
+//   l=4,r=5,  mid=4: hours=1+2+2+3=8 ≤8 → r=4
+//   l=4,r=4 → return 4 ✓</span>
+
+<span class="kw">public int</span> <span class="fn">minEatingSpeed</span>(<span class="kw">int</span>[] piles, <span class="kw">int</span> h) {
+    <span class="kw">int</span> l = <span class="num">1</span>, r = <span class="num">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> p : piles) r = <span class="type">Math</span>.<span class="fn">max</span>(r, p); <span class="cmt">// max pile = upper bound</span>
+    <span class="kw">while</span> (l &lt; r) {
+        <span class="kw">int</span> mid = l + (r - l) / <span class="num">2</span>;
+        <span class="kw">long</span> hours = <span class="num">0</span>;
+        <span class="kw">for</span> (<span class="kw">int</span> p : piles) hours += (p + mid - <span class="num">1</span>) / mid; <span class="cmt">// ceil(p/mid)</span>
+        <span class="kw">if</span> (hours &lt;= h) r = mid;   <span class="cmt">// mid works, try smaller</span>
+        <span class="kw">else</span>            l = mid + <span class="num">1</span>; <span class="cmt">// too slow, need faster</span>
+    }
+    <span class="kw">return</span> l;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N log M)</span><span class="cx cxs">Space: O(1)</span></div>
+    <div class="tip">&#128161; Same pattern as: "Minimum days to ship packages", "Capacity to ship within D days", "Split array largest sum".</div>
+  </div></div>
+</div>
+
+<!-- RECURSION -->
+<div id="recursion" class="sec">
+  <div class="stitle"><em>Recursion &amp; Divide/Conquer</em></div>
+  <div class="ssub">Break a problem into smaller same-shaped subproblems. Master the 3-step framework: base case, recursive case, combine.</div>
+  <div class="card">
+    <h3 style="font-size:.9rem;margin-bottom:.6rem">&#127381; Recursion Template</h3>
+<pre><span class="cmt">// Step 1: Base case — when to stop (simplest input)
+// Step 2: Recursive case — solve smaller subproblem(s)
+// Step 3: Combine — use subproblem results to solve current
+//
+// KEY: Trust the recursion. Assume solve(n-1) works correctly.
+//      Your job is ONLY to handle the current level.</span>
+
+<span class="kw">public int</span> <span class="fn">solve</span>(<span class="type">Problem</span> p) {
+    <span class="kw">if</span> (p.<span class="fn">isBase</span>()) <span class="kw">return</span> baseAnswer; <span class="cmt">// Step 1: stop</span>
+    <span class="kw">int</span> sub = <span class="fn">solve</span>(p.<span class="fn">smaller</span>());       <span class="cmt">// Step 2: recurse</span>
+    <span class="kw">return</span> <span class="fn">combine</span>(sub, p.<span class="fn">current</span>());   <span class="cmt">// Step 3: combine</span>
+}</pre>
+  </div>
+
+  <!-- P6: Fibonacci -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">Memoized Recursion</span><h3>6. Fibonacci Number</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Naive recursion:</span> fib(n) = fib(n-1) + fib(n-2). Correct but O(2^N) — recomputes same values exponentially.</div>
+      <div class="logic-step"><span class="lstep">Memoization:</span> Cache results. If fib(k) already computed, return cached value. Each value computed exactly once → O(N).</div>
+      <div class="logic-step"><span class="lstep">Even better — iterative:</span> Just keep two variables for fib(n-1) and fib(n-2). O(N) time, O(1) space.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Overlapping subproblems"</strong> &#8594; Memoize (top-down DP) or iterate (bottom-up)</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>n = 10</div>
+      <div class="io-out"><div class="iolabel">Output</div>55</div>
+    </div>
+<pre><span class="cmt">// Recursion tree without memo for fib(5):
+//              fib(5)
+//           /          \
+//        fib(4)        fib(3)  ← fib(3) computed TWICE
+//       /     \        /    \
+//    fib(3) fib(2) fib(2) fib(1)  ← fib(2) computed 3x
+//
+// With memo: each node computed exactly ONCE → O(N)
+//
+// DRY RUN iterative: n=6
+//   prev=0,curr=1
+//   i=2: tmp=1, prev=1, curr=1  → [0,1,1]
+//   i=3: tmp=2, prev=1, curr=2  → [0,1,1,2]
+//   i=4: tmp=3, prev=2, curr=3  → [0,1,1,2,3]
+//   i=5: tmp=5, prev=3, curr=5  → [0,1,1,2,3,5]
+//   i=6: tmp=8, prev=5, curr=8  → return 8 ✓</span>
+
+<span class="cmt">// Top-down with memoization</span>
+<span class="kw">public int</span> <span class="fn">fib</span>(<span class="kw">int</span> n, <span class="kw">int</span>[] memo) {
+    <span class="kw">if</span> (n &lt;= <span class="num">1</span>) <span class="kw">return</span> n;
+    <span class="kw">if</span> (memo[n] != <span class="num">0</span>) <span class="kw">return</span> memo[n]; <span class="cmt">// already computed</span>
+    <span class="kw">return</span> memo[n] = <span class="fn">fib</span>(n-<span class="num">1</span>, memo) + <span class="fn">fib</span>(n-<span class="num">2</span>, memo);
+}
+
+<span class="cmt">// Bottom-up O(1) space</span>
+<span class="kw">public int</span> <span class="fn">fib</span>(<span class="kw">int</span> n) {
+    <span class="kw">if</span> (n &lt;= <span class="num">1</span>) <span class="kw">return</span> n;
+    <span class="kw">int</span> prev = <span class="num">0</span>, curr = <span class="num">1</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">2</span>; i &lt;= n; i++) { <span class="kw">int</span> tmp = prev+curr; prev=curr; curr=tmp; }
+    <span class="kw">return</span> curr;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(1) iterative</span></div>
+  </div></div>
+
+  <!-- P7: Merge Sort -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Divide &amp; Conquer</span><h3>7. Merge Sort — Implement from Scratch</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Divide:</span> Split array in half recursively until single elements (trivially sorted).</div>
+      <div class="logic-step"><span class="lstep">Conquer:</span> Merge two sorted halves — classic two-pointer merge.</div>
+      <div class="logic-step"><span class="lstep">Recurrence:</span> T(N) = 2T(N/2) + O(N). By Master Theorem → O(N log N).</div>
+      <div class="logic-step"><span class="lstep">Why stable?</span> Equal elements from left half come before right half in merge step.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Sort by dividing in half, merge sorted halves"</strong> &#8594; Merge sort D&amp;C</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>[5,2,4,6,1,3]</div>
+      <div class="io-out"><div class="iolabel">Output</div>[1,2,3,4,5,6]</div>
+    </div>
+<pre><span class="cmt">// RECURSION TREE for [5,2,4,6,1,3]:
+//            [5,2,4,6,1,3]
+//           /              \
+//       [5,2,4]          [6,1,3]
+//       /     \           /    \
+//    [5,2]   [4]       [6,1]   [3]
+//    /    \              /   \
+//  [5]   [2]          [6]   [1]
+//
+// Merge [5],[2] → [2,5]
+// Merge [2,5],[4] → [2,4,5]
+// Merge [6],[1] → [1,6]
+// Merge [1,6],[3] → [1,3,6]
+// Merge [2,4,5],[1,3,6] → [1,2,3,4,5,6] ✓</span>
+
+<span class="kw">public void</span> <span class="fn">mergeSort</span>(<span class="kw">int</span>[] arr, <span class="kw">int</span> l, <span class="kw">int</span> r) {
+    <span class="kw">if</span> (l &gt;= r) <span class="kw">return</span>;                   <span class="cmt">// base: 0 or 1 element</span>
+    <span class="kw">int</span> mid = l + (r - l) / <span class="num">2</span>;
+    <span class="fn">mergeSort</span>(arr, l, mid);               <span class="cmt">// sort left half</span>
+    <span class="fn">mergeSort</span>(arr, mid+<span class="num">1</span>, r);             <span class="cmt">// sort right half</span>
+    <span class="fn">merge</span>(arr, l, mid, r);               <span class="cmt">// merge sorted halves</span>
+}
+<span class="kw">private void</span> <span class="fn">merge</span>(<span class="kw">int</span>[] arr, <span class="kw">int</span> l, <span class="kw">int</span> mid, <span class="kw">int</span> r) {
+    <span class="kw">int</span>[] tmp = <span class="type">Arrays</span>.<span class="fn">copyOfRange</span>(arr, l, r+<span class="num">1</span>);
+    <span class="kw">int</span> i=<span class="num">0</span>, j=mid-l+<span class="num">1</span>, k=l;
+    <span class="kw">while</span>(i&lt;=mid-l &amp;&amp; j&lt;=r-l)
+        arr[k++] = tmp[i]&lt;=tmp[j] ? tmp[i++] : tmp[j++];
+    <span class="kw">while</span>(i&lt;=mid-l) arr[k++]=tmp[i++];
+    <span class="kw">while</span>(j&lt;=r-l)   arr[k++]=tmp[j++];
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N log N)</span><span class="cx cxs">Space: O(N)</span></div>
+  </div></div>
+
+  <!-- P8: Power Function -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Fast Power (D&amp;C)</span><h3>8. Pow(x, n) — Fast Power</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Naive:</span> Multiply x by itself n times → O(N). Too slow for large n.</div>
+      <div class="logic-step"><span class="lstep">Key insight:</span> x^n = x^(n/2) * x^(n/2). Compute x^(n/2) once, square it. Halve the exponent each recursion → O(log N).</div>
+      <div class="logic-step"><span class="lstep">Odd exponent:</span> x^n = x * x^(n-1). Even: x^n = (x^(n/2))^2.</div>
+      <div class="logic-step"><span class="lstep">Negative exponent:</span> x^(-n) = 1/x^n.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Repeated computation reducible by halving"</strong> &#8594; Fast exponentiation D&amp;C</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>x=2.0, n=10</div>
+      <div class="io-out"><div class="iolabel">Output</div>1024.0</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: pow(2, 10)
+//   pow(2,10) = pow(2,5)^2
+//   pow(2,5)  = 2 * pow(2,4) = 2 * pow(2,2)^2
+//   pow(2,2)  = pow(2,1)^2
+//   pow(2,1)  = 2 * pow(2,0) = 2*1 = 2
+//   → pow(2,2)=4, pow(2,4)=16, pow(2,5)=32, pow(2,10)=1024 ✓
+// Only log2(10)≈3 recursive calls instead of 10!</span>
+
+<span class="kw">public double</span> <span class="fn">myPow</span>(<span class="kw">double</span> x, <span class="kw">int</span> n) {
+    <span class="kw">if</span> (n &lt; <span class="num">0</span>) { x = <span class="num">1</span> / x; n = -n; } <span class="cmt">// handle negative exponent</span>
+    <span class="kw">return</span> <span class="fn">fastPow</span>(x, n);
+}
+<span class="kw">private double</span> <span class="fn">fastPow</span>(<span class="kw">double</span> x, <span class="kw">long</span> n) {
+    <span class="kw">if</span> (n == <span class="num">0</span>) <span class="kw">return</span> <span class="num">1</span>;
+    <span class="kw">double</span> half = <span class="fn">fastPow</span>(x, n / <span class="num">2</span>);        <span class="cmt">// compute once, reuse</span>
+    <span class="kw">if</span> (n % <span class="num">2</span> == <span class="num">0</span>) <span class="kw">return</span> half * half;
+    <span class="kw">else</span>            <span class="kw">return</span> half * half * x;   <span class="cmt">// odd: one extra x</span>
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(log N)</span><span class="cx cxs">Space: O(log N) stack</span></div>
+  </div></div>
+</div>
+
+<!-- BACKTRACKING -->
+<div id="backtrack" class="sec">
+  <div class="stitle"><em>Backtracking</em></div>
+  <div class="ssub">Explore all possibilities via a decision tree. At each step: choose, recurse, un-choose (backtrack). Pruning makes it fast.</div>
+  <div class="card">
+    <h3 style="font-size:.9rem;margin-bottom:.6rem">&#127381; Universal Backtracking Template</h3>
+<pre><span class="cmt">// TEMPLATE — works for ALL backtracking problems:
+// void backtrack(state, choices, result) {
+//   if (goal reached) → add state to result, return
+//   for each valid choice:
+//     make the choice (modify state)
+//     backtrack(new state, remaining choices, result)
+//     undo the choice (restore state)         ← KEY STEP
+// }</span>
+
+<span class="kw">void</span> <span class="fn">backtrack</span>(<span class="type">List</span> current, <span class="type">List</span> choices, <span class="type">List</span> result) {
+    <span class="kw">if</span> (<span class="fn">isGoal</span>(current)) { result.<span class="fn">add</span>(<span class="kw">new</span> <span class="type">ArrayList</span>(current)); <span class="kw">return</span>; }
+    <span class="kw">for</span> (<span class="type">Choice</span> c : choices) {
+        <span class="kw">if</span> (!<span class="fn">isValid</span>(c)) <span class="kw">continue</span>;          <span class="cmt">// pruning</span>
+        current.<span class="fn">add</span>(c);                      <span class="cmt">// choose</span>
+        <span class="fn">backtrack</span>(current, remaining, result); <span class="cmt">// explore</span>
+        current.<span class="fn">remove</span>(current.<span class="fn">size</span>()-<span class="num">1</span>);  <span class="cmt">// un-choose</span>
+    }
+}</pre>
+  </div>
+
+  <!-- P9: Subsets -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Include/Exclude</span><h3>9. Subsets — All 2^N Subsets</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Decision tree:</span> For each element, you have exactly 2 choices: include it or exclude it. N elements → 2^N subsets.</div>
+      <div class="logic-step"><span class="lstep">Backtracking approach:</span> At index i, try including nums[i] (add to current, recurse with i+1), then exclude (remove, recurse with i+1).</div>
+      <div class="logic-step"><span class="lstep">Every node</span> in the decision tree is a valid subset (not just leaves). Add current to result at EVERY call.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Each element: include or exclude"</strong> &#8594; Binary decision tree, add at every node</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>nums=[1,2,3]</div>
+      <div class="io-out"><div class="iolabel">Output</div>[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]</div>
+    </div>
+<pre><span class="cmt">// DECISION TREE for [1,2,3]:
+//                       []
+//            include 1 /    \ exclude 1
+//                   [1]       []
+//          incl 2 /   \excl  / \
+//              [1,2]  [1]  [2]  []
+//        incl3/ \excl / \   ...
+//          [1,2,3][1,2][1,3][1] ...
+// Every node is a valid subset!
+//
+// DRY RUN: nums=[1,2], showing calls:
+// bt(0,[]): add [] → try 1: bt(1,[1]): add [1] → try 2: bt(2,[1,2]): add [1,2]
+//           backtrack → bt(2,[1]): done with idx≥n
+//           → backtrack 1 → bt(1,[]): add [] → try 2: bt(2,[2]): add [2]
+// Result: [[],[1],[1,2],[2]] ✓</span>
+
+<span class="kw">public</span> <span class="type">List</span>&lt;<span class="type">List</span>&lt;<span class="type">Integer</span>&gt;&gt; <span class="fn">subsets</span>(<span class="kw">int</span>[] nums) {
+    <span class="type">List</span>&lt;<span class="type">List</span>&lt;<span class="type">Integer</span>&gt;&gt; res = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+    <span class="fn">backtrack</span>(nums, <span class="num">0</span>, <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;(), res);
+    <span class="kw">return</span> res;
+}
+<span class="kw">private void</span> <span class="fn">backtrack</span>(<span class="kw">int</span>[] nums, <span class="kw">int</span> idx, <span class="type">List</span>&lt;<span class="type">Integer</span>&gt; curr, <span class="type">List</span>&lt;<span class="type">List</span>&lt;<span class="type">Integer</span>&gt;&gt; res) {
+    res.<span class="fn">add</span>(<span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;(curr));          <span class="cmt">// every state is a valid subset</span>
+    <span class="kw">for</span> (<span class="kw">int</span> i = idx; i &lt; nums.length; i++) {
+        curr.<span class="fn">add</span>(nums[i]);                    <span class="cmt">// choose</span>
+        <span class="fn">backtrack</span>(nums, i+<span class="num">1</span>, curr, res);     <span class="cmt">// explore</span>
+        curr.<span class="fn">remove</span>(curr.<span class="fn">size</span>()-<span class="num">1</span>);         <span class="cmt">// un-choose (backtrack)</span>
+    }
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N&times;2^N)</span><span class="cx cxs">Space: O(N) stack</span></div>
+  </div></div>
+
+  <!-- P10: Permutations -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Swap Backtrack</span><h3>10. Permutations — All N! Orderings</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Permutations vs Subsets:</span> Subsets = choose which elements. Permutations = choose the ORDER of all elements.</div>
+      <div class="logic-step"><span class="lstep">Decision tree:</span> At position i, choose any unused element. Mark as used, recurse for position i+1, unmark.</div>
+      <div class="logic-step"><span class="lstep">Track used:</span> Use a boolean[] or a "used set". Or use swap-based approach: swap element into current position, recurse, swap back.</div>
+      <div class="logic-step"><span class="lstep">Add to result</span> only at LEAVES (when curr.size() == nums.length).</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"All orderings of all elements"</strong> &#8594; Backtrack with used-set or swap</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>nums=[1,2,3]</div>
+      <div class="io-out"><div class="iolabel">Output</div>[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]</div>
+    </div>
+<pre><span class="cmt">// DRY RUN for [1,2] (simplified):
+// bt([], used={})
+//   try 1: bt([1], used={0})
+//     try 2: bt([1,2], used={0,1}) → curr.size=2=n → add [1,2], return
+//   un-use 1
+//   try 2: bt([2], used={1})
+//     try 1: bt([2,1], used={0,1}) → add [2,1], return
+//   un-use 2
+// Result: [[1,2],[2,1]] ✓</span>
+
+<span class="kw">public</span> <span class="type">List</span>&lt;<span class="type">List</span>&lt;<span class="type">Integer</span>&gt;&gt; <span class="fn">permute</span>(<span class="kw">int</span>[] nums) {
+    <span class="type">List</span>&lt;<span class="type">List</span>&lt;<span class="type">Integer</span>&gt;&gt; res = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+    <span class="fn">backtrack</span>(nums, <span class="kw">new</span> <span class="kw">boolean</span>[nums.length], <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;(), res);
+    <span class="kw">return</span> res;
+}
+<span class="kw">private void</span> <span class="fn">backtrack</span>(<span class="kw">int</span>[] nums, <span class="kw">boolean</span>[] used, <span class="type">List</span>&lt;<span class="type">Integer</span>&gt; curr, <span class="type">List</span>&lt;<span class="type">List</span>&lt;<span class="type">Integer</span>&gt;&gt; res) {
+    <span class="kw">if</span> (curr.<span class="fn">size</span>() == nums.length) { res.<span class="fn">add</span>(<span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;(curr)); <span class="kw">return</span>; }
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; nums.length; i++) {
+        <span class="kw">if</span> (used[i]) <span class="kw">continue</span>;            <span class="cmt">// skip already placed elements</span>
+        used[i] = <span class="kw">true</span>; curr.<span class="fn">add</span>(nums[i]);    <span class="cmt">// choose</span>
+        <span class="fn">backtrack</span>(nums, used, curr, res);      <span class="cmt">// explore</span>
+        used[i] = <span class="kw">false</span>; curr.<span class="fn">remove</span>(curr.<span class="fn">size</span>()-<span class="num">1</span>); <span class="cmt">// un-choose</span>
+    }
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N&times;N!)</span><span class="cx cxs">Space: O(N) stack</span></div>
+  </div></div>
+
+  <!-- P11: Combination Sum -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Backtrack + Pruning</span><h3>11. Combination Sum — Unlimited Reuse</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Difference from subsets:</span> Elements can be reused unlimited times. Target must sum exactly to target.</div>
+      <div class="logic-step"><span class="lstep">Pruning:</span> Sort candidates. If remaining &lt; 0 → stop. If candidate &gt; remaining → stop early.</div>
+      <div class="logic-step"><span class="lstep">Avoid duplicates:</span> Only iterate from current index i onwards (not 0) — ensures [2,2,3] not counted twice as [2,3,2].</div>
+      <div class="logic-step"><span class="lstep">Add at leaves:</span> Only add to result when remaining == 0 (exactly hit target).</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"All combos summing to target (reuse allowed)"</strong> &#8594; Backtrack from current index, prune on target</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>candidates=[2,3,6,7], target=7</div>
+      <div class="io-out"><div class="iolabel">Output</div>[[2,2,3],[7]]</div>
+    </div>
+<pre><span class="cmt">// DECISION TREE (pruned) for target=7:
+// bt(idx=0, remain=7, curr=[])
+//   pick 2: bt(0, 5, [2])
+//     pick 2: bt(0, 3, [2,2])
+//       pick 2: bt(0, 1, [2,2,2])
+//         pick 2: remain=-1 < 0 → PRUNE
+//         pick 3: remain=-2 < 0 → PRUNE
+//       pick 3: bt(1, 0, [2,2,3]) → remain=0 → ADD [2,2,3] ✓
+//       pick 6: remain=-3 → PRUNE
+//     pick 3: bt(1, 2, [2,3]) → 2<3 all pruned
+//   pick 3: bt(1, 4, [3]) → [3,3]: remain=-2 prune; nothing works
+//   pick 6: remain=1 < all left → nothing
+//   pick 7: remain=0 → ADD [7] ✓</span>
+
+<span class="kw">public</span> <span class="type">List</span>&lt;<span class="type">List</span>&lt;<span class="type">Integer</span>&gt;&gt; <span class="fn">combinationSum</span>(<span class="kw">int</span>[] cands, <span class="kw">int</span> target) {
+    <span class="type">Arrays</span>.<span class="fn">sort</span>(cands); <span class="cmt">// sort enables early pruning</span>
+    <span class="type">List</span>&lt;<span class="type">List</span>&lt;<span class="type">Integer</span>&gt;&gt; res = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+    <span class="fn">bt</span>(cands, <span class="num">0</span>, target, <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;(), res);
+    <span class="kw">return</span> res;
+}
+<span class="kw">private void</span> <span class="fn">bt</span>(<span class="kw">int</span>[] c, <span class="kw">int</span> idx, <span class="kw">int</span> rem, <span class="type">List</span>&lt;<span class="type">Integer</span>&gt; curr, <span class="type">List</span>&lt;<span class="type">List</span>&lt;<span class="type">Integer</span>&gt;&gt; res) {
+    <span class="kw">if</span> (rem == <span class="num">0</span>) { res.<span class="fn">add</span>(<span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;(curr)); <span class="kw">return</span>; }
+    <span class="kw">for</span> (<span class="kw">int</span> i = idx; i &lt; c.length; i++) {
+        <span class="kw">if</span> (c[i] &gt; rem) <span class="kw">break</span>;            <span class="cmt">// sorted → all subsequent also > rem</span>
+        curr.<span class="fn">add</span>(c[i]);
+        <span class="fn">bt</span>(c, i, rem - c[i], curr, res); <span class="cmt">// i not i+1 → reuse allowed</span>
+        curr.<span class="fn">remove</span>(curr.<span class="fn">size</span>()-<span class="num">1</span>);
+    }
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N^(T/M)) T=target, M=min</span><span class="cx cxs">Space: O(T/M) stack</span></div>
+  </div></div>
+
+  <!-- P12: Generate Parentheses -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Constrained Backtrack</span><h3>12. Generate Parentheses</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Valid parentheses rules:</span> (1) Never more closing than opening so far. (2) Total opening = total closing = n.</div>
+      <div class="logic-step"><span class="lstep">Decision at each step:</span> Add '(' if open &lt; n. Add ')' if close &lt; open. These constraints are the pruning conditions.</div>
+      <div class="logic-step"><span class="lstep">Why this generates only valid strings:</span> The constraints ensure no invalid state is ever explored. No need to validate at the end.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Generate all valid strings under constraints"</strong> &#8594; Backtrack with state variables as guards</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>n = 3</div>
+      <div class="io-out"><div class="iolabel">Output</div>["((()))","(()())","(())()","()(())","()()()"]</div>
+    </div>
+<pre><span class="cmt">// DECISION TREE for n=2:
+//         ""
+//    add( /
+//        "("         [open=1,close=0]
+//   add( /  \ add)
+//      "(("       "()"       [open=2,0 vs 1,1]
+//  add)/        add( \ add)
+//   "(()"       "()()"  "(())"... wait n=2: 
+//  add)/ 
+//  "(())"  ← add [open=2,close=2=n] → DONE
+//
+// Constraints prevent invalid states: never add ) when close>=open</span>
+
+<span class="kw">public</span> <span class="type">List</span>&lt;<span class="type">String</span>&gt; <span class="fn">generateParenthesis</span>(<span class="kw">int</span> n) {
+    <span class="type">List</span>&lt;<span class="type">String</span>&gt; res = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+    <span class="fn">bt</span>(n, <span class="num">0</span>, <span class="num">0</span>, <span class="kw">new</span> <span class="type">StringBuilder</span>(), res);
+    <span class="kw">return</span> res;
+}
+<span class="kw">private void</span> <span class="fn">bt</span>(<span class="kw">int</span> n, <span class="kw">int</span> open, <span class="kw">int</span> close, <span class="type">StringBuilder</span> sb, <span class="type">List</span>&lt;<span class="type">String</span>&gt; res) {
+    <span class="kw">if</span> (sb.length() == n*<span class="num">2</span>) { res.<span class="fn">add</span>(sb.<span class="fn">toString</span>()); <span class="kw">return</span>; }
+    <span class="kw">if</span> (open &lt; n)     { sb.<span class="fn">append</span>(<span class="str">'('</span>); <span class="fn">bt</span>(n,open+<span class="num">1</span>,close,sb,res); sb.<span class="fn">deleteCharAt</span>(sb.length()-<span class="num">1</span>); }
+    <span class="kw">if</span> (close &lt; open) { sb.<span class="fn">append</span>(<span class="str">')'</span>); <span class="fn">bt</span>(n,open,close+<span class="num">1</span>,sb,res); sb.<span class="fn">deleteCharAt</span>(sb.length()-<span class="num">1</span>); }
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(4^N/&radic;N) Catalan</span><span class="cx cxs">Space: O(N) stack</span></div>
+  </div></div>
+
+  <!-- P13: N-Queens -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag hard">Hard</span><span class="ptag">Constraint Backtrack</span><h3>13. N-Queens</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Place one queen per row.</span> For each row, try each column. Check if placement is safe (no queen attacks).</div>
+      <div class="logic-step"><span class="lstep">Conflict detection:</span> Same column: col set. Diagonal (\): row-col is constant. Anti-diagonal (/): row+col is constant. Track all 3 sets.</div>
+      <div class="logic-step"><span class="lstep">Pruning:</span> Skip unsafe placements immediately — no need to recurse deeper.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Place N items with mutual constraints"</strong> &#8594; Row-by-row backtrack + 3 conflict sets</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>n = 4</div>
+      <div class="io-out"><div class="iolabel">Output</div>[".Q..","...Q","Q...","..Q."],["..Q.","Q...","...Q",".Q.."]</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: n=4, placing queens row by row
+// Row 0: try col 0 → conflicts later, try col 1 →
+//   Row 1: col 3 ✓ (not same col, row-col=-2≠0-1=-1, row+col=4≠1)
+//     Row 2: col 0 ✓ (col≠1,3; diag 2-0=2≠{0-1=-1,1-3=-2}; anti 2+0=2≠{1,4})
+//       Row 3: col 2 ✓ (col≠0,1,3; check diags) → SOLUTION ".Q..","...Q","Q...","..Q." ✓</span>
+
+<span class="kw">public</span> <span class="type">List</span>&lt;<span class="type">List</span>&lt;<span class="type">String</span>&gt;&gt; <span class="fn">solveNQueens</span>(<span class="kw">int</span> n) {
+    <span class="type">List</span>&lt;<span class="type">List</span>&lt;<span class="type">String</span>&gt;&gt; res = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+    <span class="fn">bt</span>(n, <span class="num">0</span>, <span class="kw">new</span> <span class="kw">int</span>[n], <span class="kw">new</span> <span class="type">HashSet</span>&lt;&gt;(), <span class="kw">new</span> <span class="type">HashSet</span>&lt;&gt;(), <span class="kw">new</span> <span class="type">HashSet</span>&lt;&gt;(), res);
+    <span class="kw">return</span> res;
+}
+<span class="kw">private void</span> <span class="fn">bt</span>(<span class="kw">int</span> n, <span class="kw">int</span> row, <span class="kw">int</span>[] cols, <span class="type">Set</span>&lt;<span class="type">Integer</span>&gt; col, <span class="type">Set</span>&lt;<span class="type">Integer</span>&gt; diag, <span class="type">Set</span>&lt;<span class="type">Integer</span>&gt; anti, <span class="type">List</span>&lt;<span class="type">List</span>&lt;<span class="type">String</span>&gt;&gt; res) {
+    <span class="kw">if</span> (row == n) { res.<span class="fn">add</span>(<span class="fn">buildBoard</span>(cols, n)); <span class="kw">return</span>; }
+    <span class="kw">for</span> (<span class="kw">int</span> c = <span class="num">0</span>; c &lt; n; c++) {
+        <span class="kw">if</span> (col.<span class="fn">contains</span>(c)||diag.<span class="fn">contains</span>(row-c)||anti.<span class="fn">contains</span>(row+c)) <span class="kw">continue</span>;
+        cols[row]=c; col.<span class="fn">add</span>(c); diag.<span class="fn">add</span>(row-c); anti.<span class="fn">add</span>(row+c);
+        <span class="fn">bt</span>(n,row+<span class="num">1</span>,cols,col,diag,anti,res);
+        col.<span class="fn">remove</span>(c); diag.<span class="fn">remove</span>(row-c); anti.<span class="fn">remove</span>(row+c);
+    }
+}
+<span class="kw">private</span> <span class="type">List</span>&lt;<span class="type">String</span>&gt; <span class="fn">buildBoard</span>(<span class="kw">int</span>[] cols, <span class="kw">int</span> n) {
+    <span class="type">List</span>&lt;<span class="type">String</span>&gt; board = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+    <span class="kw">for</span> (<span class="kw">int</span> r=<span class="num">0</span>;r&lt;n;r++){<span class="kw">char</span>[] row=<span class="kw">new char</span>[n];<span class="type">Arrays</span>.<span class="fn">fill</span>(row,<span class="str">'.'</span>);row[cols[r]]='Q';board.<span class="fn">add</span>(<span class="kw">new</span> <span class="type">String</span>(row));}
+    <span class="kw">return</span> board;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N!)</span><span class="cx cxs">Space: O(N)</span></div>
+  </div></div>
+
+  <!-- P14: Word Search -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Grid Backtrack DFS</span><h3>14. Word Search in Grid</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Approach:</span> Try every cell as starting point. DFS in 4 directions. Mark current cell as visited, recurse, unmark (backtrack).</div>
+      <div class="logic-step"><span class="lstep">Pruning:</span> If current cell doesn't match word[index] → stop. If visited → skip.</div>
+      <div class="logic-step"><span class="lstep">Visited marking trick:</span> Temporarily set board[r][c]='#' to avoid revisiting. Restore after recursion.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Find path in grid matching sequence"</strong> &#8594; DFS backtrack with in-place visited marking</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>board=[["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word="ABCCED"</div>
+      <div class="io-out"><div class="iolabel">Output</div>true</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: word="ABCCED"
+// Start at (0,0)='A' matches word[0]='A'
+//   mark (0,0)='#', try neighbors:
+//   (0,1)='B' matches word[1] → mark, try neighbors:
+//     (0,2)='C' matches word[2] → mark, try neighbors:
+//       (1,2)='C' matches word[3] → mark, try neighbors:
+//         (2,2)='E' matches word[4] → mark, try:
+//           (2,1)='D' matches word[5] → ALL MATCHED → return true ✓</span>
+
+<span class="kw">public boolean</span> <span class="fn">exist</span>(<span class="kw">char</span>[][] board, <span class="type">String</span> word) {
+    <span class="kw">for</span> (<span class="kw">int</span> r=<span class="num">0</span>; r&lt;board.length; r++)
+        <span class="kw">for</span> (<span class="kw">int</span> c=<span class="num">0</span>; c&lt;board[<span class="num">0</span>].length; c++)
+            <span class="kw">if</span> (<span class="fn">dfs</span>(board, word, r, c, <span class="num">0</span>)) <span class="kw">return true</span>;
+    <span class="kw">return false</span>;
+}
+<span class="kw">private boolean</span> <span class="fn">dfs</span>(<span class="kw">char</span>[][] b, <span class="type">String</span> w, <span class="kw">int</span> r, <span class="kw">int</span> c, <span class="kw">int</span> i) {
+    <span class="kw">if</span> (i == w.length()) <span class="kw">return true</span>;     <span class="cmt">// matched all chars</span>
+    <span class="kw">if</span> (r&lt;<span class="num">0</span>||r&gt;=b.length||c&lt;<span class="num">0</span>||c&gt;=b[<span class="num">0</span>].length||b[r][c]!=w.<span class="fn">charAt</span>(i)) <span class="kw">return false</span>;
+    <span class="kw">char</span> tmp=b[r][c]; b[r][c]=<span class="str">'#'</span>;        <span class="cmt">// mark visited</span>
+    <span class="kw">boolean</span> found = <span class="fn">dfs</span>(b,w,r+<span class="num">1</span>,c,i+<span class="num">1</span>)||<span class="fn">dfs</span>(b,w,r-<span class="num">1</span>,c,i+<span class="num">1</span>)||
+                     <span class="fn">dfs</span>(b,w,r,c+<span class="num">1</span>,i+<span class="num">1</span>)||<span class="fn">dfs</span>(b,w,r,c-<span class="num">1</span>,i+<span class="num">1</span>);
+    b[r][c]=tmp;                           <span class="cmt">// restore (backtrack)</span>
+    <span class="kw">return</span> found;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(R&times;C&times;4^L)</span><span class="cx cxs">Space: O(L) stack</span></div>
+  </div></div>
+
+  <!-- P15: Sudoku Solver -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag hard">Hard</span><span class="ptag">Constraint Backtrack</span><h3>15. Sudoku Solver</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Approach:</span> Find next empty cell. Try digits 1-9. Check row/col/box constraints. Recurse. If recursion fails → try next digit. If no digit works → backtrack (return false).</div>
+      <div class="logic-step"><span class="lstep">Constraints to check:</span> No same digit in same row, column, or 3x3 box. Box index = (r/3)*3 + (c/3).</div>
+      <div class="logic-step"><span class="lstep">Return value:</span> Return true only when the entire board is filled. False triggers backtracking up the call stack.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Fill grid under multiple constraints, backtrack on failure"</strong> &#8594; Cell-by-cell backtrack with constraint checking</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>9x9 partially filled Sudoku board</div>
+      <div class="io-out"><div class="iolabel">Output</div>Completed valid Sudoku board</div>
+    </div>
+<pre><span class="cmt">// ALGORITHM:
+// 1. Find next empty cell '.'
+// 2. Try digits '1'-'9'
+// 3. If valid (not in row/col/box) → place digit, recurse
+// 4. If recursion returns true → done!
+// 5. If returns false → undo (board[r][c]='.'), try next digit
+// 6. If no digit works → return false (triggers backtrack in caller)
+//
+// DRY RUN SKETCH: row=[5,3,.,.,7,...] col0=[5,6,.,8,4,7,.,.,.]
+// For cell (0,2): try 1 → not in row? row has 5,3,7. not in col? col has 5,6,8,4,7.
+//   not in box[0]? box has 5,3,6,9,8. → 1 not in any → place '1', recurse...
+//   if recursion fails, try '2', '3', ... '4' works? keep trying...</span>
+
+<span class="kw">public void</span> <span class="fn">solveSudoku</span>(<span class="kw">char</span>[][] board) { <span class="fn">solve</span>(board); }
+
+<span class="kw">private boolean</span> <span class="fn">solve</span>(<span class="kw">char</span>[][] b) {
+    <span class="kw">for</span> (<span class="kw">int</span> r=<span class="num">0</span>; r&lt;<span class="num">9</span>; r++) <span class="kw">for</span> (<span class="kw">int</span> c=<span class="num">0</span>; c&lt;<span class="num">9</span>; c++) {
+        <span class="kw">if</span> (b[r][c] != <span class="str">'.'</span>) <span class="kw">continue</span>; <span class="cmt">// skip filled cells</span>
+        <span class="kw">for</span> (<span class="kw">char</span> d=<span class="str">'1'</span>; d&lt;=<span class="str">'9'</span>; d++) {
+            <span class="kw">if</span> (<span class="fn">isValid</span>(b,r,c,d)) {
+                b[r][c]=d;
+                <span class="kw">if</span> (<span class="fn">solve</span>(b)) <span class="kw">return true</span>; <span class="cmt">// propagate success</span>
+                b[r][c]=<span class="str">'.'</span>;               <span class="cmt">// backtrack</span>
+            }
+        }
+        <span class="kw">return false</span>; <span class="cmt">// no digit worked for this cell</span>
+    }
+    <span class="kw">return true</span>; <span class="cmt">// all cells filled</span>
+}
+<span class="kw">private boolean</span> <span class="fn">isValid</span>(<span class="kw">char</span>[][] b, <span class="kw">int</span> r, <span class="kw">int</span> c, <span class="kw">char</span> d) {
+    <span class="kw">int</span> box = (r/<span class="num">3</span>)*<span class="num">3</span> + c/<span class="num">3</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i=<span class="num">0</span>; i&lt;<span class="num">9</span>; i++) {
+        <span class="kw">if</span> (b[r][i]==d || b[i][c]==d || b[(box/<span class="num">3</span>)*<span class="num">3</span>+i/<span class="num">3</span>][box%<span class="num">3</span>*<span class="num">3</span>+i%<span class="num">3</span>]==d) <span class="kw">return false</span>;
+    }
+    <span class="kw">return true</span>;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(9^M) M=empty cells</span><span class="cx cxs">Space: O(M) stack</span></div>
+  </div></div>
+</div>
+
+<!-- TRACKER -->
+<div id="tracker" class="sec">
+  <div class="stitle">&#128203; <em>Progress</em> Tracker</div>
+  <div class="ssub">Part 3: 15 problems — Binary Search, Recursion, Backtracking.</div>
+  <div class="pgrid">
+    <div class="pc"><div class="plabel">Binary Search</div><div class="pbwrap"><div class="pb" id="pb-bs" style="background:var(--accent)"></div></div><div class="pval" id="pv-bs">0%</div></div>
+    <div class="pc"><div class="plabel">Recursion / D&amp;C</div><div class="pbwrap"><div class="pb" id="pb-rc" style="background:var(--accent2)"></div></div><div class="pval" id="pv-rc" style="color:var(--accent2)">0%</div></div>
+    <div class="pc"><div class="plabel">Backtracking</div><div class="pbwrap"><div class="pb" id="pb-bt" style="background:var(--accent3)"></div></div><div class="pval" id="pv-bt" style="color:var(--accent3)">0%</div></div>
+    <div class="pc"><div class="plabel">Overall P3</div><div class="pbwrap"><div class="pb" id="pb-all" style="background:var(--orange)"></div></div><div class="pval" id="pv-all" style="color:var(--orange)">0%</div></div>
+  </div>
+  <div class="card"><div class="tl">
+    <div class="tli"><div class="tldot" style="background:var(--accent)"></div><div class="tlday">BINARY SEARCH &mdash; 5 problems</div><div class="tltitle">Halve the search space</div>
+      <ul class="cklist" id="cl-bs">
+        <li onclick="tick(this,'bs')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>1. Binary Search — Classic</span></li>
+        <li onclick="tick(this,'bs')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>2. Search in Rotated Sorted Array</span></li>
+        <li onclick="tick(this,'bs')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>3. Find Minimum in Rotated Sorted Array</span></li>
+        <li onclick="tick(this,'bs')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>4. First Bad Version</span></li>
+        <li onclick="tick(this,'bs')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>5. Koko Eating Bananas — BS on answer</span></li>
+      </ul>
+    </div>
+    <div class="tli"><div class="tldot" style="background:var(--accent2)"></div><div class="tlday">RECURSION &amp; D&amp;C &mdash; 3 problems</div><div class="tltitle">Trust the recursion</div>
+      <ul class="cklist" id="cl-rc">
+        <li onclick="tick(this,'rc')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>6. Fibonacci — Memoization &amp; iterative</span></li>
+        <li onclick="tick(this,'rc')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>7. Merge Sort — Implement from scratch</span></li>
+        <li onclick="tick(this,'rc')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>8. Pow(x, n) — Fast power O(log N)</span></li>
+      </ul>
+    </div>
+    <div class="tli"><div class="tldot" style="background:var(--accent3)"></div><div class="tlday">BACKTRACKING &mdash; 7 problems</div><div class="tltitle">Choose, explore, un-choose</div>
+      <ul class="cklist" id="cl-bt">
+        <li onclick="tick(this,'bt')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>9. Subsets — All 2^N subsets</span></li>
+        <li onclick="tick(this,'bt')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>10. Permutations — All N! orderings</span></li>
+        <li onclick="tick(this,'bt')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>11. Combination Sum — Reuse allowed</span></li>
+        <li onclick="tick(this,'bt')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>12. Generate Parentheses</span></li>
+        <li onclick="tick(this,'bt')"><div class="chk"></div><span class="chlabel"><span class="tag hard" style="margin-right:.4rem">Hard</span>13. N-Queens</span></li>
+        <li onclick="tick(this,'bt')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>14. Word Search in Grid</span></li>
+        <li onclick="tick(this,'bt')"><div class="chk"></div><span class="chlabel"><span class="tag hard" style="margin-right:.4rem">Hard</span>15. Sudoku Solver</span></li>
+      </ul>
+    </div>
+  </div></div>
+  <div class="tip">&#128640; <strong>Part 4 next:</strong> Binary Tree (traversals, height, paths) &amp; BST (insert, delete, validate, LCA). Same format.</div>
+</div>
+
+</main>
+<script>
+function show(id,btn){document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('active')});document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('active')});var el=document.getElementById(id);if(el)el.classList.add('active');if(btn)btn.classList.add('active');window.scrollTo(0,0);}
+function toggleQA(el){el.parentElement.classList.toggle('open');}
+var totals={bs:5,rc:3,bt:7};
+function tick(li,cat){li.classList.toggle('done');var list=document.getElementById('cl-'+cat);if(!list)return;var done=list.querySelectorAll('li.done').length;var pct=Math.round(done/totals[cat]*100);var pb=document.getElementById('pb-'+cat);var pv=document.getElementById('pv-'+cat);if(pb)pb.style.width=pct+'%';if(pv)pv.textContent=pct+'%';var allDone=0,allTotal=0;Object.keys(totals).forEach(function(c){var l=document.getElementById('cl-'+c);if(l)allDone+=l.querySelectorAll('li.done').length;allTotal+=totals[c];});var apct=Math.round(allDone/allTotal*100);document.getElementById('pb-all').style.width=apct+'%';document.getElementById('pv-all').textContent=apct+'%';}
+</script>
+</body>
+</html>

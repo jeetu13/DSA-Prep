@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Part 4 — Binary Trees &amp; BST</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07090f;--surface:#0d1117;--card:#111827;--card2:#0f1923;--border:#1e2d3d;--accent:#f59e0b;--accent2:#a78bfa;--accent3:#10b981;--danger:#ef4444;--cyan:#00e5ff;--pink:#f472b6;--orange:#fb923c;--text:#e2e8f0;--muted:#64748b;--code-bg:#060d14}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh}
+header{background:linear-gradient(135deg,#07090f 0%,#1a1200 60%,#07090f 100%);border-bottom:1px solid var(--border);padding:2rem 2rem 1.5rem;position:relative;overflow:hidden}
+header::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(245,158,11,.07) 0%,transparent 65%);pointer-events:none}
+.hbadge{display:inline-flex;align-items:center;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.3rem .8rem;border-radius:2px;letter-spacing:.12em;margin-bottom:.9rem}
+h1{font-size:clamp(1.7rem,4vw,2.6rem);font-weight:800;letter-spacing:-.03em;line-height:1.1}
+h1 em{color:var(--accent);font-style:normal}
+h1 small{display:block;font-size:.45em;font-weight:400;color:var(--muted);margin-top:.3rem}
+.hpills{margin-top:1rem;display:flex;gap:.6rem;flex-wrap:wrap}
+.pill{background:var(--surface);border:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.2rem .65rem;border-radius:3px;color:var(--muted)}
+nav{display:flex;gap:.25rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:100}
+nav::-webkit-scrollbar{display:none}
+.nb{background:none;border:1px solid transparent;color:var(--muted);font-family:'Outfit',sans-serif;font-size:.78rem;font-weight:600;padding:.4rem 1rem;border-radius:4px;cursor:pointer;white-space:nowrap;transition:all .18s}
+.nb:hover{color:var(--text);border-color:var(--border)}
+.nb.active{color:var(--accent);border-color:var(--accent);background:rgba(245,158,11,.07)}
+main{max-width:980px;margin:0 auto;padding:2rem}
+.sec{display:none}.sec.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.stitle{font-size:1.5rem;font-weight:800;margin-bottom:.4rem;letter-spacing:-.02em}
+.stitle em{color:var(--accent);font-style:normal}
+.ssub{color:var(--muted);font-size:.85rem;margin-bottom:1.5rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.4rem;margin-bottom:1rem}
+.tag{font-family:'JetBrains Mono',monospace;font-size:.63rem;font-weight:700;padding:.18rem .55rem;border-radius:3px;letter-spacing:.08em;text-transform:uppercase}
+.easy{background:rgba(16,185,129,.15);color:var(--accent3);border:1px solid rgba(16,185,129,.3)}
+.medium{background:rgba(245,158,11,.15);color:var(--accent);border:1px solid rgba(245,158,11,.3)}
+.hard{background:rgba(239,68,68,.15);color:var(--danger);border:1px solid rgba(239,68,68,.3)}
+.ptag{background:rgba(245,158,11,.1);color:var(--accent);border:1px solid rgba(245,158,11,.2);font-family:'JetBrains Mono',monospace;font-size:.63rem;padding:.18rem .55rem;border-radius:3px}
+.qa{border:1px solid var(--border);border-radius:8px;margin-bottom:.6rem;overflow:hidden}
+.qq{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.2rem;cursor:pointer;background:var(--card2);transition:background .15s;gap:1rem}
+.qq:hover{background:#131e2d}.qq h3{font-size:.92rem;font-weight:600;line-height:1.4}
+.qarr{color:var(--muted);font-size:.75rem;flex-shrink:0;transition:transform .2s}
+.qa.open .qarr{transform:rotate(180deg)}
+.qa-body{display:none;padding:1.2rem;border-top:1px solid var(--border);background:var(--card)}
+.qa.open .qa-body{display:block}
+pre{background:var(--code-bg);border:1px solid #1a2535;border-radius:6px;padding:1.1rem 1.2rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.65;margin:.75rem 0;white-space:pre}
+.kw{color:#ff7b72}.type{color:#79c0ff}.fn{color:#d2a8ff}.str{color:#a5d6ff}.num{color:#f2cc60}.cmt{color:#4a6174;font-style:italic}
+.iobox{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:.75rem 0}
+.io-in,.io-out{background:var(--code-bg);border-radius:5px;padding:.65rem .9rem;font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:1.5;border:1px solid #1a2535}
+.iolabel{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem;font-weight:700}
+.io-in .iolabel{color:var(--accent)}.io-out .iolabel{color:var(--accent3)}
+.tip{background:rgba(245,158,11,.05);border-left:3px solid var(--accent);padding:.7rem 1rem;border-radius:0 5px 5px 0;margin:.75rem 0;font-size:.83rem;color:#94a3b8}
+.note{background:rgba(167,139,250,.05);border-left:3px solid var(--accent2);padding:.7rem 1rem;border-radius:0 5px 5px 0;margin:.75rem 0;font-size:.83rem;color:#94a3b8}
+.logic{background:rgba(245,158,11,.04);border:1px solid rgba(245,158,11,.15);border-radius:8px;padding:1rem;margin-bottom:.9rem}
+.logic-title{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--accent);font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.7rem}
+.logic-step{font-size:.82rem;color:#94a3b8;margin-bottom:.45rem;line-height:1.5;padding-left:.5rem;border-left:2px solid rgba(245,158,11,.2)}
+.logic-step .lstep{color:var(--text);font-weight:600;margin-right:.4rem}
+.logic-pattern{margin-top:.75rem;padding:.5rem .75rem;background:rgba(245,158,11,.1);border-radius:4px;font-size:.78rem;color:var(--accent);border:1px solid rgba(245,158,11,.2)}
+.cx-wrap{display:inline-flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap}
+.cx{font-family:'JetBrains Mono',monospace;font-size:.67rem;padding:.15rem .5rem;border-radius:3px}
+.cxt{background:rgba(245,158,11,.1);color:var(--accent);border:1px solid rgba(245,158,11,.2)}
+.cxs{background:rgba(167,139,250,.1);color:var(--accent2);border:1px solid rgba(167,139,250,.2)}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.6rem;margin-bottom:1.5rem}
+.pc{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.8rem}
+.plabel{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.5rem;font-family:'JetBrains Mono',monospace}
+.pbwrap{background:#1a2535;border-radius:10px;height:5px;overflow:hidden;margin-bottom:.35rem}
+.pb{height:100%;border-radius:10px;transition:width .4s ease;width:0%}
+.pval{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--accent)}
+.cklist{list-style:none;padding:0}
+.cklist li{display:flex;align-items:flex-start;gap:.75rem;padding:.55rem 0;border-bottom:1px solid rgba(30,45,69,.5);cursor:pointer}
+.cklist li:last-child{border-bottom:none}
+.chk{width:17px;height:17px;border:2px solid var(--border);border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-top:2px;font-size:.65rem;color:transparent}
+.cklist li.done .chk{background:var(--accent3);border-color:var(--accent3);color:#fff}
+.cklist li.done .chk::after{content:'✓'}
+.cklist li.done .chlabel{text-decoration:line-through;color:var(--muted)}
+.chlabel{font-size:.83rem;line-height:1.45}
+.tl{position:relative;padding-left:1.8rem}
+.tl::before{content:'';position:absolute;left:.35rem;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),var(--accent2),var(--accent3))}
+.tli{position:relative;margin-bottom:1.75rem}
+.tldot{position:absolute;left:-1.6rem;top:.25rem;width:11px;height:11px;border-radius:50%;border:2px solid var(--bg)}
+.tlday{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--accent);font-weight:700;margin-bottom:.2rem}
+.tltitle{font-size:.92rem;font-weight:700;margin-bottom:.6rem}
+table{width:100%;border-collapse:collapse;font-size:.8rem;margin:.75rem 0}
+th{background:var(--surface);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.55rem .75rem;text-align:left;border:1px solid var(--border)}
+td{padding:.5rem .75rem;border:1px solid var(--border);color:#94a3b8;vertical-align:top}
+tr:nth-child(even) td{background:rgba(13,25,35,.5)}
+.tree{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:#94a3b8;background:var(--code-bg);border:1px solid #1a2535;border-radius:6px;padding:1rem;margin:.75rem 0;line-height:2;text-align:center}
+@media(max-width:640px){main{padding:1rem}header{padding:1.5rem 1rem 1rem}nav{padding:.5rem .75rem}.iobox{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="hbadge">&#9654; DSA MASTER SHEET &middot; PART 4 OF 6</div>
+  <h1><em>Binary Trees</em> &amp; BST<small>DFS &middot; BFS &middot; Path Problems &middot; LCA &middot; BST Validate &amp; Ops &middot; Serialization</small></h1>
+  <div class="hpills">
+    <span class="pill">18 Problems</span><span class="pill">4 Patterns</span>
+    <span class="pill">Java &middot; Dry Runs</span><span class="pill">Logic Building</span><span class="pill">Part 4 / 6</span>
+  </div>
+</header>
+<nav>
+  <button class="nb active" onclick="show('overview',this)">Overview</button>
+  <button class="nb" onclick="show('traversal',this)">Traversals</button>
+  <button class="nb" onclick="show('paths',this)">Paths &amp; Structure</button>
+  <button class="nb" onclick="show('bst',this)">BST</button>
+  <button class="nb" onclick="show('advanced',this)">Advanced</button>
+  <button class="nb" onclick="show('tracker',this)">&#128203; Progress</button>
+</nav>
+<main>
+
+<!-- OVERVIEW -->
+<div id="overview" class="sec active">
+  <div class="stitle">Part 4 <em>Overview</em></div>
+  <div class="ssub">Trees are recursion made visible. Almost every tree problem is: "do something at this node, then recurse left and right." Master that and you've mastered trees.</div>
+  <div class="card">
+    <h3 style="font-size:.95rem;margin-bottom:.75rem">&#127775; The Universal Tree Template</h3>
+<pre><span class="cmt">// 90% of tree problems fit this shape:
+// return solve(node):
+//   if node == null → return base_value (null, 0, true, etc.)
+//   left  = solve(node.left)
+//   right = solve(node.right)
+//   return combine(left, right, node.val)   ← the real work</span>
+
+<span class="cmt">// DFS flavors — only differs in WHEN you process the node:</span>
+<span class="cmt">// Preorder:  process → left → right   (serialize, copy)</span>
+<span class="cmt">// Inorder:   left → process → right   (BST sorted order!)</span>
+<span class="cmt">// Postorder: left → right → process   (height, delete, evaluate)</span></pre>
+  </div>
+  <div class="card"><table>
+    <tr><th>Pattern</th><th>Trigger</th><th>Key Idea</th><th>Template</th></tr>
+    <tr><td><strong>DFS Traversal</strong></td><td>visit all, path, accumulate</td><td>Recurse left &amp; right, combine results</td><td>Postorder usually</td></tr>
+    <tr><td><strong>BFS / Level</strong></td><td>level order, min depth, width</td><td>Queue + level-size snapshot</td><td>while(!q.empty)</td></tr>
+    <tr><td><strong>Path Problems</strong></td><td>path sum, diameter, max path</td><td>Pass state down, return contribution up</td><td>Return vs update global</td></tr>
+    <tr><td><strong>BST Property</strong></td><td>sorted, search, insert, LCA</td><td>left &lt; root &lt; right, inorder = sorted</td><td>Go left or right by value</td></tr>
+  </table></div>
+  <div class="card">
+    <h3 style="font-size:.9rem;margin-bottom:.6rem">&#128218; Series Roadmap</h3>
+    <table>
+      <tr><th>Part</th><th>Topics</th><th>Status</th></tr>
+      <tr><td>Part 1</td><td>Arrays, Strings, Two Pointers, Sliding Window, Prefix Sum</td><td style="color:var(--accent3)">&#10003; Done (20p)</td></tr>
+      <tr><td>Part 2</td><td>Linked List, Stack, Queue, Monotonic Stack</td><td style="color:var(--accent3)">&#10003; Done (15p)</td></tr>
+      <tr><td>Part 3</td><td>Binary Search, Recursion, Backtracking</td><td style="color:var(--accent3)">&#10003; Done (15p)</td></tr>
+      <tr><td><strong>Part 4</strong></td><td>Binary Trees, BST</td><td style="color:var(--accent)">&#9654; YOU ARE HERE</td></tr>
+      <tr><td>Part 5</td><td>Graphs, Heaps, Greedy</td><td style="color:var(--muted)">Upcoming</td></tr>
+      <tr><td>Part 6</td><td>Dynamic Programming</td><td style="color:var(--muted)">Upcoming</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- TRAVERSALS -->
+<div id="traversal" class="sec">
+  <div class="stitle"><em>Tree Traversals</em></div>
+  <div class="ssub">The foundation. Know all four (pre/in/post/level) iteratively and recursively. Inorder on a BST = sorted sequence.</div>
+
+  <!-- 1. Inorder -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">DFS Inorder</span><h3>1. Binary Tree Inorder Traversal (Recursive + Iterative)</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Inorder = Left → Root → Right.</span> On a BST this visits nodes in ascending sorted order — the most important property in tree problems.</div>
+      <div class="logic-step"><span class="lstep">Recursive:</span> trivial — go left, process, go right.</div>
+      <div class="logic-step"><span class="lstep">Iterative:</span> Simulate the call stack manually. Push nodes while going left. When null, pop (= "returning from left subtree"), process, then go right.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Sorted BST traversal / simulate recursion"</strong> &#8594; Stack-based inorder</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Tree</div>    4<br>&nbsp;&nbsp;/&nbsp;\<br>&nbsp;2&nbsp;&nbsp;6<br>/&nbsp;\<br>1&nbsp;&nbsp;3</div>
+      <div class="io-out"><div class="iolabel">Inorder</div>[1, 2, 3, 4, 6]</div>
+    </div>
+<pre><span class="cmt">// DRY RUN iterative on tree above:
+// curr=4, stack=[]
+// Push 4→2→1 (go left). curr=null.
+// Pop 1 → add 1. curr=1.right=null.
+// Pop 2 → add 2. curr=2.right=3.
+// Push 3. curr=null.
+// Pop 3 → add 3. curr=3.right=null.
+// Pop 4 → add 4. curr=4.right=6.
+// Push 6. curr=null.
+// Pop 6 → add 6.
+// Result: [1,2,3,4,6] ✓</span>
+
+<span class="cmt">// Recursive — 3 lines</span>
+<span class="kw">public void</span> <span class="fn">inorder</span>(<span class="type">TreeNode</span> node, <span class="type">List</span>&lt;<span class="type">Integer</span>&gt; res) {
+    <span class="kw">if</span> (node == <span class="kw">null</span>) <span class="kw">return</span>;
+    <span class="fn">inorder</span>(node.left, res);
+    res.<span class="fn">add</span>(node.val);   <span class="cmt">// process between children</span>
+    <span class="fn">inorder</span>(node.right, res);
+}
+
+<span class="cmt">// Iterative — O(1) extra space conceptually (stack replaces call stack)</span>
+<span class="kw">public</span> <span class="type">List</span>&lt;<span class="type">Integer</span>&gt; <span class="fn">inorderIterative</span>(<span class="type">TreeNode</span> root) {
+    <span class="type">List</span>&lt;<span class="type">Integer</span>&gt; res = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+    <span class="type">Deque</span>&lt;<span class="type">TreeNode</span>&gt; st = <span class="kw">new</span> <span class="type">ArrayDeque</span>&lt;&gt;();
+    <span class="type">TreeNode</span> curr = root;
+    <span class="kw">while</span> (curr != <span class="kw">null</span> || !st.<span class="fn">isEmpty</span>()) {
+        <span class="kw">while</span> (curr != <span class="kw">null</span>) { st.<span class="fn">push</span>(curr); curr = curr.left; } <span class="cmt">// go left</span>
+        curr = st.<span class="fn">pop</span>();           <span class="cmt">// backtrack</span>
+        res.<span class="fn">add</span>(curr.val);         <span class="cmt">// process</span>
+        curr = curr.right;           <span class="cmt">// go right</span>
+    }
+    <span class="kw">return</span> res;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(H) H=height</span></div>
+  </div></div>
+
+  <!-- 2. Level Order -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">BFS Level</span><h3>2. Binary Tree Level Order Traversal (BFS)</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">BFS visits nodes level by level.</span> Use a Queue (FIFO). The key trick: snapshot queue.size() before the inner loop so you process exactly one level per outer iteration.</div>
+      <div class="logic-step"><span class="lstep">Variations built on this same template:</span> zigzag level order (alternate reverse), right side view (take last of each level), level averages, min depth.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Level-by-level processing"</strong> &#8594; Queue BFS + size snapshot</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Tree</div>3 / 9,20 / _,_,15,7</div>
+      <div class="io-out"><div class="iolabel">Output</div>[[3],[9,20],[15,7]]</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: 3→[9,20]→[15,7]
+// queue=[3]. Outer loop:
+//   size=1: poll 3→level=[3], offer 9,20. res=[[3]]
+//   size=2: poll 9→[9] (no children), poll 20→[9,20], offer 15,7. res=[[3],[9,20]]
+//   size=2: poll 15,7→[15,7]. res=[[3],[9,20],[15,7]] ✓</span>
+
+<span class="kw">public</span> <span class="type">List</span>&lt;<span class="type">List</span>&lt;<span class="type">Integer</span>&gt;&gt; <span class="fn">levelOrder</span>(<span class="type">TreeNode</span> root) {
+    <span class="type">List</span>&lt;<span class="type">List</span>&lt;<span class="type">Integer</span>&gt;&gt; res = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+    <span class="kw">if</span> (root == <span class="kw">null</span>) <span class="kw">return</span> res;
+    <span class="type">Queue</span>&lt;<span class="type">TreeNode</span>&gt; q = <span class="kw">new</span> <span class="type">LinkedList</span>&lt;&gt;();
+    q.<span class="fn">offer</span>(root);
+    <span class="kw">while</span> (!q.<span class="fn">isEmpty</span>()) {
+        <span class="kw">int</span> size = q.<span class="fn">size</span>(); <span class="cmt">// snapshot: process exactly this many (one level)</span>
+        <span class="type">List</span>&lt;<span class="type">Integer</span>&gt; level = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; size; i++) {
+            <span class="type">TreeNode</span> n = q.<span class="fn">poll</span>();
+            level.<span class="fn">add</span>(n.val);
+            <span class="kw">if</span> (n.left  != <span class="kw">null</span>) q.<span class="fn">offer</span>(n.left);
+            <span class="kw">if</span> (n.right != <span class="kw">null</span>) q.<span class="fn">offer</span>(n.right);
+        }
+        res.<span class="fn">add</span>(level);
+    }
+    <span class="kw">return</span> res;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(N)</span></div>
+  </div></div>
+
+  <!-- 3. Right Side View -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">BFS Last of Level</span><h3>3. Binary Tree Right Side View</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">What's visible from the right?</span> The last node at each level. BFS level-order is perfect — just take the last node of each level's inner loop.</div>
+      <div class="logic-step"><span class="lstep">DFS alternative:</span> Traverse right subtree before left. Add current node if depth == res.size() (first visit at this depth from the right).</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Last/first node per level"</strong> &#8594; BFS level-order, pick boundary node</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Tree</div>1→[2,3]→[_,5,_,4]</div>
+      <div class="io-out"><div class="iolabel">Right View</div>[1, 3, 4]</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: Level 0→[1], Level 1→[2,3], Level 2→[5,4]
+// Last of each level: 1, 3, 4 ✓</span>
+
+<span class="kw">public</span> <span class="type">List</span>&lt;<span class="type">Integer</span>&gt; <span class="fn">rightSideView</span>(<span class="type">TreeNode</span> root) {
+    <span class="type">List</span>&lt;<span class="type">Integer</span>&gt; res = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+    <span class="kw">if</span> (root == <span class="kw">null</span>) <span class="kw">return</span> res;
+    <span class="type">Queue</span>&lt;<span class="type">TreeNode</span>&gt; q = <span class="kw">new</span> <span class="type">LinkedList</span>&lt;&gt;();
+    q.<span class="fn">offer</span>(root);
+    <span class="kw">while</span> (!q.<span class="fn">isEmpty</span>()) {
+        <span class="kw">int</span> size = q.<span class="fn">size</span>();
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; size; i++) {
+            <span class="type">TreeNode</span> n = q.<span class="fn">poll</span>();
+            <span class="kw">if</span> (i == size - <span class="num">1</span>) res.<span class="fn">add</span>(n.val); <span class="cmt">// last node of this level</span>
+            <span class="kw">if</span> (n.left  != <span class="kw">null</span>) q.<span class="fn">offer</span>(n.left);
+            <span class="kw">if</span> (n.right != <span class="kw">null</span>) q.<span class="fn">offer</span>(n.right);
+        }
+    }
+    <span class="kw">return</span> res;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(N)</span></div>
+  </div></div>
+
+  <!-- 4. Symmetric Tree -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">Mirror DFS</span><h3>4. Symmetric Tree — Mirror Check</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">A tree is symmetric if it's a mirror of itself.</span> Instead of checking a single node, compare two nodes simultaneously — the left subtree of the root vs the right subtree.</div>
+      <div class="logic-step"><span class="lstep">Mirror recursion:</span> isMirror(L, R) = L.val==R.val AND isMirror(L.left, R.right) AND isMirror(L.right, R.left). Note the cross-comparison.</div>
+      <div class="logic-step"><span class="lstep">Base cases:</span> Both null → true. One null → false.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Tree symmetry"</strong> &#8594; Two-pointer recursion comparing opposite sides</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>1→[2,2]→[3,4,4,3]</div>
+      <div class="io-out"><div class="iolabel">Output</div>true</div>
+    </div>
+<pre><span class="cmt">// DRY RUN:
+//       1
+//      / \
+//     2   2
+//    / \ / \
+//   3  4 4  3
+// isMirror(2L,2R): vals match(2==2)
+//   isMirror(3,3): ✓ both same
+//   isMirror(4,4): ✓ both same → true ✓</span>
+
+<span class="kw">public boolean</span> <span class="fn">isSymmetric</span>(<span class="type">TreeNode</span> root) {
+    <span class="kw">return</span> <span class="fn">mirror</span>(root.left, root.right);
+}
+<span class="kw">private boolean</span> <span class="fn">mirror</span>(<span class="type">TreeNode</span> L, <span class="type">TreeNode</span> R) {
+    <span class="kw">if</span> (L == <span class="kw">null</span> &amp;&amp; R == <span class="kw">null</span>) <span class="kw">return true</span>;
+    <span class="kw">if</span> (L == <span class="kw">null</span> || R == <span class="kw">null</span>) <span class="kw">return false</span>;
+    <span class="kw">return</span> L.val == R.val
+        &amp;&amp; <span class="fn">mirror</span>(L.left,  R.right)  <span class="cmt">// outer pair</span>
+        &amp;&amp; <span class="fn">mirror</span>(L.right, R.left);   <span class="cmt">// inner pair</span>
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(H)</span></div>
+  </div></div>
+</div>
+
+<!-- PATHS & STRUCTURE -->
+<div id="paths" class="sec">
+  <div class="stitle"><em>Paths &amp; Structure</em></div>
+  <div class="ssub">Height, diameter, path sums, and LCA. These require returning information UP the tree while passing state DOWN.</div>
+
+  <!-- 5. Max Depth -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">Postorder Height</span><h3>5. Maximum Depth of Binary Tree</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Definition:</span> Depth = number of nodes on the longest root-to-leaf path.</div>
+      <div class="logic-step"><span class="lstep">Recursive formula:</span> depth(node) = 1 + max(depth(left), depth(right)). Classic postorder — you need children's depths first before you can compute current node's depth.</div>
+      <div class="logic-step"><span class="lstep">Base case:</span> null node has depth 0.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Compute property bottom-up"</strong> &#8594; Postorder: return from leaves, combine at root</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Tree</div>3→[9,20]→[_,_,15,7]</div>
+      <div class="io-out"><div class="iolabel">Output</div>3</div>
+    </div>
+<pre><span class="cmt">// DRY RUN:
+//       3          depth=3
+//      / \
+//     9   20       depth=2 for right subtree
+//        / \
+//       15  7      depth=1
+//
+// depth(15)=1, depth(7)=1
+// depth(20)=1+max(1,1)=2
+// depth(9)=1+max(0,0)=1
+// depth(3)=1+max(1,2)=3 ✓</span>
+
+<span class="kw">public int</span> <span class="fn">maxDepth</span>(<span class="type">TreeNode</span> root) {
+    <span class="kw">if</span> (root == <span class="kw">null</span>) <span class="kw">return</span> <span class="num">0</span>;                            <span class="cmt">// base</span>
+    <span class="kw">return</span> <span class="num">1</span> + <span class="type">Math</span>.<span class="fn">max</span>(<span class="fn">maxDepth</span>(root.left), <span class="fn">maxDepth</span>(root.right)); <span class="cmt">// combine</span>
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(H)</span></div>
+  </div></div>
+
+  <!-- 6. Diameter -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">Return vs Update Global</span><h3>6. Diameter of Binary Tree</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Diameter = longest path between any two nodes.</span> This path may or may not pass through the root.</div>
+      <div class="logic-step"><span class="lstep">Key insight:</span> For every node, the longest path THROUGH it = height(left) + height(right). The diameter is the maximum of this value across all nodes.</div>
+      <div class="logic-step"><span class="lstep">Two jobs at once:</span> The recursive function RETURNS height (for the parent to use), but also UPDATES a global max diameter. This dual-purpose pattern appears in many hard tree problems.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Path through current node = left-height + right-height"</strong> &#8594; Return height, update global max</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Tree</div>1→[2,3]→[4,5,_,_]</div>
+      <div class="io-out"><div class="iolabel">Output</div>3 (path 4→2→1→3 or 5→2→1→3)</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: diameter=0 initially
+//       1
+//      / \
+//     2   3
+//    / \
+//   4   5
+//
+// height(4)=1, height(5)=1
+// at node 2: diameter = max(0, 1+1) = 2. return height=2
+// height(3)=1
+// at node 1: diameter = max(2, 2+1) = 3. return height=3
+// return diameter=3 ✓</span>
+
+<span class="kw">int</span> diameter = <span class="num">0</span>; <span class="cmt">// global max, updated at each node</span>
+
+<span class="kw">public int</span> <span class="fn">diameterOfBinaryTree</span>(<span class="type">TreeNode</span> root) {
+    <span class="fn">height</span>(root);
+    <span class="kw">return</span> diameter;
+}
+<span class="kw">private int</span> <span class="fn">height</span>(<span class="type">TreeNode</span> node) {
+    <span class="kw">if</span> (node == <span class="kw">null</span>) <span class="kw">return</span> <span class="num">0</span>;
+    <span class="kw">int</span> L = <span class="fn">height</span>(node.left), R = <span class="fn">height</span>(node.right);
+    diameter = <span class="type">Math</span>.<span class="fn">max</span>(diameter, L + R); <span class="cmt">// path through current node</span>
+    <span class="kw">return</span> <span class="num">1</span> + <span class="type">Math</span>.<span class="fn">max</span>(L, R);            <span class="cmt">// height returned to parent</span>
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(H)</span></div>
+  </div></div>
+
+  <!-- 7. Path Sum -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">DFS Pass-Down</span><h3>7. Path Sum — Root to Leaf</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Pass remaining sum DOWN the tree.</span> At each node, subtract node.val from target. At a leaf, check if remaining == 0.</div>
+      <div class="logic-step"><span class="lstep">Leaf check:</span> A leaf has no children. Don't return true at an internal node even if sum hits 0.</div>
+      <div class="logic-step"><span class="lstep">OR logic:</span> Return true if LEFT path OR RIGHT path has the sum. Recursion handles this naturally.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Root-to-leaf constraint"</strong> &#8594; DFS passing remaining value, check at leaf</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Tree / Target</div>5→[4,8]→[11,_,13,4]→[7,2,_,_,_,1], target=22</div>
+      <div class="io-out"><div class="iolabel">Output</div>true (5→4→11→2)</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: target=22, path 5→4→11→2
+// hasPath(5,22): rem=22-5=17, try left
+//   hasPath(4,17): rem=17-4=13, try left
+//     hasPath(11,13): rem=13-11=2, try left
+//       hasPath(7,2): leaf! 2-7=-5≠0 → false
+//     try right: hasPath(2,2): leaf! 2-2=0 → true ✓</span>
+
+<span class="kw">public boolean</span> <span class="fn">hasPathSum</span>(<span class="type">TreeNode</span> root, <span class="kw">int</span> target) {
+    <span class="kw">if</span> (root == <span class="kw">null</span>) <span class="kw">return false</span>;
+    <span class="kw">if</span> (root.left == <span class="kw">null</span> &amp;&amp; root.right == <span class="kw">null</span>)   <span class="cmt">// leaf node</span>
+        <span class="kw">return</span> root.val == target;
+    <span class="kw">return</span> <span class="fn">hasPathSum</span>(root.left,  target - root.val)
+        || <span class="fn">hasPathSum</span>(root.right, target - root.val);
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(H)</span></div>
+  </div></div>
+
+  <!-- 8. Max Path Sum -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag hard">Hard</span><span class="ptag">Global Max + Local Return</span><h3>8. Binary Tree Maximum Path Sum</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Path can go through any nodes, not just root-to-leaf.</span> It can start anywhere and end anywhere — but it must be a connected path (no branching in both directions simultaneously).</div>
+      <div class="logic-step"><span class="lstep">At each node, two things:</span> (1) The "gain" this node contributes to its parent = node.val + max(leftGain, rightGain, 0). Can't use both branches when reporting UP. (2) The path THROUGH this node = node.val + leftGain + rightGain — update global max.</div>
+      <div class="logic-step"><span class="lstep">Why max(..., 0)?</span> If a subtree gives negative gain, it's better to ignore it (don't include it in the path).</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Any-to-any path max sum"</strong> &#8594; Return single-branch gain up, track two-branch sum as global max</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Tree</div>-10→[9,20]→[_,_,15,7]</div>
+      <div class="io-out"><div class="iolabel">Output</div>42 (15→20→7)</div>
+    </div>
+<pre><span class="cmt">// DRY RUN:
+//     -10
+//     / \
+//    9   20
+//       / \
+//      15   7
+//
+// gain(9)=9, gain(15)=15, gain(7)=7
+// at node 20: path=20+15+7=42 → max=42. return 20+max(15,7)=35
+// at node -10: path=-10+9+35=34 < 42. return max stays 42 ✓</span>
+
+<span class="kw">int</span> maxSum = <span class="type">Integer</span>.MIN_VALUE;
+
+<span class="kw">public int</span> <span class="fn">maxPathSum</span>(<span class="type">TreeNode</span> root) {
+    <span class="fn">gain</span>(root);
+    <span class="kw">return</span> maxSum;
+}
+<span class="kw">private int</span> <span class="fn">gain</span>(<span class="type">TreeNode</span> node) {
+    <span class="kw">if</span> (node == <span class="kw">null</span>) <span class="kw">return</span> <span class="num">0</span>;
+    <span class="kw">int</span> L = <span class="type">Math</span>.<span class="fn">max</span>(<span class="fn">gain</span>(node.left),  <span class="num">0</span>); <span class="cmt">// ignore negative subtrees</span>
+    <span class="kw">int</span> R = <span class="type">Math</span>.<span class="fn">max</span>(<span class="fn">gain</span>(node.right), <span class="num">0</span>);
+    maxSum = <span class="type">Math</span>.<span class="fn">max</span>(maxSum, node.val + L + R); <span class="cmt">// path through this node</span>
+    <span class="kw">return</span> node.val + <span class="type">Math</span>.<span class="fn">max</span>(L, R);            <span class="cmt">// best single branch to parent</span>
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(H)</span></div>
+  </div></div>
+
+  <!-- 9. LCA Binary Tree -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">LCA DFS</span><h3>9. Lowest Common Ancestor — Binary Tree</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">LCA = deepest node that has both p and q as descendants.</span></div>
+      <div class="logic-step"><span class="lstep">Key insight:</span> When recursing, if a node IS p or q → return it immediately (it's either the LCA or a descendant to report). Don't recurse deeper once found.</div>
+      <div class="logic-step"><span class="lstep">Combining results:</span> If both left and right return non-null, current node = LCA (p is in one subtree, q in the other). If only one side returns non-null, bubble that up.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"First node where both targets split to different subtrees"</strong> &#8594; Return found nodes up, LCA = first split point</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Tree, p=5, q=1</div>3→[5,1]→[6,2,0,8]</div>
+      <div class="io-out"><div class="iolabel">Output</div>3</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: find LCA(5,1) in tree rooted at 3
+// lca(3): recurse left(5), right(1)
+//   lca(5): node==p → return 5 (don't go deeper)
+//   lca(1): node==q → return 1
+// At node 3: left=5 (non-null), right=1 (non-null) → both found → LCA=3 ✓
+//
+// LCA(5,4) where 4 is under 5:
+// lca(5): node==p → return 5 immediately (4 is under 5 but we return here)
+// At 3: left=5, right=null → return 5 (LCA is 5 itself) ✓</span>
+
+<span class="kw">public</span> <span class="type">TreeNode</span> <span class="fn">lowestCommonAncestor</span>(<span class="type">TreeNode</span> root, <span class="type">TreeNode</span> p, <span class="type">TreeNode</span> q) {
+    <span class="kw">if</span> (root == <span class="kw">null</span> || root == p || root == q) <span class="kw">return</span> root;
+    <span class="type">TreeNode</span> left  = <span class="fn">lowestCommonAncestor</span>(root.left,  p, q);
+    <span class="type">TreeNode</span> right = <span class="fn">lowestCommonAncestor</span>(root.right, p, q);
+    <span class="kw">if</span> (left != <span class="kw">null</span> &amp;&amp; right != <span class="kw">null</span>) <span class="kw">return</span> root;  <span class="cmt">// split here → LCA</span>
+    <span class="kw">return</span> left != <span class="kw">null</span> ? left : right;              <span class="cmt">// bubble found node up</span>
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(H)</span></div>
+  </div></div>
+
+  <!-- 10. Flatten Tree to Linked List -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Preorder In-Place</span><h3>10. Flatten Binary Tree to Linked List</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Preorder = root → left → right.</span> Flattened list follows preorder. So after flattening: each node's right = its preorder successor, left = null.</div>
+      <div class="logic-step"><span class="lstep">Trick (Morris-like):</span> For each node, if it has a left child: find the rightmost node of the left subtree, attach current right there, then move left subtree to right, clear left.</div>
+      <div class="logic-step"><span class="lstep">This is O(1) space</span> — no recursion stack needed.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Rewire tree in preorder, in-place"</strong> &#8594; Find left-subtree tail, splice</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Tree</div>1→[2,5]→[3,4,_,6]</div>
+      <div class="io-out"><div class="iolabel">Output</div>1→2→3→4→5→6 (right pointers only)</div>
+    </div>
+<pre><span class="cmt">// DRY RUN:
+//     1           After step 1 (node=1):
+//    / \          rightmost of left(2)=4
+//   2   5         4.right = 5 (old right)
+//  / \ / \    →   1.right = 2, 1.left=null
+// 3  4 _ 6
+//                 1→2→3→4→5→6 (continuing...) ✓</span>
+
+<span class="kw">public void</span> <span class="fn">flatten</span>(<span class="type">TreeNode</span> root) {
+    <span class="type">TreeNode</span> curr = root;
+    <span class="kw">while</span> (curr != <span class="kw">null</span>) {
+        <span class="kw">if</span> (curr.left != <span class="kw">null</span>) {
+            <span class="type">TreeNode</span> tail = curr.left;
+            <span class="kw">while</span> (tail.right != <span class="kw">null</span>) tail = tail.right; <span class="cmt">// find tail of left</span>
+            tail.right = curr.right; <span class="cmt">// connect old right to tail</span>
+            curr.right = curr.left;  <span class="cmt">// move left subtree to right</span>
+            curr.left  = <span class="kw">null</span>;
+        }
+        curr = curr.right;
+    }
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(1)</span></div>
+  </div></div>
+
+  <!-- 11. Construct from Preorder+Inorder -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Divide by Root Index</span><h3>11. Construct Tree from Preorder + Inorder</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Preorder[0] is always the root.</span> Find that root in inorder — everything LEFT of it in inorder = left subtree, everything RIGHT = right subtree.</div>
+      <div class="logic-step"><span class="lstep">Recursively:</span> Build left subtree using preorder[1..leftSize] and inorder[0..rootIdx-1]. Build right subtree from the rest.</div>
+      <div class="logic-step"><span class="lstep">Optimization:</span> Use a HashMap for inorder index lookups → O(1) per call instead of O(N) scan.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Preorder gives root, inorder gives subtree boundaries"</strong> &#8594; Divide by root's inorder index</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>preorder=[3,9,20,15,7], inorder=[9,3,15,20,7]</div>
+      <div class="io-out"><div class="iolabel">Output</div>Tree: 3→[9,20]→[_,_,15,7]</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: preorder=[3,9,20,15,7], inorder=[9,3,15,20,7]
+// root=preorder[0]=3. In inorder: 3 is at idx 1.
+//   left subtree: inorder[0..0]=[9], preorder[1..1]=[9]
+//     root=9, no children
+//   right subtree: inorder[2..4]=[15,20,7], preorder[2..4]=[20,15,7]
+//     root=20. In [15,20,7]: 20 at idx 1.
+//       left: [15], right: [7]
+// Result tree: 3→[9,20]→[_,_,15,7] ✓</span>
+
+<span class="kw">public</span> <span class="type">TreeNode</span> <span class="fn">buildTree</span>(<span class="kw">int</span>[] pre, <span class="kw">int</span>[] ino) {
+    <span class="type">Map</span>&lt;<span class="type">Integer</span>,<span class="type">Integer</span>&gt; map = <span class="kw">new</span> <span class="type">HashMap</span>&lt;&gt;();
+    <span class="kw">for</span> (<span class="kw">int</span> i=<span class="num">0</span>; i&lt;ino.length; i++) map.<span class="fn">put</span>(ino[i], i); <span class="cmt">// O(1) index lookup</span>
+    <span class="kw">return</span> <span class="fn">build</span>(pre, <span class="num">0</span>, pre.length-<span class="num">1</span>, ino, <span class="num">0</span>, ino.length-<span class="num">1</span>, map);
+}
+<span class="kw">private</span> <span class="type">TreeNode</span> <span class="fn">build</span>(<span class="kw">int</span>[] pre, <span class="kw">int</span> pl, <span class="kw">int</span> pr, <span class="kw">int</span>[] ino, <span class="kw">int</span> il, <span class="kw">int</span> ir, <span class="type">Map</span>&lt;<span class="type">Integer</span>,<span class="type">Integer</span>&gt; m) {
+    <span class="kw">if</span> (pl > pr) <span class="kw">return null</span>;
+    <span class="type">TreeNode</span> root = <span class="kw">new</span> <span class="type">TreeNode</span>(pre[pl]);
+    <span class="kw">int</span> ri = m.<span class="fn">get</span>(pre[pl]);     <span class="cmt">// root's position in inorder</span>
+    <span class="kw">int</span> leftSize = ri - il;
+    root.left  = <span class="fn">build</span>(pre, pl+<span class="num">1</span>, pl+leftSize, ino, il, ri-<span class="num">1</span>, m);
+    root.right = <span class="fn">build</span>(pre, pl+leftSize+<span class="num">1</span>, pr, ino, ri+<span class="num">1</span>, ir, m);
+    <span class="kw">return</span> root;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(N)</span></div>
+  </div></div>
+</div>
+
+<!-- BST -->
+<div id="bst" class="sec">
+  <div class="stitle"><em>Binary Search Tree</em></div>
+  <div class="ssub">BST property: left &lt; root &lt; right. Inorder traversal = sorted sequence. Use the property to navigate in O(H) instead of O(N).</div>
+  <div class="card">
+    <h3 style="font-size:.9rem;margin-bottom:.5rem">&#127775; BST Key Properties</h3>
+    <table>
+      <tr><th>Operation</th><th>Average</th><th>Worst (skewed)</th><th>How</th></tr>
+      <tr><td>Search</td><td>O(log N)</td><td>O(N)</td><td>Go left if &lt; root, right if &gt; root</td></tr>
+      <tr><td>Insert</td><td>O(log N)</td><td>O(N)</td><td>Search for null position, insert</td></tr>
+      <tr><td>Delete</td><td>O(log N)</td><td>O(N)</td><td>3 cases: leaf, one child, two children</td></tr>
+      <tr><td>Inorder</td><td>O(N)</td><td>O(N)</td><td>Always gives sorted sequence</td></tr>
+    </table>
+  </div>
+
+  <!-- 12. Validate BST -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Valid Range DFS</span><h3>12. Validate Binary Search Tree</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Common mistake:</span> Only checking node.val &gt; node.left.val is WRONG. A right descendant of a left child could violate the BST property.</div>
+      <div class="logic-step"><span class="lstep">Correct approach:</span> Each node must be within a valid range [min, max]. Root: (-∞, +∞). Left child: (min, root.val). Right child: (root.val, max).</div>
+      <div class="logic-step"><span class="lstep">Pass the valid range DOWN:</span> At each node, check current value is within range, then recurse with tightened bounds.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"BST validation needs global context, not just local comparison"</strong> &#8594; Pass min/max bounds down recursively</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Invalid BST</div>5→[1,4]→[_,_,3,6] (4 is right of 5 but 3&lt;5)</div>
+      <div class="io-out"><div class="iolabel">Output</div>false</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: 5→[1,4]
+// isValid(5, -∞, +∞): 5 in range ✓
+//   isValid(1, -∞, 5): 1 in range ✓
+//   isValid(4, 5, +∞): 4 < min=5 → FALSE ✓
+//
+// DRY RUN valid: 2→[1,3]
+// isValid(2, -∞, +∞) → isValid(1,-∞,2) ✓ → isValid(3,2,+∞) ✓ → true ✓</span>
+
+<span class="kw">public boolean</span> <span class="fn">isValidBST</span>(<span class="type">TreeNode</span> root) {
+    <span class="kw">return</span> <span class="fn">valid</span>(root, <span class="type">Long</span>.MIN_VALUE, <span class="type">Long</span>.MAX_VALUE);
+}
+<span class="kw">private boolean</span> <span class="fn">valid</span>(<span class="type">TreeNode</span> node, <span class="kw">long</span> min, <span class="kw">long</span> max) {
+    <span class="kw">if</span> (node == <span class="kw">null</span>) <span class="kw">return true</span>;
+    <span class="kw">if</span> (node.val &lt;= min || node.val &gt;= max) <span class="kw">return false</span>; <span class="cmt">// out of valid range</span>
+    <span class="kw">return</span> <span class="fn">valid</span>(node.left,  min,      node.val)   <span class="cmt">// left: upper bound tightens</span>
+        &amp;&amp; <span class="fn">valid</span>(node.right, node.val, max);         <span class="cmt">// right: lower bound tightens</span>
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(H)</span></div>
+  </div></div>
+
+  <!-- 13. Search BST -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">BST Navigate</span><h3>13. Search in a BST</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">BST gives you a direction at every node:</span> val &lt; root → go left. val &gt; root → go right. val == root → found.</div>
+      <div class="logic-step"><span class="lstep">This eliminates half the tree at each step</span> → O(log N) average.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Binary decision at each node"</strong> &#8594; O(log N) navigation using BST ordering</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">BST, val=2</div>4→[2,7]→[1,3,_,_]</div>
+      <div class="io-out"><div class="iolabel">Output</div>Subtree rooted at 2</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: search(4, val=2)
+//   2 < 4 → go left to node 2
+//   2 == 2 → found! return node(2) ✓</span>
+
+<span class="kw">public</span> <span class="type">TreeNode</span> <span class="fn">searchBST</span>(<span class="type">TreeNode</span> root, <span class="kw">int</span> val) {
+    <span class="kw">while</span> (root != <span class="kw">null</span>) {
+        <span class="kw">if</span>      (val == root.val) <span class="kw">return</span> root;
+        <span class="kw">else if</span> (val &lt;  root.val) root = root.left;
+        <span class="kw">else</span>                      root = root.right;
+    }
+    <span class="kw">return null</span>; <span class="cmt">// not found</span>
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(log N) avg</span><span class="cx cxs">Space: O(1)</span></div>
+  </div></div>
+
+  <!-- 14. Insert into BST -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">BST Insert</span><h3>14. Insert into a BST</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Navigate like search, but insert at the first null you reach.</span> The new value always goes to a leaf position (no restructuring needed for insertion).</div>
+      <div class="logic-step"><span class="lstep">Return the modified tree root</span> — recursive approach returns the node at each step to reconnect the tree.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Search for null position, attach new node there"</strong> &#8594; BST recursive insert</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">BST, insert=5</div>4→[2,7]→[1,3,_,_]</div>
+      <div class="io-out"><div class="iolabel">Output</div>4→[2,7]→[1,3,5,_]</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: insert 5 into BST rooted at 4
+// 5 > 4 → go right to 7
+// 5 < 7 → go left. 7.left = null
+// insert here: 7.left = new TreeNode(5) ✓</span>
+
+<span class="kw">public</span> <span class="type">TreeNode</span> <span class="fn">insertIntoBST</span>(<span class="type">TreeNode</span> root, <span class="kw">int</span> val) {
+    <span class="kw">if</span> (root == <span class="kw">null</span>) <span class="kw">return new</span> <span class="type">TreeNode</span>(val); <span class="cmt">// found insertion point</span>
+    <span class="kw">if</span> (val &lt; root.val) root.left  = <span class="fn">insertIntoBST</span>(root.left,  val);
+    <span class="kw">else</span>               root.right = <span class="fn">insertIntoBST</span>(root.right, val);
+    <span class="kw">return</span> root; <span class="cmt">// return current node to rebuild parent links</span>
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(log N) avg</span><span class="cx cxs">Space: O(H)</span></div>
+  </div></div>
+
+  <!-- 15. Delete from BST -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">BST Delete 3 Cases</span><h3>15. Delete Node from BST</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">3 cases when deleting a node:</span></div>
+      <div class="logic-step"><span class="lstep">Case 1 — Leaf (no children):</span> Just remove it. Return null to parent.</div>
+      <div class="logic-step"><span class="lstep">Case 2 — One child:</span> Return the existing child to the parent. The child "replaces" the deleted node.</div>
+      <div class="logic-step"><span class="lstep">Case 3 — Two children:</span> Find the inorder successor (smallest in right subtree). Copy its value to current node. Delete the inorder successor from the right subtree.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Replace with inorder successor when two children"</strong> &#8594; Find min of right subtree, swap values, delete successor</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">BST, delete 3</div>5→[3,6]→[2,4,_,7]</div>
+      <div class="io-out"><div class="iolabel">Output</div>5→[4,6]→[2,_,_,7]</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: delete 3 (has 2 children: 2 and 4)
+// Find inorder successor = min of right subtree = 4
+// Replace node(3).val with 4
+// Delete 4 from right subtree of node (now node.val=4)
+// Result: 5→[4,6]→[2,_,_,7] ✓</span>
+
+<span class="kw">public</span> <span class="type">TreeNode</span> <span class="fn">deleteNode</span>(<span class="type">TreeNode</span> root, <span class="kw">int</span> key) {
+    <span class="kw">if</span> (root == <span class="kw">null</span>) <span class="kw">return null</span>;
+    <span class="kw">if</span> (key &lt; root.val) root.left  = <span class="fn">deleteNode</span>(root.left,  key);
+    <span class="kw">else if</span> (key > root.val) root.right = <span class="fn">deleteNode</span>(root.right, key);
+    <span class="kw">else</span> {                                         <span class="cmt">// found node to delete</span>
+        <span class="kw">if</span> (root.left  == <span class="kw">null</span>) <span class="kw">return</span> root.right; <span class="cmt">// case 1 or 2</span>
+        <span class="kw">if</span> (root.right == <span class="kw">null</span>) <span class="kw">return</span> root.left;  <span class="cmt">// case 2</span>
+        <span class="type">TreeNode</span> succ = root.right;                <span class="cmt">// case 3: find inorder successor</span>
+        <span class="kw">while</span> (succ.left != <span class="kw">null</span>) succ = succ.left;
+        root.val   = succ.val;                     <span class="cmt">// copy successor's value</span>
+        root.right = <span class="fn">deleteNode</span>(root.right, succ.val); <span class="cmt">// delete successor</span>
+    }
+    <span class="kw">return</span> root;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(log N) avg</span><span class="cx cxs">Space: O(H)</span></div>
+  </div></div>
+
+  <!-- 16. Kth Smallest in BST -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Inorder Counter</span><h3>16. Kth Smallest Element in BST</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">BST inorder = sorted ascending.</span> Kth smallest = kth element in inorder traversal.</div>
+      <div class="logic-step"><span class="lstep">Don't collect all then index</span> — stop early as soon as you've visited k nodes. Use a counter and return immediately.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Kth in BST = kth inorder"</strong> &#8594; Inorder with early-stop counter</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">BST, k=3</div>3→[1,4]→[_,2,_,_]</div>
+      <div class="io-out"><div class="iolabel">Output</div>3 (inorder: 1,2,3,4)</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: k=3, BST: 3→[1,4]→[_,2]
+// Inorder: visit 1(k=2→1), visit 2(k=1→0 wait no, count up)
+// count=0: visit 1 → count=1, visit 2 → count=2, visit 3 → count=3==k → return 3 ✓</span>
+
+<span class="kw">int</span> count = <span class="num">0</span>, result = <span class="num">0</span>;
+<span class="kw">public int</span> <span class="fn">kthSmallest</span>(<span class="type">TreeNode</span> root, <span class="kw">int</span> k) {
+    <span class="fn">inorder</span>(root, k);
+    <span class="kw">return</span> result;
+}
+<span class="kw">private void</span> <span class="fn">inorder</span>(<span class="type">TreeNode</span> node, <span class="kw">int</span> k) {
+    <span class="kw">if</span> (node == <span class="kw">null</span>) <span class="kw">return</span>;
+    <span class="fn">inorder</span>(node.left, k);
+    <span class="kw">if</span> (++count == k) { result = node.val; <span class="kw">return</span>; } <span class="cmt">// found kth</span>
+    <span class="fn">inorder</span>(node.right, k);
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(H+K)</span><span class="cx cxs">Space: O(H)</span></div>
+  </div></div>
+
+  <!-- 17. LCA BST -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">BST Navigate to Split</span><h3>17. LCA of a BST</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">BST LCA is simpler than general tree LCA</span> because you can navigate by value.</div>
+      <div class="logic-step"><span class="lstep">Key insight:</span> If both p and q are less than root → LCA is in left subtree. If both greater → right subtree. If they split (one each side, or one equals root) → root IS the LCA.</div>
+      <div class="logic-step"><span class="lstep">No need for general DFS</span> — navigate directly to the split point.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"BST: split point = LCA"</strong> &#8594; Navigate by comparing both values to current node</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">BST, p=2, q=8</div>6→[2,8]→[0,4,7,9]</div>
+      <div class="io-out"><div class="iolabel">Output</div>6</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: p=2, q=8, root=6
+// 2 < 6 AND 8 > 6 → they're on different sides → LCA = 6 ✓
+//
+// DRY RUN 2: p=2, q=4, root=6
+// Both < 6 → go left to node 2
+// p=2 == root=2 → LCA = 2 ✓</span>
+
+<span class="kw">public</span> <span class="type">TreeNode</span> <span class="fn">lowestCommonAncestor</span>(<span class="type">TreeNode</span> root, <span class="type">TreeNode</span> p, <span class="type">TreeNode</span> q) {
+    <span class="kw">while</span> (root != <span class="kw">null</span>) {
+        <span class="kw">if</span> (p.val &lt; root.val &amp;&amp; q.val &lt; root.val)
+            root = root.left;            <span class="cmt">// both in left subtree</span>
+        <span class="kw">else if</span> (p.val > root.val &amp;&amp; q.val > root.val)
+            root = root.right;           <span class="cmt">// both in right subtree</span>
+        <span class="kw">else</span>
+            <span class="kw">return</span> root;               <span class="cmt">// split point = LCA</span>
+    }
+    <span class="kw">return null</span>;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(H)</span><span class="cx cxs">Space: O(1)</span></div>
+  </div></div>
+</div>
+
+<!-- ADVANCED -->
+<div id="advanced" class="sec">
+  <div class="stitle"><em>Advanced Trees</em></div>
+  <div class="ssub">Serialize/Deserialize and Codec — classic Google/Meta interview questions testing DFS + string manipulation.</div>
+
+  <!-- 18. Serialize / Deserialize -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag hard">Hard</span><span class="ptag">Preorder DFS Codec</span><h3>18. Serialize and Deserialize Binary Tree</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Serialize = tree → string. Deserialize = string → tree.</span> Must handle null children to reconstruct the exact structure.</div>
+      <div class="logic-step"><span class="lstep">Use preorder DFS for serialization.</span> Use a special marker (e.g. "#") for null nodes. This uniquely identifies the tree structure — preorder alone (without inorder) IS enough when nulls are explicitly marked.</div>
+      <div class="logic-step"><span class="lstep">Deserialize:</span> Use a queue or index pointer on the tokens. Recursively reconstruct: take next token, if "#" return null, else create node and recurse for left then right.</div>
+      <div class="logic-step"><span class="lstep">Why preorder?</span> Root comes first — you can create the root node immediately, then recurse for children. Postorder or inorder would require extra lookahead.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Encode structure with null markers"</strong> &#8594; Preorder DFS with "#" for null, queue for deserialization</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Tree</div>1→[2,3]→[_,_,4,5]</div>
+      <div class="io-out"><div class="iolabel">Serialized</div>"1,2,#,#,3,4,#,#,5,#,#"</div>
+    </div>
+<pre><span class="cmt">// SERIALIZE DRY RUN: tree 1→[2,3]→[_,_,4,5]
+// preorder: visit 1 → "1,"
+//   go left  → 2 → "1,2,"
+//     go left  → null → "1,2,#,"
+//     go right → null → "1,2,#,#,"
+//   go right → 3 → "1,2,#,#,3,"
+//     go left  → 4 → "...3,4,"
+//       null,null → "...4,#,#,"
+//     go right → 5 → "...5,#,#"
+// Final: "1,2,#,#,3,4,#,#,5,#,#" ✓
+//
+// DESERIALIZE: queue = [1,2,#,#,3,4,#,#,5,#,#]
+// poll 1 → node(1). recurse left:
+//   poll 2 → node(2). recurse left: poll # → null. recurse right: poll # → null.
+//   return node(2)
+// recurse right: poll 3 → node(3). recurse left:
+//   poll 4 → node(4). #,# → null,null. return node(4)
+// recurse right: poll 5 → node(5). #,# → return node(5)
+// Tree reconstructed ✓</span>
+
+<span class="kw">public</span> <span class="type">String</span> <span class="fn">serialize</span>(<span class="type">TreeNode</span> root) {
+    <span class="type">StringBuilder</span> sb = <span class="kw">new</span> <span class="type">StringBuilder</span>();
+    <span class="fn">serDFS</span>(root, sb);
+    <span class="kw">return</span> sb.<span class="fn">toString</span>();
+}
+<span class="kw">private void</span> <span class="fn">serDFS</span>(<span class="type">TreeNode</span> n, <span class="type">StringBuilder</span> sb) {
+    <span class="kw">if</span> (n == <span class="kw">null</span>) { sb.<span class="fn">append</span>(<span class="str">"#,"</span>); <span class="kw">return</span>; }
+    sb.<span class="fn">append</span>(n.val).<span class="fn">append</span>(<span class="str">','</span>);
+    <span class="fn">serDFS</span>(n.left, sb); <span class="fn">serDFS</span>(n.right, sb);
+}
+
+<span class="kw">public</span> <span class="type">TreeNode</span> <span class="fn">deserialize</span>(<span class="type">String</span> data) {
+    <span class="type">Queue</span>&lt;<span class="type">String</span>&gt; q = <span class="kw">new</span> <span class="type">LinkedList</span>&lt;&gt;(<span class="type">Arrays</span>.<span class="fn">asList</span>(data.<span class="fn">split</span>(<span class="str">","</span>)));
+    <span class="kw">return</span> <span class="fn">desDFS</span>(q);
+}
+<span class="kw">private</span> <span class="type">TreeNode</span> <span class="fn">desDFS</span>(<span class="type">Queue</span>&lt;<span class="type">String</span>&gt; q) {
+    <span class="type">String</span> val = q.<span class="fn">poll</span>();
+    <span class="kw">if</span> (<span class="str">"#"</span>.<span class="fn">equals</span>(val)) <span class="kw">return null</span>;
+    <span class="type">TreeNode</span> node = <span class="kw">new</span> <span class="type">TreeNode</span>(<span class="type">Integer</span>.<span class="fn">parseInt</span>(val));
+    node.left  = <span class="fn">desDFS</span>(q);
+    node.right = <span class="fn">desDFS</span>(q);
+    <span class="kw">return</span> node;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(N)</span></div>
+    <div class="tip">&#128161; This same codec pattern works for any tree — encode structure, decode with same traversal order. Classic Google/Meta interview question.</div>
+  </div></div>
+</div>
+
+<!-- TRACKER -->
+<div id="tracker" class="sec">
+  <div class="stitle">&#128203; <em>Progress</em> Tracker</div>
+  <div class="ssub">Part 4: 18 problems — Traversals, Path Problems, BST, Advanced.</div>
+  <div class="pgrid">
+    <div class="pc"><div class="plabel">Traversals</div><div class="pbwrap"><div class="pb" id="pb-tr" style="background:var(--accent)"></div></div><div class="pval" id="pv-tr">0%</div></div>
+    <div class="pc"><div class="plabel">Paths &amp; Structure</div><div class="pbwrap"><div class="pb" id="pb-ps" style="background:var(--accent2)"></div></div><div class="pval" id="pv-ps" style="color:var(--accent2)">0%</div></div>
+    <div class="pc"><div class="plabel">BST</div><div class="pbwrap"><div class="pb" id="pb-bst" style="background:var(--accent3)"></div></div><div class="pval" id="pv-bst" style="color:var(--accent3)">0%</div></div>
+    <div class="pc"><div class="plabel">Advanced</div><div class="pbwrap"><div class="pb" id="pb-adv" style="background:var(--orange)"></div></div><div class="pval" id="pv-adv" style="color:var(--orange)">0%</div></div>
+    <div class="pc"><div class="plabel">Overall P4</div><div class="pbwrap"><div class="pb" id="pb-all" style="background:var(--pink)"></div></div><div class="pval" id="pv-all" style="color:var(--pink)">0%</div></div>
+  </div>
+  <div class="card"><div class="tl">
+    <div class="tli"><div class="tldot" style="background:var(--accent)"></div><div class="tlday">TRAVERSALS &mdash; 4 problems</div><div class="tltitle">Know all 4 orders</div>
+      <ul class="cklist" id="cl-tr">
+        <li onclick="tick(this,'tr')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>1. Inorder Traversal — Recursive + Iterative</span></li>
+        <li onclick="tick(this,'tr')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>2. Level Order Traversal (BFS)</span></li>
+        <li onclick="tick(this,'tr')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>3. Binary Tree Right Side View</span></li>
+        <li onclick="tick(this,'tr')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>4. Symmetric Tree &mdash; Mirror Check</span></li>
+      </ul>
+    </div>
+    <div class="tli"><div class="tldot" style="background:var(--accent2)"></div><div class="tlday">PATHS &amp; STRUCTURE &mdash; 7 problems</div><div class="tltitle">Return vs update global</div>
+      <ul class="cklist" id="cl-ps">
+        <li onclick="tick(this,'ps')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>5. Maximum Depth of Binary Tree</span></li>
+        <li onclick="tick(this,'ps')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>6. Diameter of Binary Tree</span></li>
+        <li onclick="tick(this,'ps')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>7. Path Sum — Root to Leaf</span></li>
+        <li onclick="tick(this,'ps')"><div class="chk"></div><span class="chlabel"><span class="tag hard" style="margin-right:.4rem">Hard</span>8. Binary Tree Maximum Path Sum</span></li>
+        <li onclick="tick(this,'ps')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>9. Lowest Common Ancestor &mdash; Binary Tree</span></li>
+        <li onclick="tick(this,'ps')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>10. Flatten Binary Tree to Linked List</span></li>
+        <li onclick="tick(this,'ps')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>11. Construct Tree from Preorder + Inorder</span></li>
+      </ul>
+    </div>
+    <div class="tli"><div class="tldot" style="background:var(--accent3)"></div><div class="tlday">BST &mdash; 6 problems</div><div class="tltitle">Use the BST property</div>
+      <ul class="cklist" id="cl-bst">
+        <li onclick="tick(this,'bst')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>12. Validate Binary Search Tree</span></li>
+        <li onclick="tick(this,'bst')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>13. Search in a BST</span></li>
+        <li onclick="tick(this,'bst')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>14. Insert into a BST</span></li>
+        <li onclick="tick(this,'bst')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>15. Delete Node from BST (3 cases)</span></li>
+        <li onclick="tick(this,'bst')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>16. Kth Smallest in BST</span></li>
+        <li onclick="tick(this,'bst')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>17. LCA of a BST</span></li>
+      </ul>
+    </div>
+    <div class="tli"><div class="tldot" style="background:var(--orange)"></div><div class="tlday">ADVANCED &mdash; 1 problem</div><div class="tltitle">Codec mastery</div>
+      <ul class="cklist" id="cl-adv">
+        <li onclick="tick(this,'adv')"><div class="chk"></div><span class="chlabel"><span class="tag hard" style="margin-right:.4rem">Hard</span>18. Serialize and Deserialize Binary Tree</span></li>
+      </ul>
+    </div>
+  </div></div>
+  <div class="tip">&#128640; <strong>Part 5 next:</strong> Graphs (DFS/BFS/Union-Find/Topo Sort) + Heaps (Top-K/Merge K lists) + Greedy.</div>
+</div>
+</main>
+<script>
+function show(id,btn){document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('active')});document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('active')});var el=document.getElementById(id);if(el)el.classList.add('active');if(btn)btn.classList.add('active');window.scrollTo(0,0);}
+function toggleQA(el){el.parentElement.classList.toggle('open');}
+var totals={tr:4,ps:7,bst:6,adv:1};
+function tick(li,cat){li.classList.toggle('done');var list=document.getElementById('cl-'+cat);if(!list)return;var done=list.querySelectorAll('li.done').length;var pct=Math.round(done/totals[cat]*100);var pb=document.getElementById('pb-'+cat);var pv=document.getElementById('pv-'+cat);if(pb)pb.style.width=pct+'%';if(pv)pv.textContent=pct+'%';var allDone=0,allTotal=0;Object.keys(totals).forEach(function(c){var l=document.getElementById('cl-'+c);if(l)allDone+=l.querySelectorAll('li.done').length;allTotal+=totals[c];});var apct=Math.round(allDone/allTotal*100);document.getElementById('pb-all').style.width=apct+'%';document.getElementById('pb-all').textContent=apct+'%';document.getElementById('pv-all').textContent=apct+'%';}
+</script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Master Sheet — Index</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#04060b;--surface:#0a0f18;--card:#0e1520;--border:#162030;--p1:#00e5ff;--p2:#a78bfa;--p3:#10b981;--p4:#f59e0b;--p5:#f472b6;--p6:#fb923c;--text:#e2e8f0;--muted:#4a6174}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:4rem 2rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:10%;left:60%;width:600px;height:600px;background:radial-gradient(circle,rgba(0,229,255,.05),transparent 60%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:0;left:10%;width:500px;height:400px;background:radial-gradient(circle,rgba(245,158,11,.04),transparent 60%);pointer-events:none}
+.grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,229,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.02) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+.hero-inner{max-width:900px;margin:0 auto;width:100%;position:relative}
+.badge{display:inline-flex;background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.2);color:var(--p1);font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.4rem 1rem;border-radius:2px;letter-spacing:.15em;margin-bottom:2rem;animation:up .6s ease both}
+h1{font-size:clamp(2.5rem,7vw,5.5rem);font-weight:900;line-height:1;letter-spacing:-.04em;margin-bottom:1rem;animation:up .6s .1s ease both}
+h1 em{color:var(--p1);font-style:normal;display:block}
+h1 span{color:var(--muted)}
+.sub{font-size:clamp(.95rem,2vw,1.15rem);color:var(--muted);max-width:520px;line-height:1.6;margin-bottom:2.5rem;font-weight:300;animation:up .6s .2s ease both}
+.stats{display:flex;gap:2.5rem;flex-wrap:wrap;margin-bottom:3rem;animation:up .6s .3s ease both}
+.sn{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--p1);line-height:1}
+.sl{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:.2rem}
+.hint{display:flex;align-items:center;gap:.5rem;color:var(--muted);font-size:.75rem;font-family:'JetBrains Mono',monospace;animation:up .6s .5s ease both}
+.hint::before{content:'';width:28px;height:1px;background:var(--border)}
+section{max-width:1080px;margin:0 auto;padding:4rem 2rem}
+.lbl{font-family:'JetBrains Mono',monospace;font-size:.64rem;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.7rem}
+.stitle{font-size:clamp(1.4rem,3vw,1.9rem);font-weight:800;letter-spacing:-.03em;margin-bottom:.4rem}
+.ssub{color:var(--muted);font-size:.85rem;margin-bottom:2rem;line-height:1.6}
+.grid6{display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:1.1rem}
+.pc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.6rem;position:relative;overflow:hidden;text-decoration:none;display:block;color:inherit;transition:all .22s}
+.pc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0}
+.pc:not(.locked):hover{border-color:#243447;transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.5)}
+.pc.locked{opacity:.42;cursor:default;pointer-events:none}
+.p1::before{background:linear-gradient(90deg,var(--p1),#007a99)}
+.p2::before{background:linear-gradient(90deg,var(--p2),#5b21b6)}
+.p3::before{background:linear-gradient(90deg,var(--p3),#065f46)}
+.p4::before{background:linear-gradient(90deg,var(--p4),#92400e)}
+.p5::before{background:linear-gradient(90deg,var(--p5),#9d174d)}
+.p6::before{background:linear-gradient(90deg,var(--p6),#9a3412)}
+.pch{display:flex;justify-content:space-between;align-items:center;margin-bottom:.9rem}
+.pnum{font-family:'JetBrains Mono',monospace;font-size:.61rem;font-weight:700;padding:.17rem .48rem;border-radius:3px;letter-spacing:.07em}
+.p1 .pnum{background:rgba(0,229,255,.1);color:var(--p1)}
+.p2 .pnum{background:rgba(167,139,250,.1);color:var(--p2)}
+.p3 .pnum{background:rgba(16,185,129,.1);color:var(--p3)}
+.p4 .pnum{background:rgba(245,158,11,.1);color:var(--p4)}
+.p5 .pnum{background:rgba(244,114,182,.1);color:var(--p5)}
+.p6 .pnum{background:rgba(251,146,60,.1);color:var(--p6)}
+.pst{font-family:'JetBrains Mono',monospace;font-size:.64rem}
+.sd{color:#10b981}.ss{color:var(--muted)}
+.ptitle{font-size:1rem;font-weight:800;margin-bottom:.35rem;letter-spacing:-.02em}
+.ptopics{color:var(--muted);font-size:.77rem;margin-bottom:1rem;line-height:1.5}
+.pft{display:flex;align-items:center;justify-content:space-between}
+.ppills{display:flex;gap:.35rem;flex-wrap:wrap}
+.ppill{font-size:.59rem;font-family:'JetBrains Mono',monospace;padding:.11rem .38rem;border-radius:3px;background:rgba(255,255,255,.03);border:1px solid var(--border);color:var(--muted)}
+.parr{font-size:.8rem;color:var(--muted);transition:all .2s}
+.pc:hover .parr{color:var(--p1);transform:translateX(4px)}
+.glow{position:absolute;top:-50px;right:-50px;width:180px;height:180px;border-radius:50%;opacity:0;transition:opacity .3s;pointer-events:none}
+.p1:hover .glow{background:radial-gradient(circle,rgba(0,229,255,.07),transparent 70%);opacity:1}
+.p2:hover .glow{background:radial-gradient(circle,rgba(167,139,250,.07),transparent 70%);opacity:1}
+.p3:hover .glow{background:radial-gradient(circle,rgba(16,185,129,.07),transparent 70%);opacity:1}
+.p4:hover .glow{background:radial-gradient(circle,rgba(245,158,11,.07),transparent 70%);opacity:1}
+.feats{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.65rem;margin-top:2.5rem}
+.feat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.85rem}
+.fi{font-size:1.1rem;margin-bottom:.35rem}
+.ft{font-weight:700;font-size:.81rem;margin-bottom:.2rem}
+.fd{font-size:.71rem;color:var(--muted);line-height:1.4}
+footer{padding:2rem;text-align:center;color:var(--muted);font-size:.76rem;border-top:1px solid var(--border)}
+footer em{color:var(--p1);font-style:normal}
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:640px){.hero{padding:3rem 1.5rem;padding-top:5rem;min-height:auto}section{padding:2.5rem 1.5rem}.stats{gap:1.5rem}.sn{font-size:1.5rem}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="grid"></div>
+  <div class="hero-inner">
+    <div class="badge">&#9654;&nbsp; DSA INTERVIEW PREP &nbsp;&middot;&nbsp; JAVA EDITION</div>
+    <h1><span>Master</span><em>DSA in Java</em></h1>
+    <p class="sub">Every pattern. Every problem. Dry runs, logic building, and Java solutions &mdash; so you understand the <em style="color:var(--p4);font-style:normal">why</em>, not just the what.</p>
+    <div class="stats">
+      <div><div class="sn">103</div><div class="sl">Total Problems</div></div>
+      <div><div class="sn">6</div><div class="sl">Parts Total</div></div>
+      <div><div class="sn">4</div><div class="sl">Parts Ready</div></div>
+      <div><div class="sn">18+</div><div class="sl">Patterns</div></div>
+    </div>
+    <div class="hint">scroll to explore all parts</div>
+  </div>
+</div>
+
+<section>
+  <div class="lbl">DSA Master Sheet</div>
+  <div class="stitle">6-Part Series</div>
+  <div class="ssub">Striver-inspired curriculum. Every problem: I/O examples &middot; dry-run trace &middot; logic building &middot; Java solution &middot; complexity analysis.</div>
+
+  <div class="grid6">
+
+    <a href="dsa_part1.html" class="pc p1">
+      <div class="glow"></div>
+      <div class="pch"><span class="pnum">PART 01</span><span class="pst sd">&#10003; Ready</span></div>
+      <div class="ptitle">Arrays &amp; Strings</div>
+      <div class="ptopics">Two Pointers &middot; Sliding Window &middot; Prefix Sum &middot; Kadane's &middot; Boyer-Moore Voting</div>
+      <div class="pft"><div class="ppills"><span class="ppill">20 problems</span><span class="ppill">5 patterns</span></div><span class="parr">&#8594;</span></div>
+    </a>
+
+    <a href="dsa_part2.html" class="pc p2">
+      <div class="glow"></div>
+      <div class="pch"><span class="pnum">PART 02</span><span class="pst sd">&#10003; Ready</span></div>
+      <div class="ptitle">Linked List &amp; Stack</div>
+      <div class="ptopics">Fast/Slow Pointers &middot; Floyd's Cycle &middot; Dummy Node &middot; Monotonic Stack &middot; BFS Queue</div>
+      <div class="pft"><div class="ppills"><span class="ppill">15 problems</span><span class="ppill">4 patterns</span></div><span class="parr">&#8594;</span></div>
+    </a>
+
+    <a href="dsa_part3.html" class="pc p3">
+      <div class="glow"></div>
+      <div class="pch"><span class="pnum">PART 03</span><span class="pst sd">&#10003; Ready</span></div>
+      <div class="ptitle">Binary Search &amp; Backtracking</div>
+      <div class="ptopics">3 BS Templates &middot; BS on Answer Space &middot; Subsets &middot; Permutations &middot; N-Queens &middot; Sudoku</div>
+      <div class="pft"><div class="ppills"><span class="ppill">15 problems</span><span class="ppill">3 patterns</span></div><span class="parr">&#8594;</span></div>
+    </a>
+
+    <a href="dsa_part4.html" class="pc p4">
+      <div class="glow"></div>
+      <div class="pch"><span class="pnum">PART 04</span><span class="pst sd">&#10003; Ready</span></div>
+      <div class="ptitle">Binary Trees &amp; BST</div>
+      <div class="ptopics">DFS/BFS &middot; Diameter &middot; Max Path Sum &middot; LCA &middot; BST Ops &middot; Serialize/Deserialize</div>
+      <div class="pft"><div class="ppills"><span class="ppill">18 problems</span><span class="ppill">4 patterns</span></div><span class="parr">&#8594;</span></div>
+    </a>
+
+    <div class="pc p5 locked">
+      <div class="pch"><span class="pnum">PART 05</span><span class="pst ss">&#9711; Upcoming</span></div>
+      <div class="ptitle">Graphs, Heaps &amp; Greedy</div>
+      <div class="ptopics">DFS/BFS &middot; Union-Find &middot; Dijkstra &middot; Topological Sort &middot; Top-K &middot; Merge K Lists</div>
+      <div class="pft"><div class="ppills"><span class="ppill">16 problems</span><span class="ppill">4 patterns</span></div><span class="parr" style="opacity:.3">&#8594;</span></div>
+    </div>
+
+    <div class="pc p6 locked">
+      <div class="pch"><span class="pnum">PART 06</span><span class="pst ss">&#9711; Upcoming</span></div>
+      <div class="ptitle">Dynamic Programming</div>
+      <div class="ptopics">1D/2D DP &middot; Knapsack &middot; LCS &middot; LIS &middot; Coin Change &middot; State Machine DP</div>
+      <div class="pft"><div class="ppills"><span class="ppill">15 problems</span><span class="ppill">5 patterns</span></div><span class="parr" style="opacity:.3">&#8594;</span></div>
+    </div>
+
+  </div>
+
+  <div class="lbl" style="margin-top:3rem">Every Problem Includes</div>
+  <div class="feats">
+    <div class="feat"><div class="fi">&#129504;</div><div class="ft">Logic Building</div><div class="fd">Brute force &rarr; insight &rarr; pattern unlock</div></div>
+    <div class="feat"><div class="fi">&#128260;</div><div class="ft">Dry Run Trace</div><div class="fd">Variable states at every step with real values</div></div>
+    <div class="feat"><div class="fi">&#128228;</div><div class="ft">I/O Examples</div><div class="fd">Multiple test cases including edge cases</div></div>
+    <div class="feat"><div class="fi">&#9749;</div><div class="ft">Java Solution</div><div class="fd">Clean interview-ready Java with comments</div></div>
+    <div class="feat"><div class="fi">&#9203;</div><div class="ft">Complexity</div><div class="fd">Time &amp; space with explanation</div></div>
+    <div class="feat"><div class="fi">&#9989;</div><div class="ft">Progress Tracker</div><div class="fd">Live checkboxes &amp; bars per section</div></div>
+  </div>
+</section>
+
+<footer>Parts <em>1 &ndash; 4</em> available &nbsp;&middot;&nbsp; Parts 5 &amp; 6 coming soon &nbsp;&middot;&nbsp; 103 problems total</footer>
+
+</body>
+</html>

@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Part 2 — Linked List, Stack, Queue</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07090f;--surface:#0d1117;--card:#111827;--card2:#0f1923;--border:#1e2d3d;--accent:#a78bfa;--accent2:#f472b6;--accent3:#10b981;--warn:#f59e0b;--danger:#ef4444;--cyan:#00e5ff;--orange:#fb923c;--text:#e2e8f0;--muted:#64748b;--code-bg:#060d14}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh}
+header{background:linear-gradient(135deg,#07090f 0%,#130d20 60%,#07090f 100%);border-bottom:1px solid var(--border);padding:2rem 2rem 1.5rem;position:relative;overflow:hidden}
+header::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(167,139,250,.07) 0%,transparent 65%);pointer-events:none}
+.hbadge{display:inline-flex;align-items:center;background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.3);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.3rem .8rem;border-radius:2px;letter-spacing:.12em;margin-bottom:.9rem}
+h1{font-size:clamp(1.7rem,4vw,2.6rem);font-weight:800;letter-spacing:-.03em;line-height:1.1}
+h1 em{color:var(--accent);font-style:normal}
+h1 small{display:block;font-size:.45em;font-weight:400;color:var(--muted);margin-top:.3rem}
+.hpills{margin-top:1rem;display:flex;gap:.6rem;flex-wrap:wrap}
+.pill{background:var(--surface);border:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.2rem .65rem;border-radius:3px;color:var(--muted)}
+nav{display:flex;gap:.25rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:100}
+nav::-webkit-scrollbar{display:none}
+.nb{background:none;border:1px solid transparent;color:var(--muted);font-family:'Outfit',sans-serif;font-size:.78rem;font-weight:600;padding:.4rem 1rem;border-radius:4px;cursor:pointer;white-space:nowrap;transition:all .18s}
+.nb:hover{color:var(--text);border-color:var(--border)}
+.nb.active{color:var(--accent);border-color:var(--accent);background:rgba(167,139,250,.07)}
+main{max-width:980px;margin:0 auto;padding:2rem}
+.sec{display:none}.sec.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.stitle{font-size:1.5rem;font-weight:800;margin-bottom:.4rem;letter-spacing:-.02em}
+.stitle em{color:var(--accent);font-style:normal}
+.ssub{color:var(--muted);font-size:.85rem;margin-bottom:1.5rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.4rem;margin-bottom:1rem}
+.tag{font-family:'JetBrains Mono',monospace;font-size:.63rem;font-weight:700;padding:.18rem .55rem;border-radius:3px;letter-spacing:.08em;text-transform:uppercase}
+.easy{background:rgba(16,185,129,.15);color:var(--accent3);border:1px solid rgba(16,185,129,.3)}
+.medium{background:rgba(245,158,11,.15);color:var(--warn);border:1px solid rgba(245,158,11,.3)}
+.hard{background:rgba(239,68,68,.15);color:var(--danger);border:1px solid rgba(239,68,68,.3)}
+.ptag{background:rgba(167,139,250,.12);color:#a78bfa;border:1px solid rgba(167,139,250,.3);font-family:'JetBrains Mono',monospace;font-size:.63rem;padding:.18rem .55rem;border-radius:3px}
+.qa{border:1px solid var(--border);border-radius:8px;margin-bottom:.6rem;overflow:hidden}
+.qq{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.2rem;cursor:pointer;background:var(--card2);transition:background .15s;gap:1rem}
+.qq:hover{background:#131e2d}.qq h3{font-size:.92rem;font-weight:600;line-height:1.4}
+.qarr{color:var(--muted);font-size:.75rem;flex-shrink:0;transition:transform .2s}
+.qa.open .qarr{transform:rotate(180deg)}
+.qa-body{display:none;padding:1.2rem;border-top:1px solid var(--border);background:var(--card)}
+.qa.open .qa-body{display:block}
+pre{background:var(--code-bg);border:1px solid #1a2535;border-radius:6px;padding:1.1rem 1.2rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.65;margin:.75rem 0;white-space:pre}
+.kw{color:#ff7b72}.type{color:#79c0ff}.fn{color:#d2a8ff}.str{color:#a5d6ff}.num{color:#f2cc60}.cmt{color:#4a6174;font-style:italic}
+.iobox{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:.75rem 0}
+.io-in,.io-out{background:var(--code-bg);border-radius:5px;padding:.65rem .9rem;font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:1.5;border:1px solid #1a2535}
+.iolabel{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem;font-weight:700}
+.io-in .iolabel{color:var(--accent)}.io-out .iolabel{color:var(--accent3)}
+.tip{background:rgba(167,139,250,.05);border-left:3px solid var(--accent);padding:.7rem 1rem;border-radius:0 5px 5px 0;margin:.75rem 0;font-size:.83rem;color:#94a3b8}
+.warn{background:rgba(245,158,11,.05);border-left:3px solid var(--warn);padding:.7rem 1rem;border-radius:0 5px 5px 0;margin:.75rem 0;font-size:.83rem;color:#94a3b8}
+.note{background:rgba(0,229,255,.05);border-left:3px solid var(--cyan);padding:.7rem 1rem;border-radius:0 5px 5px 0;margin:.75rem 0;font-size:.83rem;color:#94a3b8}
+.logic{background:rgba(167,139,250,.04);border:1px solid rgba(167,139,250,.15);border-radius:8px;padding:1rem;margin-bottom:.9rem}
+.logic-title{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--accent);font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.7rem}
+.logic-step{font-size:.82rem;color:#94a3b8;margin-bottom:.45rem;line-height:1.5;padding-left:.5rem;border-left:2px solid rgba(167,139,250,.2)}
+.logic-step .lstep{color:var(--text);font-weight:600;margin-right:.4rem}
+.logic-pattern{margin-top:.75rem;padding:.5rem .75rem;background:rgba(167,139,250,.1);border-radius:4px;font-size:.78rem;color:#a78bfa;border:1px solid rgba(167,139,250,.2)}
+.cx-wrap{display:inline-flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap}
+.cx{font-family:'JetBrains Mono',monospace;font-size:.67rem;padding:.15rem .5rem;border-radius:3px}
+.cxt{background:rgba(167,139,250,.1);color:var(--accent);border:1px solid rgba(167,139,250,.2)}
+.cxs{background:rgba(244,114,182,.1);color:var(--accent2);border:1px solid rgba(244,114,182,.2)}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.6rem;margin-bottom:1.5rem}
+.pc{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.8rem}
+.plabel{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.5rem;font-family:'JetBrains Mono',monospace}
+.pbwrap{background:#1a2535;border-radius:10px;height:5px;overflow:hidden;margin-bottom:.35rem}
+.pb{height:100%;border-radius:10px;transition:width .4s ease;width:0%}
+.pval{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--accent)}
+.cklist{list-style:none;padding:0}
+.cklist li{display:flex;align-items:flex-start;gap:.75rem;padding:.55rem 0;border-bottom:1px solid rgba(30,45,69,.5);cursor:pointer}
+.cklist li:last-child{border-bottom:none}
+.chk{width:17px;height:17px;border:2px solid var(--border);border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-top:2px;font-size:.65rem;color:transparent}
+.cklist li.done .chk{background:var(--accent3);border-color:var(--accent3);color:#fff}
+.cklist li.done .chk::after{content:'✓'}
+.cklist li.done .chlabel{text-decoration:line-through;color:var(--muted)}
+.chlabel{font-size:.83rem;line-height:1.45}
+.tl{position:relative;padding-left:1.8rem}
+.tl::before{content:'';position:absolute;left:.35rem;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),var(--accent2),var(--accent3))}
+.tli{position:relative;margin-bottom:1.75rem}
+.tldot{position:absolute;left:-1.6rem;top:.25rem;width:11px;height:11px;border-radius:50%;border:2px solid var(--bg)}
+.tlday{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--accent);font-weight:700;margin-bottom:.2rem}
+.tltitle{font-size:.92rem;font-weight:700;margin-bottom:.6rem}
+table{width:100%;border-collapse:collapse;font-size:.8rem;margin:.75rem 0}
+th{background:var(--surface);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.55rem .75rem;text-align:left;border:1px solid var(--border)}
+td{padding:.5rem .75rem;border:1px solid var(--border);color:#94a3b8;vertical-align:top}
+tr:nth-child(even) td{background:rgba(13,25,35,.5)}
+@media(max-width:640px){main{padding:1rem}header{padding:1.5rem 1rem 1rem}nav{padding:.5rem .75rem}.iobox{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="hbadge">&#9654; DSA MASTER SHEET &middot; PART 2 OF 6</div>
+  <h1><em>Linked List</em> &amp; Stack/Queue<small>Reverse &middot; Cycle Detection &middot; Merge &middot; Monotonic Stack &middot; BFS Queue</small></h1>
+  <div class="hpills">
+    <span class="pill">18 Problems</span><span class="pill">4 Patterns</span>
+    <span class="pill">Java &middot; Dry Runs</span><span class="pill">Logic Building</span><span class="pill">Part 2 / 6</span>
+  </div>
+</header>
+<nav>
+  <button class="nb active" onclick="show('overview',this)">Overview</button>
+  <button class="nb" onclick="show('ll',this)">Linked List</button>
+  <button class="nb" onclick="show('stack',this)">Stack</button>
+  <button class="nb" onclick="show('queue',this)">Queue</button>
+  <button class="nb" onclick="show('mono',this)">Monotonic Stack</button>
+  <button class="nb" onclick="show('tracker',this)">&#128203; Progress</button>
+</nav>
+<main>
+
+<!-- OVERVIEW -->
+<div id="overview" class="sec active">
+  <div class="stitle">Part 2 <em>Overview</em></div>
+  <div class="ssub">Pointer manipulation and LIFO/FIFO data structures. These patterns appear constantly in real systems.</div>
+  <div class="card"><table>
+    <tr><th>Pattern</th><th>Trigger Words</th><th>Key Idea</th><th>Time</th></tr>
+    <tr><td><strong>Linked List</strong></td><td>reverse, cycle, merge, nth from end</td><td>Pointer re-wiring; fast/slow pointers</td><td>O(N)</td></tr>
+    <tr><td><strong>Stack</strong></td><td>valid brackets, undo, next greater, evaluate</td><td>LIFO — process on pop, not push</td><td>O(N)</td></tr>
+    <tr><td><strong>Queue / BFS</strong></td><td>level order, shortest path, rotten oranges</td><td>FIFO — process level by level</td><td>O(N)</td></tr>
+    <tr><td><strong>Monotonic Stack</strong></td><td>next greater/smaller, histogram, span</td><td>Maintain increasing/decreasing stack of indices</td><td>O(N)</td></tr>
+  </table></div>
+  <div class="card">
+    <h3 style="font-size:.95rem;margin-bottom:.75rem">&#128218; Full Series Roadmap</h3>
+    <table>
+      <tr><th>Part</th><th>Topics</th><th>Status</th></tr>
+      <tr><td>Part 1</td><td>Arrays, Strings, Two Pointers, Sliding Window, Prefix Sum</td><td style="color:var(--accent3)">&#10003; Done (20 problems)</td></tr>
+      <tr><td><strong>Part 2</strong></td><td>Linked List, Stack, Queue, Monotonic Stack</td><td style="color:var(--accent)">&#9654; YOU ARE HERE</td></tr>
+      <tr><td>Part 3</td><td>Binary Search, Recursion, Backtracking</td><td style="color:var(--muted)">Upcoming</td></tr>
+      <tr><td>Part 4</td><td>Binary Tree, BST</td><td style="color:var(--muted)">Upcoming</td></tr>
+      <tr><td>Part 5</td><td>Graphs, Heaps, Greedy</td><td style="color:var(--muted)">Upcoming</td></tr>
+      <tr><td>Part 6</td><td>Dynamic Programming</td><td style="color:var(--muted)">Upcoming</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- LINKED LIST -->
+<div id="ll" class="sec">
+  <div class="stitle"><em>Linked List</em></div>
+  <div class="ssub">Master pointer manipulation. All LL problems boil down to: re-wiring next pointers, fast/slow runners, or dummy node tricks.</div>
+
+  <!-- 1. Reverse Linked List -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">Iterative / Recursive</span><h3>1. Reverse Linked List</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Visualize:</span> 1&#8594;2&#8594;3&#8594;null. We want null&#8592;1&#8592;2&#8592;3. Each node's next pointer needs to flip.</div>
+      <div class="logic-step"><span class="lstep">Problem:</span> If you flip curr.next, you lose the rest of the list. Solution: save next BEFORE flipping.</div>
+      <div class="logic-step"><span class="lstep">3-pointer dance:</span> prev=null, curr=head. At each step: save curr.next, flip curr.next=prev, advance prev=curr, curr=saved.</div>
+      <div class="logic-step"><span class="lstep">Termination:</span> When curr=null, prev points to the new head.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Reverse pointer direction"</strong> &#8594; 3-pointer iterative (prev, curr, next)</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>1&#8594;2&#8594;3&#8594;4&#8594;5&#8594;null</div>
+      <div class="io-out"><div class="iolabel">Output</div>5&#8594;4&#8594;3&#8594;2&#8594;1&#8594;null</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: 1->2->3->null
+// Initial: prev=null, curr=1
+// Step 1: next=2, curr(1).next=null, prev=1, curr=2   → null<-1  2->3
+// Step 2: next=3, curr(2).next=1,   prev=2, curr=3   → null<-1<-2  3->null
+// Step 3: next=null, curr(3).next=2, prev=3, curr=null → null<-1<-2<-3
+// curr==null → return prev=3 ✓</span>
+
+<span class="kw">public</span> <span class="type">ListNode</span> <span class="fn">reverseList</span>(<span class="type">ListNode</span> head) {
+    <span class="type">ListNode</span> prev = <span class="kw">null</span>, curr = head;
+    <span class="kw">while</span> (curr != <span class="kw">null</span>) {
+        <span class="type">ListNode</span> next = curr.next; <span class="cmt">// 1. save next before breaking link</span>
+        curr.next = prev;          <span class="cmt">// 2. flip the pointer</span>
+        prev = curr;               <span class="cmt">// 3. advance prev</span>
+        curr = next;               <span class="cmt">// 4. advance curr</span>
+    }
+    <span class="kw">return</span> prev; <span class="cmt">// prev is new head when curr==null</span>
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(1)</span></div>
+  </div></div>
+
+  <!-- 2. Detect Cycle -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">Floyd&#39;s Fast/Slow</span><h3>2. Linked List Cycle Detection</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Problem:</span> Detect if a linked list has a cycle. HashSet approach: O(N) space. Can we do O(1)?</div>
+      <div class="logic-step"><span class="lstep">Analogy:</span> Imagine two runners on a circular track. The faster one will always lap the slower one — they'll meet. No cycle = fast runner reaches the end.</div>
+      <div class="logic-step"><span class="lstep">Algorithm:</span> slow moves 1 step, fast moves 2 steps. If they ever meet &#8594; cycle. If fast hits null &#8594; no cycle.</div>
+      <div class="logic-step"><span class="lstep">Cycle start:</span> After meeting, move one pointer back to head. Advance both 1 step at a time. They meet at the cycle start node.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Two things moving at different speeds"</strong> &#8594; Fast/slow pointers (Floyd's)</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>3&#8594;2&#8594;0&#8594;-4&#8594;(back to 2)</div>
+      <div class="io-out"><div class="iolabel">Output</div>true, cycle at node 2</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: 3->2->0->-4->2 (cycle at index 1)
+// slow=3, fast=3
+// Step 1: slow=2, fast=0
+// Step 2: slow=0, fast=2  (fast: -4->2)
+// Step 3: slow=-4, fast=-4 → MEET! cycle detected ✓
+//
+// Find cycle start: reset slow=head(3), keep fast=-4
+// Step 1: slow=2, fast=2 → MEET at node 2 = cycle start ✓</span>
+
+<span class="kw">public boolean</span> <span class="fn">hasCycle</span>(<span class="type">ListNode</span> head) {
+    <span class="type">ListNode</span> slow = head, fast = head;
+    <span class="kw">while</span> (fast != <span class="kw">null</span> &amp;&amp; fast.next != <span class="kw">null</span>) {
+        slow = slow.next;
+        fast = fast.next.next;
+        <span class="kw">if</span> (slow == fast) <span class="kw">return true</span>; <span class="cmt">// pointers met → cycle</span>
+    }
+    <span class="kw">return false</span>;
+}
+
+<span class="cmt">// BONUS: Find cycle start node</span>
+<span class="kw">public</span> <span class="type">ListNode</span> <span class="fn">detectCycle</span>(<span class="type">ListNode</span> head) {
+    <span class="type">ListNode</span> slow = head, fast = head;
+    <span class="kw">while</span> (fast != <span class="kw">null</span> &amp;&amp; fast.next != <span class="kw">null</span>) {
+        slow = slow.next; fast = fast.next.next;
+        <span class="kw">if</span> (slow == fast) {
+            slow = head; <span class="cmt">// reset one to head</span>
+            <span class="kw">while</span> (slow != fast) { slow = slow.next; fast = fast.next; }
+            <span class="kw">return</span> slow; <span class="cmt">// cycle start</span>
+        }
+    }
+    <span class="kw">return null</span>;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(1)</span></div>
+  </div></div>
+
+  <!-- 3. Middle of Linked List -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">Fast/Slow Pointers</span><h3>3. Find Middle of Linked List</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Naive:</span> Count N nodes, then walk N/2 steps = 2 passes.</div>
+      <div class="logic-step"><span class="lstep">Insight:</span> When fast (2x speed) reaches the end, slow (1x speed) is exactly halfway. One pass!</div>
+      <div class="logic-step"><span class="lstep">Odd vs even:</span> fast!=null gives second middle for even lists. fast.next!=null gives first middle.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Find N/2 position in one pass"</strong> &#8594; Fast/slow where fast=2&#215;slow</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>1&#8594;2&#8594;3&#8594;4&#8594;5</div>
+      <div class="io-out"><div class="iolabel">Output</div>Node 3 (middle)</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: 1->2->3->4->5
+// slow=1,fast=1
+// Step 1: slow=2, fast=3
+// Step 2: slow=3, fast=5
+// Step 3: fast.next=null → stop. return slow=3 ✓
+//
+// Even: 1->2->3->4
+// Step 1: slow=2, fast=3
+// Step 2: slow=3, fast=null(fast was 3, fast.next=4, fast.next.next=null)
+// Actually: fast=4 after step 1, fast.next=null → stop at slow=3 (second middle) ✓</span>
+
+<span class="kw">public</span> <span class="type">ListNode</span> <span class="fn">middleNode</span>(<span class="type">ListNode</span> head) {
+    <span class="type">ListNode</span> slow = head, fast = head;
+    <span class="kw">while</span> (fast != <span class="kw">null</span> &amp;&amp; fast.next != <span class="kw">null</span>) {
+        slow = slow.next;       <span class="cmt">// moves 1 step</span>
+        fast = fast.next.next;  <span class="cmt">// moves 2 steps</span>
+    }
+    <span class="kw">return</span> slow; <span class="cmt">// at N/2 when fast reaches end</span>
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(1)</span></div>
+  </div></div>
+
+  <!-- 4. Merge Two Sorted Lists -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">Dummy Node + Merge</span><h3>4. Merge Two Sorted Linked Lists</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Think merge sort's merge step:</span> Compare heads, take smaller, advance that pointer.</div>
+      <div class="logic-step"><span class="lstep">Dummy node trick:</span> Create a fake head node. This eliminates special-casing the first element — you always append to dummy.next.</div>
+      <div class="logic-step"><span class="lstep">Leftover:</span> When one list exhausts, append the other directly (already sorted).</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Build result list incrementally"</strong> &#8594; Dummy head + pointer weaving</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>l1=1&#8594;2&#8594;4, l2=1&#8594;3&#8594;4</div>
+      <div class="io-out"><div class="iolabel">Output</div>1&#8594;1&#8594;2&#8594;3&#8594;4&#8594;4</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: l1=1->2->4, l2=1->3->4
+// dummy=0, curr=dummy
+// l1(1) == l2(1): take l1(1), curr->1, l1=2
+// l1(2) >  l2(1): take l2(1), curr->1->1, l2=3
+// l1(2) <  l2(3): take l1(2), curr->1->1->2, l1=4
+// l1(4) >  l2(3): take l2(3), curr->...->3, l2=4
+// l1(4) == l2(4): take l1(4), l1=null
+// l1=null: append l2(4) directly
+// return dummy.next = 1->1->2->3->4->4 ✓</span>
+
+<span class="kw">public</span> <span class="type">ListNode</span> <span class="fn">mergeTwoLists</span>(<span class="type">ListNode</span> l1, <span class="type">ListNode</span> l2) {
+    <span class="type">ListNode</span> dummy = <span class="kw">new</span> <span class="type">ListNode</span>(<span class="num">0</span>), curr = dummy;
+    <span class="kw">while</span> (l1 != <span class="kw">null</span> &amp;&amp; l2 != <span class="kw">null</span>) {
+        <span class="kw">if</span> (l1.val &lt;= l2.val) { curr.next = l1; l1 = l1.next; }
+        <span class="kw">else</span>                   { curr.next = l2; l2 = l2.next; }
+        curr = curr.next;
+    }
+    curr.next = (l1 != <span class="kw">null</span>) ? l1 : l2; <span class="cmt">// attach remaining</span>
+    <span class="kw">return</span> dummy.next;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(M+N)</span><span class="cx cxs">Space: O(1)</span></div>
+  </div></div>
+
+  <!-- 5. Remove Nth from End -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Two Pointers Gap</span><h3>5. Remove Nth Node from End</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Naive:</span> Count total N, then walk to (N - nth) position. Two passes.</div>
+      <div class="logic-step"><span class="lstep">One-pass insight:</span> Maintain two pointers exactly n steps apart. When fast hits the end, slow is at the node BEFORE the one to remove.</div>
+      <div class="logic-step"><span class="lstep">Gap trick:</span> Advance fast n steps first. Then move both together until fast.next=null.</div>
+      <div class="logic-step"><span class="lstep">Dummy node:</span> Handles edge case of removing the head (n == list length).</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Nth from end in one pass"</strong> &#8594; Two pointers with n-step gap</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>1&#8594;2&#8594;3&#8594;4&#8594;5, n=2</div>
+      <div class="io-out"><div class="iolabel">Output</div>1&#8594;2&#8594;3&#8594;5</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: 1->2->3->4->5, n=2
+// dummy->1->2->3->4->5, slow=fast=dummy
+// Advance fast n=2 steps: fast=1, fast=2
+// Move both until fast.next=null:
+//   fast(2).next=3≠null: slow=1, fast=3
+//   fast(3).next=4≠null: slow=2, fast=4
+//   fast(4).next=5≠null: slow=3, fast=5
+//   fast(5).next=null → stop
+// slow=3, slow.next=4 (to remove). slow.next=4.next=5
+// List: 1->2->3->5 ✓</span>
+
+<span class="kw">public</span> <span class="type">ListNode</span> <span class="fn">removeNthFromEnd</span>(<span class="type">ListNode</span> head, <span class="kw">int</span> n) {
+    <span class="type">ListNode</span> dummy = <span class="kw">new</span> <span class="type">ListNode</span>(<span class="num">0</span>, head);
+    <span class="type">ListNode</span> slow = dummy, fast = dummy;
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; n; i++) fast = fast.next; <span class="cmt">// advance fast n steps</span>
+    <span class="kw">while</span> (fast.next != <span class="kw">null</span>) { slow = slow.next; fast = fast.next; }
+    slow.next = slow.next.next; <span class="cmt">// skip the nth node</span>
+    <span class="kw">return</span> dummy.next;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(1)</span></div>
+  </div></div>
+
+  <!-- 6. Palindrome Linked List -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">Find Mid + Reverse Half</span><h3>6. Palindrome Linked List</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">If it were an array:</span> Two pointers from ends, compare. Easy. But LL has no backward traversal.</div>
+      <div class="logic-step"><span class="lstep">Key idea:</span> Find middle (fast/slow), reverse the second half in-place, compare both halves from the front.</div>
+      <div class="logic-step"><span class="lstep">Steps:</span> (1) Find mid using fast/slow. (2) Reverse from mid.next. (3) Compare head vs reversed half. (4) Optionally restore.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Palindrome check on LL"</strong> &#8594; Find mid + reverse second half + compare</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>1&#8594;2&#8594;2&#8594;1</div>
+      <div class="io-out"><div class="iolabel">Output</div>true</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: 1->2->2->1
+// Step 1 find mid: slow=2(idx1), fast=1(idx3)
+// Step 2 reverse second half from slow.next=2->1:
+//   reversed: 1->2->null
+// Step 3 compare: head=1 vs rev=1 ✓, head=2 vs rev=2 ✓ → true ✓</span>
+
+<span class="kw">public boolean</span> <span class="fn">isPalindrome</span>(<span class="type">ListNode</span> head) {
+    <span class="type">ListNode</span> slow = head, fast = head;
+    <span class="kw">while</span> (fast != <span class="kw">null</span> &amp;&amp; fast.next != <span class="kw">null</span>) { slow=slow.next; fast=fast.next.next; }
+    <span class="type">ListNode</span> rev = <span class="fn">reverse</span>(slow); <span class="cmt">// reverse second half</span>
+    <span class="type">ListNode</span> p1 = head, p2 = rev;
+    <span class="kw">while</span> (p2 != <span class="kw">null</span>) {
+        <span class="kw">if</span> (p1.val != p2.val) <span class="kw">return false</span>;
+        p1=p1.next; p2=p2.next;
+    }
+    <span class="kw">return true</span>;
+}
+<span class="kw">private</span> <span class="type">ListNode</span> <span class="fn">reverse</span>(<span class="type">ListNode</span> head) {
+    <span class="type">ListNode</span> prev=<span class="kw">null</span>, curr=head;
+    <span class="kw">while</span>(curr!=<span class="kw">null</span>){<span class="type">ListNode</span> nx=curr.next;curr.next=prev;prev=curr;curr=nx;}
+    <span class="kw">return</span> prev;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(1)</span></div>
+  </div></div>
+</div>
+
+<!-- STACK -->
+<div id="stack" class="sec">
+  <div class="stitle"><em>Stack</em></div>
+  <div class="ssub">LIFO — Last In, First Out. Use when you need to process things in reverse order, validate nesting, or track "last seen".</div>
+
+  <!-- 7. Valid Parentheses -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">Stack Matching</span><h3>7. Valid Parentheses</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Observation:</span> Every closing bracket must match the MOST RECENTLY seen unmatched opening bracket. That's exactly what a stack gives you — LIFO access to the most recent item.</div>
+      <div class="logic-step"><span class="lstep">Algorithm:</span> Push opening brackets. On closing bracket, check if top of stack matches. If not &#8594; invalid.</div>
+      <div class="logic-step"><span class="lstep">End check:</span> Stack must be empty at the end (no unmatched opens).</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Match recent open with current close"</strong> &#8594; Stack push/pop</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>s = "()[]{}"</div>
+      <div class="io-out"><div class="iolabel">Output</div>true</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input 2</div>s = "([)]"</div>
+      <div class="io-out"><div class="iolabel">Output 2</div>false</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: "([)]"
+//   '(': push → stack=['(']
+//   '[': push → stack=['(','[']
+//   ')': map[')'] = '('. pop → '[' ≠ '(' → return false ✓
+//
+// DRY RUN: "()[]{}"
+//   '(': push=['(']
+//   ')': pop='(', map[')']=('(') → match ✓, stack=[]
+//   '[': push=['[']
+//   ']': pop='[', match ✓, stack=[]
+//   '{': push=['{']
+//   '}': pop='{', match ✓, stack=[]
+//   stack empty → return true ✓</span>
+
+<span class="kw">public boolean</span> <span class="fn">isValid</span>(<span class="type">String</span> s) {
+    <span class="type">Deque</span>&lt;<span class="type">Character</span>&gt; st = <span class="kw">new</span> <span class="type">ArrayDeque</span>&lt;&gt;();
+    <span class="kw">for</span> (<span class="kw">char</span> c : s.<span class="fn">toCharArray</span>()) {
+        <span class="kw">if</span>      (c==<span class="str">'('</span>||c==<span class="str">'['</span>||c==<span class="str">'{') </span>st.<span class="fn">push</span>(c);
+        <span class="kw">else if</span> (c==<span class="str">')' </span>&amp;&amp; (st.<span class="fn">isEmpty</span>()||st.<span class="fn">pop</span>()!=<span class="str">'(') </span><span class="kw">return false</span>;
+        <span class="kw">else if</span> (c==<span class="str">']' </span>&amp;&amp; (st.<span class="fn">isEmpty</span>()||st.<span class="fn">pop</span>()!=<span class="str">'[') </span><span class="kw">return false</span>;
+        <span class="kw">else if</span> (c==<span class="str">'}' </span>&amp;&amp; (st.<span class="fn">isEmpty</span>()||st.<span class="fn">pop</span>()!=<span class="str">'{') </span><span class="kw">return false</span>;
+    }
+    <span class="kw">return</span> st.<span class="fn">isEmpty</span>(); <span class="cmt">// unmatched opens = invalid</span>
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(N)</span></div>
+  </div></div>
+
+  <!-- 8. Min Stack -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Auxiliary Stack</span><h3>8. Min Stack — O(1) getMin()</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Challenge:</span> Standard stack gives O(1) push/pop/top but O(N) for minimum.</div>
+      <div class="logic-step"><span class="lstep">Insight:</span> Maintain a parallel "min stack" that records the current minimum AT EACH LEVEL of the main stack. When you push x, also push min(x, minStack.top).</div>
+      <div class="logic-step"><span class="lstep">Why it works:</span> When you pop from main stack, also pop from minStack. The min at any depth is always at the top of minStack.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Track aggregate (min/max) through push/pop"</strong> &#8594; Parallel auxiliary stack</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Operations</div>push(-2), push(0), push(-3), getMin(), pop(), top(), getMin()</div>
+      <div class="io-out"><div class="iolabel">Output</div>-3, 0, -2</div>
+    </div>
+<pre><span class="cmt">// DRY RUN:
+// push(-2): stack=[-2], minSt=[-2]
+// push(0):  stack=[-2,0], minSt=[-2,-2]   ← min stays -2
+// push(-3): stack=[-2,0,-3], minSt=[-2,-2,-3]  ← new min
+// getMin(): minSt.top = -3 ✓
+// pop():    stack=[-2,0], minSt=[-2,-2]
+// top():    stack.top = 0 ✓
+// getMin(): minSt.top = -2 ✓</span>
+
+<span class="kw">class</span> <span class="type">MinStack</span> {
+    <span class="type">Deque</span>&lt;<span class="type">Integer</span>&gt; stack = <span class="kw">new</span> <span class="type">ArrayDeque</span>&lt;&gt;();
+    <span class="type">Deque</span>&lt;<span class="type">Integer</span>&gt; minSt = <span class="kw">new</span> <span class="type">ArrayDeque</span>&lt;&gt;(); <span class="cmt">// tracks min at each level</span>
+    <span class="kw">public void</span> <span class="fn">push</span>(<span class="kw">int</span> val) {
+        stack.<span class="fn">push</span>(val);
+        minSt.<span class="fn">push</span>(minSt.<span class="fn">isEmpty</span>() ? val : <span class="type">Math</span>.<span class="fn">min</span>(val, minSt.<span class="fn">peek</span>()));
+    }
+    <span class="kw">public void</span> <span class="fn">pop</span>()        { stack.<span class="fn">pop</span>(); minSt.<span class="fn">pop</span>(); }
+    <span class="kw">public int</span>  <span class="fn">top</span>()        { <span class="kw">return</span> stack.<span class="fn">peek</span>(); }
+    <span class="kw">public int</span>  <span class="fn">getMin</span>()    { <span class="kw">return</span> minSt.<span class="fn">peek</span>(); }
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(1) all ops</span><span class="cx cxs">Space: O(N)</span></div>
+  </div></div>
+
+  <!-- 9. Evaluate Reverse Polish Notation -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Stack Evaluation</span><h3>9. Evaluate Reverse Polish Notation</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">RPN:</span> Operands come before operator. "2 3 +" means 2+3=5. No parentheses needed.</div>
+      <div class="logic-step"><span class="lstep">Stack model:</span> Push numbers. When you see an operator, pop two numbers, apply operator, push result. At the end, stack has one item: the answer.</div>
+      <div class="logic-step"><span class="lstep">Order matters:</span> First pop = right operand. Second pop = left operand. (For subtraction/division this matters!)</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Evaluate expression with deferred operations"</strong> &#8594; Stack-based evaluation</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>["2","1","+","3","*"]</div>
+      <div class="io-out"><div class="iolabel">Output</div>9 &nbsp;// (2+1)*3</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: ["2","1","+","3","*"]
+//   "2": stack=[2]
+//   "1": stack=[2,1]
+//   "+": pop 1,2 → 2+1=3 → stack=[3]
+//   "3": stack=[3,3]
+//   "*": pop 3,3 → 3*3=9 → stack=[9]
+//   return 9 ✓</span>
+
+<span class="kw">public int</span> <span class="fn">evalRPN</span>(<span class="type">String</span>[] tokens) {
+    <span class="type">Deque</span>&lt;<span class="type">Integer</span>&gt; st = <span class="kw">new</span> <span class="type">ArrayDeque</span>&lt;&gt;();
+    <span class="kw">for</span> (<span class="type">String</span> t : tokens) {
+        <span class="kw">if</span> (<span class="str">"+*-/"</span>.<span class="fn">contains</span>(t)) {
+            <span class="kw">int</span> b=st.<span class="fn">pop</span>(), a=st.<span class="fn">pop</span>(); <span class="cmt">// b=right, a=left operand</span>
+            st.<span class="fn">push</span>(t.<span class="fn">equals</span>(<span class="str">"+"</span>)?a+b:t.<span class="fn">equals</span>(<span class="str">"-"</span>)?a-b:t.<span class="fn">equals</span>(<span class="str">"*"</span>)?a*b:a/b);
+        } <span class="kw">else</span> st.<span class="fn">push</span>(<span class="type">Integer</span>.<span class="fn">parseInt</span>(t));
+    }
+    <span class="kw">return</span> st.<span class="fn">pop</span>();
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(N)</span></div>
+  </div></div>
+
+  <!-- 10. Daily Temperatures -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Monotonic Stack</span><h3>10. Daily Temperatures — Next Warmer Day</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Brute force:</span> For each day, scan forward until warmer → O(N²).</div>
+      <div class="logic-step"><span class="lstep">Key insight:</span> We want the NEXT GREATER element for each index. When we find a warmer day at j for unresolved day i, we can answer i immediately.</div>
+      <div class="logic-step"><span class="lstep">Stack stores indices</span> of days waiting for their answer. It's monotonically decreasing in temperature (we never push if current is colder than top).</div>
+      <div class="logic-step"><span class="lstep">Process:</span> For each day j, while stack top's temp &lt; today's temp: pop, answer that day with (j - popped_index). Push j.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Next greater element"</strong> &#8594; Monotonic decreasing stack of indices</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>[73,74,75,71,69,72,76,73]</div>
+      <div class="io-out"><div class="iolabel">Output</div>[1,1,4,2,1,1,0,0]</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: [73,74,75,71,69,72,76,73]
+//   i=0(73): stack=[] → push 0. stack=[0]
+//   i=1(74): 74>temps[0]=73 → pop 0, res[0]=1-0=1. push 1. stack=[1]
+//   i=2(75): 75>temps[1]=74 → pop 1, res[1]=2-1=1. push 2. stack=[2]
+//   i=3(71): 71<75 → push 3. stack=[2,3]
+//   i=4(69): 69<71 → push 4. stack=[2,3,4]
+//   i=5(72): 72>temps[4]=69 → pop 4, res[4]=5-4=1
+//             72>temps[3]=71 → pop 3, res[3]=5-3=2
+//             72<temps[2]=75 → stop. push 5. stack=[2,5]
+//   i=6(76): 76>temps[5]=72 → pop 5, res[5]=6-5=1
+//             76>temps[2]=75 → pop 2, res[2]=6-2=4
+//             stack empty → push 6. stack=[6]
+//   i=7(73): 73<76 → push 7. stack=[6,7]
+//   Remaining in stack: res[6]=res[7]=0 (no warmer day)
+//   return [1,1,4,2,1,1,0,0] ✓</span>
+
+<span class="kw">public int</span>[] <span class="fn">dailyTemperatures</span>(<span class="kw">int</span>[] temps) {
+    <span class="kw">int</span>[] res = <span class="kw">new int</span>[temps.length];
+    <span class="type">Deque</span>&lt;<span class="type">Integer</span>&gt; st = <span class="kw">new</span> <span class="type">ArrayDeque</span>&lt;&gt;(); <span class="cmt">// stores indices</span>
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; temps.length; i++) {
+        <span class="kw">while</span> (!st.<span class="fn">isEmpty</span>() &amp;&amp; temps[i] &gt; temps[st.<span class="fn">peek</span>()]) {
+            <span class="kw">int</span> idx = st.<span class="fn">pop</span>();
+            res[idx] = i - idx; <span class="cmt">// days waited = current - waiting index</span>
+        }
+        st.<span class="fn">push</span>(i);
+    }
+    <span class="kw">return</span> res; <span class="cmt">// remaining in stack → res stays 0 (no warmer day)</span>
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(N)</span></div>
+  </div></div>
+</div>
+
+<!-- QUEUE -->
+<div id="queue" class="sec">
+  <div class="stitle"><em>Queue &amp; BFS</em></div>
+  <div class="ssub">FIFO — First In, First Out. BFS uses a queue to explore level by level. Perfect for shortest path on unweighted graphs.</div>
+
+  <!-- 11. Implement Queue using Stacks -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">Two Stacks</span><h3>11. Implement Queue using Two Stacks</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Problem:</span> Stack = LIFO. Queue = FIFO. They're opposites. Two opposites cancel each other out!</div>
+      <div class="logic-step"><span class="lstep">Two-stack trick:</span> stack1=inbox (push here). stack2=outbox (pop from here). When outbox is empty, pour all of inbox into outbox — this reverses the order = FIFO!</div>
+      <div class="logic-step"><span class="lstep">Amortized O(1):</span> Each element moves from inbox to outbox exactly once. Total work = 2N over N operations → O(1) amortized per operation.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"FIFO from LIFO"</strong> &#8594; Double-reverse with two stacks</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: push(1), push(2), pop(), push(3), pop()
+// push(1): in=[1], out=[]
+// push(2): in=[1,2], out=[]
+// pop():   out empty → pour in→out: out=[2,1], in=[]
+//          pop out → return 1 ✓ out=[2]
+// push(3): in=[3], out=[2]
+// pop():   out not empty → pop out → return 2 ✓ out=[]</span>
+
+<span class="kw">class</span> <span class="type">MyQueue</span> {
+    <span class="type">Deque</span>&lt;<span class="type">Integer</span>&gt; in=<span class="kw">new</span> <span class="type">ArrayDeque</span>&lt;&gt;(), out=<span class="kw">new</span> <span class="type">ArrayDeque</span>&lt;&gt;();
+    <span class="kw">public void</span> <span class="fn">push</span>(<span class="kw">int</span> x) { in.<span class="fn">push</span>(x); }
+    <span class="kw">public int</span>  <span class="fn">pop</span>()       { <span class="fn">move</span>(); <span class="kw">return</span> out.<span class="fn">pop</span>(); }
+    <span class="kw">public int</span>  <span class="fn">peek</span>()      { <span class="fn">move</span>(); <span class="kw">return</span> out.<span class="fn">peek</span>(); }
+    <span class="kw">public boolean</span> <span class="fn">empty</span>() { <span class="kw">return</span> in.<span class="fn">isEmpty</span>() &amp;&amp; out.<span class="fn">isEmpty</span>(); }
+    <span class="kw">private void</span> <span class="fn">move</span>() {
+        <span class="kw">if</span> (out.<span class="fn">isEmpty</span>())                  <span class="cmt">// only pour when outbox empty</span>
+            <span class="kw">while</span> (!in.<span class="fn">isEmpty</span>()) out.<span class="fn">push</span>(in.<span class="fn">pop</span>());
+    }
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(1) amortized</span><span class="cx cxs">Space: O(N)</span></div>
+  </div></div>
+
+  <!-- 12. Binary Tree Level Order -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">BFS Queue</span><h3>12. Binary Tree Level Order Traversal</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">BFS template:</span> Queue starts with root. Each iteration: process ALL nodes at current level (snapshot the queue size first!), add their children.</div>
+      <div class="logic-step"><span class="lstep">Level snapshot trick:</span> int size = queue.size() before inner loop. Process exactly `size` nodes — that's one full level.</div>
+      <div class="logic-step"><span class="lstep">DFS vs BFS:</span> DFS (recursion/stack) goes deep first. BFS (queue) goes wide first — naturally level-by-level.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Process level by level"</strong> &#8594; BFS with level-size snapshot</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>Tree: 3 / 9,20 / _,_,15,7</div>
+      <div class="io-out"><div class="iolabel">Output</div>[[3],[9,20],[15,7]]</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: tree with root=3, children=9,20; 20's children=15,7
+// queue=[3]
+// Level 1: size=1 → process 3 → level=[3], add 9,20. queue=[9,20]
+// Level 2: size=2 → process 9 → level=[9], no children
+//                 → process 20 → level=[9,20], add 15,7. queue=[15,7]
+// Level 3: size=2 → process 15,7 → level=[15,7]. queue=[]
+// return [[3],[9,20],[15,7]] ✓</span>
+
+<span class="kw">public</span> <span class="type">List</span>&lt;<span class="type">List</span>&lt;<span class="type">Integer</span>&gt;&gt; <span class="fn">levelOrder</span>(<span class="type">TreeNode</span> root) {
+    <span class="type">List</span>&lt;<span class="type">List</span>&lt;<span class="type">Integer</span>&gt;&gt; res = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+    <span class="kw">if</span> (root == <span class="kw">null</span>) <span class="kw">return</span> res;
+    <span class="type">Queue</span>&lt;<span class="type">TreeNode</span>&gt; q = <span class="kw">new</span> <span class="type">LinkedList</span>&lt;&gt;();
+    q.<span class="fn">offer</span>(root);
+    <span class="kw">while</span> (!q.<span class="fn">isEmpty</span>()) {
+        <span class="kw">int</span> size = q.<span class="fn">size</span>(); <span class="cmt">// snapshot current level size</span>
+        <span class="type">List</span>&lt;<span class="type">Integer</span>&gt; level = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; size; i++) {
+            <span class="type">TreeNode</span> node = q.<span class="fn">poll</span>();
+            level.<span class="fn">add</span>(node.val);
+            <span class="kw">if</span> (node.left  != <span class="kw">null</span>) q.<span class="fn">offer</span>(node.left);
+            <span class="kw">if</span> (node.right != <span class="kw">null</span>) q.<span class="fn">offer</span>(node.right);
+        }
+        res.<span class="fn">add</span>(level);
+    }
+    <span class="kw">return</span> res;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(N)</span></div>
+  </div></div>
+
+  <!-- 13. Rotten Oranges -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Multi-Source BFS</span><h3>13. Rotting Oranges — Minimum Minutes</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Key insight:</span> Multiple rotten oranges spread simultaneously. This screams Multi-Source BFS — start BFS from ALL rotten oranges at once.</div>
+      <div class="logic-step"><span class="lstep">Each BFS level = 1 minute.</span> Count levels until no more fresh oranges can be reached.</div>
+      <div class="logic-step"><span class="lstep">End check:</span> After BFS, if any fresh orange remains → return -1 (unreachable, surrounded by empty).</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Simultaneous spread from multiple sources"</strong> &#8594; Multi-source BFS</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>[[2,1,1],[1,1,0],[0,1,1]]</div>
+      <div class="io-out"><div class="iolabel">Output</div>4</div>
+    </div>
+<pre><span class="cmt">// 2=rotten, 1=fresh, 0=empty
+// DRY RUN: [[2,1,1],[1,1,0],[0,1,1]]
+// Init: queue=[(0,0,rotten)], fresh=6
+// Min 1: rot (0,1),(1,0). fresh=4
+// Min 2: rot (0,2),(1,1). fresh=2
+// Min 3: no new reachable from (0,2)&(1,1)...
+//         (1,1) rots (2,1). fresh=1
+// Min 4: (2,1) rots (2,2). fresh=0
+// return 4 ✓</span>
+
+<span class="kw">public int</span> <span class="fn">orangesRotting</span>(<span class="kw">int</span>[][] grid) {
+    <span class="kw">int</span> rows=grid.length, cols=grid[<span class="num">0</span>].length, fresh=<span class="num">0</span>, minutes=<span class="num">0</span>;
+    <span class="type">Queue</span>&lt;<span class="kw">int</span>[]&gt; q = <span class="kw">new</span> <span class="type">LinkedList</span>&lt;&gt;();
+    <span class="kw">for</span>(<span class="kw">int</span> r=<span class="num">0</span>;r&lt;rows;r++) <span class="kw">for</span>(<span class="kw">int</span> c=<span class="num">0</span>;c&lt;cols;c++){
+        <span class="kw">if</span>(grid[r][c]==<span class="num">2</span>) q.<span class="fn">offer</span>(<span class="kw">new int</span>[]{r,c}); <span class="cmt">// all rotten → queue</span>
+        <span class="kw">else if</span>(grid[r][c]==<span class="num">1</span>) fresh++;
+    }
+    <span class="kw">int</span>[][] dirs={{<span class="num">0</span>,<span class="num">1</span>},{<span class="num">0</span>,-<span class="num">1</span>},{<span class="num">1</span>,<span class="num">0</span>},{-<span class="num">1</span>,<span class="num">0</span>}};
+    <span class="kw">while</span> (!q.<span class="fn">isEmpty</span>() &amp;&amp; fresh &gt; <span class="num">0</span>) {
+        minutes++;
+        <span class="kw">int</span> size=q.<span class="fn">size</span>();
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">0</span>;i&lt;size;i++){
+            <span class="kw">int</span>[] cell=q.<span class="fn">poll</span>();
+            <span class="kw">for</span>(<span class="kw">int</span>[] d:dirs){
+                <span class="kw">int</span> nr=cell[<span class="num">0</span>]+d[<span class="num">0</span>], nc=cell[<span class="num">1</span>]+d[<span class="num">1</span>];
+                <span class="kw">if</span>(nr&gt;=<span class="num">0</span>&amp;&amp;nr&lt;rows&amp;&amp;nc&gt;=<span class="num">0</span>&amp;&amp;nc&lt;cols&amp;&amp;grid[nr][nc]==<span class="num">1</span>){
+                    grid[nr][nc]=<span class="num">2</span>; fresh--; q.<span class="fn">offer</span>(<span class="kw">new int</span>[]{nr,nc});
+                }
+            }
+        }
+    }
+    <span class="kw">return</span> fresh==<span class="num">0</span> ? minutes : -<span class="num">1</span>;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(R&#215;C)</span><span class="cx cxs">Space: O(R&#215;C)</span></div>
+  </div></div>
+</div>
+
+<!-- MONOTONIC STACK -->
+<div id="mono" class="sec">
+  <div class="stitle"><em>Monotonic Stack</em></div>
+  <div class="ssub">A stack that maintains elements in sorted order (increasing or decreasing). The go-to for "next greater/smaller" problems.</div>
+  <div class="card"><table>
+    <tr><th>Type</th><th>Stack order</th><th>Use case</th></tr>
+    <tr><td>Monotonic Decreasing</td><td>top is smallest</td><td>Next Greater Element, Daily Temperatures</td></tr>
+    <tr><td>Monotonic Increasing</td><td>top is largest</td><td>Next Smaller Element, Largest Rectangle</td></tr>
+  </table></div>
+
+  <!-- 14. Next Greater Element -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Mono Decreasing Stack</span><h3>14. Next Greater Element I</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Brute force:</span> For each element, scan right until greater found → O(N²).</div>
+      <div class="logic-step"><span class="lstep">Monotonic stack insight:</span> Process right to left. Maintain a stack of candidates. For each element, pop smaller candidates (they'll never be "next greater" for anything to the left). Top = next greater.</div>
+      <div class="logic-step"><span class="lstep">Alternatively left to right:</span> Push indices. When current > stack top → current is the NGE for top. Pop and record.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"NGE = first element to the right that's larger"</strong> &#8594; Monotonic decreasing stack</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>nums1=[4,1,2], nums2=[1,3,4,2]</div>
+      <div class="io-out"><div class="iolabel">Output</div>[-1,3,-1]</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: nums2=[1,3,4,2], build NGE map
+// Process left to right with monotonic decreasing stack:
+//   i=0(1): stack=[] → push 1. stack=[1]
+//   i=1(3): 3>stack top(1) → pop 1, nge[1]=3. stack=[] → push 3. stack=[3]
+//   i=2(4): 4>stack top(3) → pop 3, nge[3]=4. stack=[] → push 4. stack=[4]
+//   i=3(2): 2<4 → push 2. stack=[4,2]
+//   End: remaining [4,2] have no NGE → nge[4]=-1, nge[2]=-1
+// nge map: {1:3, 3:4, 4:-1, 2:-1}
+// For nums1=[4,1,2]: lookup nge[4]=-1, nge[1]=3, nge[2]=-1
+// return [-1,3,-1] ✓</span>
+
+<span class="kw">public int</span>[] <span class="fn">nextGreaterElement</span>(<span class="kw">int</span>[] nums1, <span class="kw">int</span>[] nums2) {
+    <span class="type">Map</span>&lt;<span class="type">Integer</span>,<span class="type">Integer</span>&gt; nge = <span class="kw">new</span> <span class="type">HashMap</span>&lt;&gt;();
+    <span class="type">Deque</span>&lt;<span class="type">Integer</span>&gt; st = <span class="kw">new</span> <span class="type">ArrayDeque</span>&lt;&gt;();
+    <span class="kw">for</span> (<span class="kw">int</span> n : nums2) {
+        <span class="kw">while</span> (!st.<span class="fn">isEmpty</span>() &amp;&amp; n &gt; st.<span class="fn">peek</span>()) nge.<span class="fn">put</span>(st.<span class="fn">pop</span>(), n);
+        st.<span class="fn">push</span>(n);
+    }
+    <span class="kw">while</span> (!st.<span class="fn">isEmpty</span>()) nge.<span class="fn">put</span>(st.<span class="fn">pop</span>(), -<span class="num">1</span>); <span class="cmt">// no NGE found</span>
+    <span class="kw">int</span>[] res = <span class="kw">new int</span>[nums1.length];
+    <span class="kw">for</span> (<span class="kw">int</span> i=<span class="num">0</span>; i&lt;nums1.length; i++) res[i] = nge.<span class="fn">get</span>(nums1[i]);
+    <span class="kw">return</span> res;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N+M)</span><span class="cx cxs">Space: O(N)</span></div>
+  </div></div>
+
+  <!-- 15. Largest Rectangle in Histogram -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag hard">Hard</span><span class="ptag">Mono Increasing Stack</span><h3>15. Largest Rectangle in Histogram</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Key insight:</span> For each bar, the largest rectangle using that bar's height extends leftward to the first shorter bar on its left and rightward to the first shorter bar on its right.</div>
+      <div class="logic-step"><span class="lstep">Monotonic increasing stack:</span> When we pop a bar (because current is shorter), that bar's "right boundary" = current index. Its "left boundary" = new stack top + 1. Width = right - left - 1.</div>
+      <div class="logic-step"><span class="lstep">Sentinel trick:</span> Append height 0 at the end to flush remaining stack items.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Area bounded by first shorter on each side"</strong> &#8594; Monotonic increasing stack</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Input</div>heights=[2,1,5,6,2,3]</div>
+      <div class="io-out"><div class="iolabel">Output</div>10 &nbsp;// bars 5,6 → height=5, width=2</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: [2,1,5,6,2,3] + sentinel [0]
+// stack=[] (stores indices, increasing by height)
+//   i=0(h=2): stack=[0]
+//   i=1(h=1): 1<heights[0]=2 → pop 0, width=1-(-1)-1=1, area=2*1=2, max=2
+//             stack empty → push 1. stack=[1]
+//   i=2(h=5): stack=[1,2]
+//   i=3(h=6): stack=[1,2,3]
+//   i=4(h=2): 2<6 → pop 3, width=4-(2)-1=1, area=6*1=6, max=6
+//             2<5 → pop 2, width=4-(1)-1=2, area=5*2=10, max=10 ←
+//             2≥1 → stop. push 4. stack=[1,4]
+//   i=5(h=3): stack=[1,4,5]
+//   i=6(h=0): sentinel! pop 5→area=3*(6-4-1)=3, pop 4→area=2*(6-1-1)=8
+//             pop 1→area=1*(6-(-1)-1)=6, stack empty
+//   return 10 ✓</span>
+
+<span class="kw">public int</span> <span class="fn">largestRectangleArea</span>(<span class="kw">int</span>[] heights) {
+    <span class="type">Deque</span>&lt;<span class="type">Integer</span>&gt; st = <span class="kw">new</span> <span class="type">ArrayDeque</span>&lt;&gt;();
+    st.<span class="fn">push</span>(-<span class="num">1</span>); <span class="cmt">// sentinel for left boundary</span>
+    <span class="kw">int</span> max = <span class="num">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt;= heights.length; i++) {
+        <span class="kw">int</span> h = (i == heights.length) ? <span class="num">0</span> : heights[i]; <span class="cmt">// sentinel at end</span>
+        <span class="kw">while</span> (st.<span class="fn">peek</span>() != -<span class="num">1</span> &amp;&amp; heights[st.<span class="fn">peek</span>()] &gt;= h) {
+            <span class="kw">int</span> height = heights[st.<span class="fn">pop</span>()];
+            <span class="kw">int</span> width  = i - st.<span class="fn">peek</span>() - <span class="num">1</span>; <span class="cmt">// width between current and new top</span>
+            max = <span class="type">Math</span>.<span class="fn">max</span>(max, height * width);
+        }
+        st.<span class="fn">push</span>(i);
+    }
+    <span class="kw">return</span> max;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(N)</span></div>
+  </div></div>
+</div>
+
+<!-- PROGRESS TRACKER -->
+<div id="tracker" class="sec">
+  <div class="stitle">&#128203; <em>Progress</em> Tracker</div>
+  <div class="ssub">Mark problems done. Part 2: 15 problems across Linked List, Stack, Queue, Monotonic Stack.</div>
+  <div class="pgrid">
+    <div class="pc"><div class="plabel">Linked List</div><div class="pbwrap"><div class="pb" id="pb-ll" style="background:var(--accent)"></div></div><div class="pval" id="pv-ll">0%</div></div>
+    <div class="pc"><div class="plabel">Stack</div><div class="pbwrap"><div class="pb" id="pb-st" style="background:var(--accent2)"></div></div><div class="pval" id="pv-st" style="color:var(--accent2)">0%</div></div>
+    <div class="pc"><div class="plabel">Queue/BFS</div><div class="pbwrap"><div class="pb" id="pb-q" style="background:var(--accent3)"></div></div><div class="pval" id="pv-q" style="color:var(--accent3)">0%</div></div>
+    <div class="pc"><div class="plabel">Mono Stack</div><div class="pbwrap"><div class="pb" id="pb-mn" style="background:var(--warn)"></div></div><div class="pval" id="pv-mn" style="color:var(--warn)">0%</div></div>
+    <div class="pc"><div class="plabel">Overall P2</div><div class="pbwrap"><div class="pb" id="pb-all" style="background:var(--orange)"></div></div><div class="pval" id="pv-all" style="color:var(--orange)">0%</div></div>
+  </div>
+  <div class="card"><div class="tl">
+    <div class="tli"><div class="tldot" style="background:var(--accent)"></div><div class="tlday">LINKED LIST &mdash; 6 problems</div><div class="tltitle">Pointer mastery</div>
+      <ul class="cklist" id="cl-ll">
+        <li onclick="tick(this,'ll')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>1. Reverse Linked List</span></li>
+        <li onclick="tick(this,'ll')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>2. Linked List Cycle Detection (Floyd's)</span></li>
+        <li onclick="tick(this,'ll')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>3. Find Middle of Linked List</span></li>
+        <li onclick="tick(this,'ll')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>4. Merge Two Sorted Lists</span></li>
+        <li onclick="tick(this,'ll')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>5. Remove Nth Node from End</span></li>
+        <li onclick="tick(this,'ll')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>6. Palindrome Linked List</span></li>
+      </ul>
+    </div>
+    <div class="tli"><div class="tldot" style="background:var(--accent2)"></div><div class="tlday">STACK &mdash; 4 problems</div><div class="tltitle">LIFO mastery</div>
+      <ul class="cklist" id="cl-st">
+        <li onclick="tick(this,'st')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>7. Valid Parentheses</span></li>
+        <li onclick="tick(this,'st')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>8. Min Stack &mdash; O(1) getMin</span></li>
+        <li onclick="tick(this,'st')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>9. Evaluate Reverse Polish Notation</span></li>
+        <li onclick="tick(this,'st')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>10. Daily Temperatures</span></li>
+      </ul>
+    </div>
+    <div class="tli"><div class="tldot" style="background:var(--accent3)"></div><div class="tlday">QUEUE / BFS &mdash; 3 problems</div><div class="tltitle">Level-by-level thinking</div>
+      <ul class="cklist" id="cl-q">
+        <li onclick="tick(this,'q')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>11. Implement Queue using Two Stacks</span></li>
+        <li onclick="tick(this,'q')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>12. Binary Tree Level Order Traversal</span></li>
+        <li onclick="tick(this,'q')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>13. Rotting Oranges &mdash; Multi-source BFS</span></li>
+      </ul>
+    </div>
+    <div class="tli"><div class="tldot" style="background:var(--warn)"></div><div class="tlday">MONOTONIC STACK &mdash; 2 problems</div><div class="tltitle">Next greater / histogram</div>
+      <ul class="cklist" id="cl-mn">
+        <li onclick="tick(this,'mn')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>14. Next Greater Element I</span></li>
+        <li onclick="tick(this,'mn')"><div class="chk"></div><span class="chlabel"><span class="tag hard" style="margin-right:.4rem">Hard</span>15. Largest Rectangle in Histogram</span></li>
+      </ul>
+    </div>
+  </div></div>
+</div>
+</main>
+<script>
+function show(id,btn){document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('active')});document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('active')});var el=document.getElementById(id);if(el)el.classList.add('active');if(btn)btn.classList.add('active');window.scrollTo(0,0);}
+function toggleQA(el){el.parentElement.classList.toggle('open');}
+var totals={ll:6,st:4,q:3,mn:2};
+function tick(li,cat){li.classList.toggle('done');var list=document.getElementById('cl-'+cat);if(!list)return;var done=list.querySelectorAll('li.done').length;var pct=Math.round(done/totals[cat]*100);var pb=document.getElementById('pb-'+cat);var pv=document.getElementById('pv-'+cat);if(pb)pb.style.width=pct+'%';if(pv)pv.textContent=pct+'%';var allDone=0,allTotal=0;Object.keys(totals).forEach(function(c){var l=document.getElementById('cl-'+c);if(l)allDone+=l.querySelectorAll('li.done').length;allTotal+=totals[c];});var apct=Math.round(allDone/allTotal*100);document.getElementById('pb-all').style.width=apct+'%';document.getElementById('pv-all').textContent=apct+'%';}
+</script>
+</body>
+</html>

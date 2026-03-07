@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Master Sheet — Part 1</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07090f;--surface:#0d1117;--card:#111827;--card2:#0f1923;--border:#1e2d3d;--accent:#00e5ff;--accent2:#7c3aed;--accent3:#10b981;--warn:#f59e0b;--danger:#ef4444;--pink:#f472b6;--orange:#fb923c;--text:#e2e8f0;--muted:#64748b;--code-bg:#060d14}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh}
+header{background:linear-gradient(135deg,#07090f 0%,#0d1320 60%,#07090f 100%);border-bottom:1px solid var(--border);padding:2rem 2rem 1.5rem;position:relative;overflow:hidden}
+header::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(0,229,255,.07) 0%,transparent 65%);pointer-events:none}
+.hbadge{display:inline-flex;align-items:center;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.25);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.3rem .8rem;border-radius:2px;letter-spacing:.12em;margin-bottom:.9rem}
+h1{font-size:clamp(1.7rem,4vw,2.6rem);font-weight:800;letter-spacing:-.03em;line-height:1.1}
+h1 em{color:var(--accent);font-style:normal}
+h1 small{display:block;font-size:.45em;font-weight:400;color:var(--muted);margin-top:.3rem}
+.hpills{margin-top:1rem;display:flex;gap:.6rem;flex-wrap:wrap}
+.pill{background:var(--surface);border:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.2rem .65rem;border-radius:3px;color:var(--muted)}
+nav{display:flex;gap:.25rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:100}
+nav::-webkit-scrollbar{display:none}
+.nb{background:none;border:1px solid transparent;color:var(--muted);font-family:'Outfit',sans-serif;font-size:.78rem;font-weight:600;padding:.4rem 1rem;border-radius:4px;cursor:pointer;white-space:nowrap;transition:all .18s}
+.nb:hover{color:var(--text);border-color:var(--border)}
+.nb.active{color:var(--accent);border-color:var(--accent);background:rgba(0,229,255,.07)}
+main{max-width:980px;margin:0 auto;padding:2rem}
+.sec{display:none}
+.sec.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.stitle{font-size:1.5rem;font-weight:800;margin-bottom:.4rem;letter-spacing:-.02em}
+.stitle em{color:var(--accent);font-style:normal}
+.ssub{color:var(--muted);font-size:.85rem;margin-bottom:1.5rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.4rem;margin-bottom:1rem}
+.tag{font-family:'JetBrains Mono',monospace;font-size:.63rem;font-weight:700;padding:.18rem .55rem;border-radius:3px;letter-spacing:.08em;text-transform:uppercase}
+.easy{background:rgba(16,185,129,.15);color:var(--accent3);border:1px solid rgba(16,185,129,.3)}
+.medium{background:rgba(245,158,11,.15);color:var(--warn);border:1px solid rgba(245,158,11,.3)}
+.hard{background:rgba(239,68,68,.15);color:var(--danger);border:1px solid rgba(239,68,68,.3)}
+.ptag{background:rgba(124,58,237,.12);color:#a78bfa;border:1px solid rgba(124,58,237,.3);font-family:'JetBrains Mono',monospace;font-size:.63rem;padding:.18rem .55rem;border-radius:3px}
+.qa{border:1px solid var(--border);border-radius:8px;margin-bottom:.6rem;overflow:hidden}
+.qq{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.2rem;cursor:pointer;background:var(--card2);transition:background .15s;gap:1rem}
+.qq:hover{background:#131e2d}
+.qq h3{font-size:.92rem;font-weight:600;line-height:1.4}
+.qarr{color:var(--muted);font-size:.75rem;flex-shrink:0;transition:transform .2s}
+.qa.open .qarr{transform:rotate(180deg)}
+.qa-body{display:none;padding:1.2rem;border-top:1px solid var(--border);background:var(--card)}
+.qa.open .qa-body{display:block}
+pre{background:var(--code-bg);border:1px solid #1a2535;border-radius:6px;padding:1.1rem 1.2rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.65;margin:.75rem 0;white-space:pre}
+.kw{color:#ff7b72}.type{color:#79c0ff}.fn{color:#d2a8ff}.str{color:#a5d6ff}.num{color:#f2cc60}.cmt{color:#4a6174;font-style:italic}.ann{color:#ffa657}
+.iobox{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:.75rem 0}
+.io-in,.io-out{background:var(--code-bg);border-radius:5px;padding:.65rem .9rem;font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:1.5;border:1px solid #1a2535}
+.iolabel{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem;font-weight:700}
+.io-in .iolabel{color:var(--accent)}.io-out .iolabel{color:var(--accent3)}
+.tip{background:rgba(0,229,255,.05);border-left:3px solid var(--accent);padding:.7rem 1rem;border-radius:0 5px 5px 0;margin:.75rem 0;font-size:.83rem;color:#94a3b8}
+.warn{background:rgba(245,158,11,.05);border-left:3px solid var(--warn);padding:.7rem 1rem;border-radius:0 5px 5px 0;margin:.75rem 0;font-size:.83rem;color:#94a3b8}
+.note{background:rgba(124,58,237,.05);border-left:3px solid #7c3aed;padding:.7rem 1rem;border-radius:0 5px 5px 0;margin:.75rem 0;font-size:.83rem;color:#94a3b8}
+.cx-wrap{display:inline-flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap}
+.cx{font-family:'JetBrains Mono',monospace;font-size:.67rem;padding:.15rem .5rem;border-radius:3px}
+.cxt{background:rgba(0,229,255,.1);color:var(--accent);border:1px solid rgba(0,229,255,.2)}
+.cxs{background:rgba(124,58,237,.1);color:#a78bfa;border:1px solid rgba(124,58,237,.2)}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.6rem;margin-bottom:1.5rem}
+.pc{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.8rem}
+.plabel{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.5rem;font-family:'JetBrains Mono',monospace}
+.pbwrap{background:#1a2535;border-radius:10px;height:5px;overflow:hidden;margin-bottom:.35rem}
+.pb{height:100%;border-radius:10px;transition:width .4s ease;width:0%}
+.pval{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--accent)}
+.cklist{list-style:none;padding:0}
+.cklist li{display:flex;align-items:flex-start;gap:.75rem;padding:.55rem 0;border-bottom:1px solid rgba(30,45,69,.5);cursor:pointer}
+.cklist li:last-child{border-bottom:none}
+.chk{width:17px;height:17px;border:2px solid var(--border);border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-top:2px;font-size:.65rem;color:transparent}
+.cklist li.done .chk{background:var(--accent3);border-color:var(--accent3);color:#fff}
+.cklist li.done .chk::after{content:'✓'}
+.cklist li.done .chlabel{text-decoration:line-through;color:var(--muted)}
+.chlabel{font-size:.83rem;line-height:1.45}
+.tl{position:relative;padding-left:1.8rem}
+.tl::before{content:'';position:absolute;left:.35rem;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),var(--accent2),var(--accent3))}
+.tli{position:relative;margin-bottom:1.75rem}
+.tldot{position:absolute;left:-1.6rem;top:.25rem;width:11px;height:11px;border-radius:50%;border:2px solid var(--bg)}
+.tlday{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--accent);font-weight:700;margin-bottom:.2rem}
+.tltitle{font-size:.92rem;font-weight:700;margin-bottom:.6rem}
+table{width:100%;border-collapse:collapse;font-size:.8rem;margin:.75rem 0}
+th{background:var(--surface);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.55rem .75rem;text-align:left;border:1px solid var(--border)}
+td{padding:.5rem .75rem;border:1px solid var(--border);color:#94a3b8;vertical-align:top}
+tr:nth-child(even) td{background:rgba(13,25,35,.5)}
+.pgcard{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1rem;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.pgcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.pgcard.arr::before{background:var(--accent)}.pgcard.str::before{background:var(--accent3)}.pgcard.tp::before{background:var(--warn)}.pgcard.sw::before{background:var(--accent2)}.pgcard.pre::before{background:var(--pink)}
+.pgcard:hover{border-color:#2e4060;transform:translateY(-1px)}
+.pgcard h4{font-size:.85rem;font-weight:700;margin-bottom:.3rem}
+.pgcard p{font-size:.75rem;color:var(--muted);line-height:1.4}
+.pgcard .pcc{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);margin-top:.5rem}
+.pgrid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.75rem;margin-bottom:1.5rem}
+@media(max-width:640px){main{padding:1rem}header{padding:1.5rem 1rem 1rem}nav{padding:.5rem .75rem}.iobox{grid-template-columns:1fr}}
+
+.logic{background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.15);border-radius:8px;padding:1rem;margin-bottom:.9rem}
+.logic-title{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--accent);font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.7rem}
+.logic-step{font-size:.82rem;color:#94a3b8;margin-bottom:.45rem;line-height:1.5;padding-left:.5rem;border-left:2px solid rgba(0,229,255,.2)}
+.logic-step .lstep{color:var(--text);font-weight:600;margin-right:.4rem}
+.logic-pattern{margin-top:.75rem;padding:.5rem .75rem;background:rgba(124,58,237,.1);border-radius:4px;font-size:.78rem;color:#a78bfa;border:1px solid rgba(124,58,237,.2)}
+</style>
+</head>
+<body>
+<header>
+  <div class="hbadge">&#9654; DSA MASTER SHEET &middot; PART 1 OF 6</div>
+  <h1><em>DSA</em> Master Sheet<small>Arrays &middot; Strings &middot; Two Pointers &middot; Sliding Window &middot; Prefix Sum</small></h1>
+  <div class="hpills">
+    <span class="pill">20 Problems</span>
+    <span class="pill">5 Patterns</span>
+    <span class="pill">Java &middot; Dry Runs</span>
+    <span class="pill">Striver-Inspired</span>
+    <span class="pill">Part 1 / 6</span>
+  </div>
+</header>
+
+<nav>
+  <button class="nb active" onclick="show('overview',this)">Overview</button>
+  <button class="nb" onclick="show('arrays',this)">Arrays</button>
+  <button class="nb" onclick="show('strings',this)">Strings</button>
+  <button class="nb" onclick="show('twoptr',this)">Two Pointers</button>
+  <button class="nb" onclick="show('sliding',this)">Sliding Window</button>
+  <button class="nb" onclick="show('prefix',this)">Prefix Sum</button>
+  <button class="nb" onclick="show('tracker',this)">&#128203; Progress</button>
+</nav>
+
+<main>
+
+<!-- OVERVIEW -->
+<div id="overview" class="sec active">
+  <div class="stitle">Part 1 <em>Overview</em></div>
+  <div class="ssub">Master the 5 foundational patterns that appear in 60%+ of all coding interviews.</div>
+  <div class="pgrid2">
+    <div class="pgcard arr" onclick="show('arrays',document.querySelectorAll('.nb')[1])"><h4>&#128451; Arrays</h4><p>Sorting tricks, in-place ops, frequency maps, running min/max</p><div class="pcc">6 problems</div></div>
+    <div class="pgcard str" onclick="show('strings',document.querySelectorAll('.nb')[2])"><h4>&#128284; Strings</h4><p>Palindromes, anagrams, character frequency, expand-around-center</p><div class="pcc">4 problems</div></div>
+    <div class="pgcard tp"  onclick="show('twoptr',document.querySelectorAll('.nb')[3])"><h4>&#128073;&#128072; Two Pointers</h4><p>Opposite ends, partition, fast/slow pointers</p><div class="pcc">4 problems</div></div>
+    <div class="pgcard sw"  onclick="show('sliding',document.querySelectorAll('.nb')[4])"><h4>&#129695; Sliding Window</h4><p>Fixed &amp; variable window, max/min subarray, substring</p><div class="pcc">4 problems</div></div>
+    <div class="pgcard pre" onclick="show('prefix',document.querySelectorAll('.nb')[5])"><h4>&#10133; Prefix Sum</h4><p>Range queries, subarray sums equals k, difference arrays</p><div class="pcc">2 problems</div></div>
+  </div>
+  <div class="card">
+    <h3 style="font-size:.95rem;margin-bottom:.75rem">&#128506; When to Use Which Pattern</h3>
+    <table>
+      <tr><th>Pattern</th><th>Trigger Words</th><th>Key Idea</th><th>Time</th></tr>
+      <tr><td><strong>Array + HashMap</strong></td><td>pair, frequency, count, first seen</td><td>Trade O(N) space for O(1) lookup</td><td>O(N)</td></tr>
+      <tr><td><strong>Two Pointers</strong></td><td>sorted, pair sum, palindrome, remove</td><td>Shrink search space from both ends</td><td>O(N)</td></tr>
+      <tr><td><strong>Sliding Window</strong></td><td>subarray, substring, contiguous, window of size k</td><td>Expand right, shrink left</td><td>O(N)</td></tr>
+      <tr><td><strong>Prefix Sum</strong></td><td>range sum, subarray sum equals k, 2D grid</td><td>pre[i]=pre[i-1]+arr[i], query in O(1)</td><td>O(1) query</td></tr>
+      <tr><td><strong>Kadane's / Running</strong></td><td>maximum subarray, best profit, running max</td><td>Extend or restart at each element</td><td>O(N)</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h3 style="font-size:.95rem;margin-bottom:.75rem">&#128218; Full Series Roadmap</h3>
+    <table>
+      <tr><th>Part</th><th>Topics</th><th>Problems</th><th>Status</th></tr>
+      <tr><td><strong>Part 1</strong></td><td>Arrays, Strings, Two Pointers, Sliding Window, Prefix Sum</td><td>20</td><td style="color:var(--accent3)">&#9654; YOU ARE HERE</td></tr>
+      <tr><td>Part 2</td><td>Linked List, Stack, Queue, Monotonic Stack</td><td>18</td><td style="color:var(--muted)">Upcoming</td></tr>
+      <tr><td>Part 3</td><td>Binary Search, Recursion, Backtracking</td><td>15</td><td style="color:var(--muted)">Upcoming</td></tr>
+      <tr><td>Part 4</td><td>Binary Tree, BST</td><td>18</td><td style="color:var(--muted)">Upcoming</td></tr>
+      <tr><td>Part 5</td><td>Graphs, Heaps, Greedy</td><td>16</td><td style="color:var(--muted)">Upcoming</td></tr>
+      <tr><td>Part 6</td><td>Dynamic Programming</td><td>15</td><td style="color:var(--muted)">Upcoming</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ARRAYS -->
+<div id="arrays" class="sec">
+  <div class="stitle"><em>Arrays</em></div>
+  <div class="ssub">Foundation of all DSA. Master sorting tricks, in-place manipulation, and HashMap frequency patterns.</div>
+
+  <div class="qa">
+    <div class="qq" onclick="toggleQA(this)">
+      <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">HashMap</span><h3>1. Two Sum</h3></div>
+      <span class="qarr">&#9660;</span>
+    </div>
+    <div class="qa-body">
+      <p style="color:#94a3b8;margin-bottom:.75rem">Given an integer array and a target, return indices of two numbers that add up to target.</p><div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+<div class="logic-step"><span class="lstep">Brute force?</span> Check every pair → O(N²). Too slow.</div>
+<div class="logic-step"><span class="lstep">Observation:</span> For each number X, we don't need to scan again — we just need to know <em>has (target−X) appeared before?</em></div>
+<div class="logic-step"><span class="lstep">Data structure:</span> HashMap gives O(1) lookup. Store num→index as we go.</div>
+<div class="logic-step"><span class="lstep">Edge case:</span> Check BEFORE inserting to avoid using the same element twice (e.g. target=6, num=3).</div>
+<div class="logic-pattern">Pattern unlock: <strong>"Need complement of current element"</strong> → HashMap</div></div>
+      <div class="iobox">
+        <div class="io-in"><div class="iolabel">Input</div>nums=[2,7,11,15], target=9</div>
+        <div class="io-out"><div class="iolabel">Output</div>[0,1] &nbsp;// 2+7=9</div>
+      </div>
+      <div class="iobox">
+        <div class="io-in"><div class="iolabel">Input 2</div>nums=[3,2,4], target=6</div>
+        <div class="io-out"><div class="iolabel">Output 2</div>[1,2] &nbsp;// 2+4=6</div>
+      </div>
+<pre><span class="cmt">// PATTERN: HashMap complement lookup
+// For each num, we need (target-num). Store seen values.
+//
+// DRY RUN: nums=[2,7,11,15], target=9
+//   i=0, num=2: complement=7, map={} → not found → map={2:0}
+//   i=1, num=7: complement=2, map has 2 at idx 0 → return [0,1] ✓
+//
+// DRY RUN 2: nums=[3,2,4], target=6
+//   i=0, num=3: complement=3, map={} → not found → map={3:0}
+//   i=1, num=2: complement=4, map={3:0} → not found → map={3:0,2:1}
+//   i=2, num=4: complement=2, map has 2 at idx 1 → return [1,2] ✓
+//   NOTE: We check BEFORE adding — handles case where target=6, num=3 (complement=3 same element)</span>
+
+<span class="kw">public int</span>[] <span class="fn">twoSum</span>(<span class="kw">int</span>[] nums, <span class="kw">int</span> target) {
+    <span class="type">Map</span>&lt;<span class="type">Integer</span>,<span class="type">Integer</span>&gt; map = <span class="kw">new</span> <span class="type">HashMap</span>&lt;&gt;();
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; nums.length; i++) {
+        <span class="kw">int</span> comp = target - nums[i];
+        <span class="kw">if</span> (map.<span class="fn">containsKey</span>(comp)) <span class="kw">return new int</span>[]{map.<span class="fn">get</span>(comp), i};
+        map.<span class="fn">put</span>(nums[i], i); <span class="cmt">// store AFTER checking</span>
+    }
+    <span class="kw">throw new</span> <span class="type">IllegalArgumentException</span>(<span class="str">"no solution"</span>);
+}</pre>
+      <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(N)</span></div>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="qq" onclick="toggleQA(this)">
+      <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">Running Min</span><h3>2. Best Time to Buy and Sell Stock</h3></div>
+      <span class="qarr">&#9660;</span>
+    </div>
+    <div class="qa-body">
+      <p style="color:#94a3b8;margin-bottom:.75rem">Find max profit — buy on one day, sell on a later day.</p><div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+<div class="logic-step"><span class="lstep">Brute force?</span> Try all (buy,sell) pairs → O(N²). Too slow.</div>
+<div class="logic-step"><span class="lstep">Observation:</span> To maximize profit on day i, you want the <em>minimum price seen in days 0..i-1</em>. You don't need to look back — just track it as a running variable.</div>
+<div class="logic-step"><span class="lstep">Think:</span> profit[i] = price[i] − minPrice. Update minPrice and maxProfit at each step.</div>
+<div class="logic-pattern">Pattern unlock: <strong>"Best outcome up to current point"</strong> → Running min/max variable</div></div>
+      <div class="iobox">
+        <div class="io-in"><div class="iolabel">Input</div>prices=[7,1,5,3,6,4]</div>
+        <div class="io-out"><div class="iolabel">Output</div>5 &nbsp;// buy@1, sell@6</div>
+      </div>
+      <div class="iobox">
+        <div class="io-in"><div class="iolabel">Input 2</div>prices=[7,6,4,3,1]</div>
+        <div class="io-out"><div class="iolabel">Output 2</div>0 &nbsp;// always decreasing</div>
+      </div>
+<pre><span class="cmt">// PATTERN: Track running minimum while scanning
+// At each price: best profit = current_price - min_so_far
+//
+// DRY RUN: [7,1,5,3,6,4]
+//   price=7: minPrice=7, profit=0,   max=0
+//   price=1: minPrice=1, profit=0,   max=0
+//   price=5: minPrice=1, profit=4,   max=4
+//   price=3: minPrice=1, profit=2,   max=4
+//   price=6: minPrice=1, profit=5,   max=5 ← peak
+//   price=4: minPrice=1, profit=3,   max=5
+//   return 5 ✓</span>
+
+<span class="kw">public int</span> <span class="fn">maxProfit</span>(<span class="kw">int</span>[] prices) {
+    <span class="kw">int</span> minPrice = <span class="type">Integer</span>.MAX_VALUE, maxProfit = <span class="num">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> p : prices) {
+        minPrice   = <span class="type">Math</span>.<span class="fn">min</span>(minPrice, p);
+        maxProfit  = <span class="type">Math</span>.<span class="fn">max</span>(maxProfit, p - minPrice);
+    }
+    <span class="kw">return</span> maxProfit;
+}</pre>
+      <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(1)</span></div>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="qq" onclick="toggleQA(this)">
+      <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">HashSet</span><h3>3. Contains Duplicate</h3></div>
+      <span class="qarr">&#9660;</span>
+    </div>
+    <div class="qa-body">
+      <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+<div class="logic-step"><span class="lstep">Brute force?</span> Compare every pair → O(N²).</div>
+<div class="logic-step"><span class="lstep">Smarter:</span> Sort → duplicates become adjacent → O(N log N). But can we do O(N)?</div>
+<div class="logic-step"><span class="lstep">Key question:</span> "Have I seen this number before?" → HashSet answers this in O(1).</div>
+<div class="logic-pattern">Pattern unlock: <strong>"Seen before?"</strong> → HashSet membership check</div></div><div class="iobox">
+        <div class="io-in"><div class="iolabel">Input</div>nums=[1,2,3,1]</div>
+        <div class="io-out"><div class="iolabel">Output</div>true</div>
+      </div>
+<pre><span class="cmt">// DRY RUN: [1,2,3,1]
+//   1: seen={} → not present → add → seen={1}
+//   2: seen={1} → not present → add → seen={1,2}
+//   3: seen={1,2} → not present → add → seen={1,2,3}
+//   1: seen={1,2,3} → 1 IS present → return true ✓
+//
+// TRICK: set.add() returns false if element already present → one-liner check</span>
+
+<span class="kw">public boolean</span> <span class="fn">containsDuplicate</span>(<span class="kw">int</span>[] nums) {
+    <span class="type">Set</span>&lt;<span class="type">Integer</span>&gt; seen = <span class="kw">new</span> <span class="type">HashSet</span>&lt;&gt;();
+    <span class="kw">for</span> (<span class="kw">int</span> n : nums)
+        <span class="kw">if</span> (!seen.<span class="fn">add</span>(n)) <span class="kw">return true</span>; <span class="cmt">// add() returns false if already present</span>
+    <span class="kw">return false</span>;
+}</pre>
+      <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(N)</span></div>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="qq" onclick="toggleQA(this)">
+      <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Prefix &times; Suffix</span><h3>4. Product of Array Except Self</h3></div>
+      <span class="qarr">&#9660;</span>
+    </div>
+    <div class="qa-body">
+      <p style="color:#94a3b8;margin-bottom:.75rem">Return array where output[i] = product of all elements except nums[i]. No division.</p>
+      <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+<div class="logic-step"><span class="lstep">Brute force?</span> For each i, multiply all others → O(N²). Division is banned.</div>
+<div class="logic-step"><span class="lstep">Observation:</span> output[i] = (everything LEFT of i) × (everything RIGHT of i). These are two independent products you can compute separately.</div>
+<div class="logic-step"><span class="lstep">Forward pass:</span> res[i] = product of nums[0..i-1]. One loop, O(N).</div>
+<div class="logic-step"><span class="lstep">Backward pass:</span> Multiply each res[i] by product of nums[i+1..n-1]. Use a running "right" variable — no extra array needed.</div>
+<div class="logic-pattern">Pattern unlock: <strong>"Each element depends on all others"</strong> → Prefix × Suffix product</div></div><div class="iobox">
+        <div class="io-in"><div class="iolabel">Input</div>nums=[1,2,3,4]</div>
+        <div class="io-out"><div class="iolabel">Output</div>[24,12,8,6]</div>
+      </div>
+<pre><span class="cmt">// PATTERN: Two-pass — prefix products then suffix products
+// output[i] = (product of all LEFT of i) * (product of all RIGHT of i)
+//
+// DRY RUN: [1,2,3,4]
+// Pass 1 — left products:
+//   res[0] = 1             (nothing left of index 0)
+//   res[1] = 1*1 = 1       (nums[0]=1)
+//   res[2] = 1*2 = 2       (nums[0]*nums[1]=1*2)
+//   res[3] = 1*2*3 = 6     (nums[0..2])
+//   res = [1,1,2,6]
+// Pass 2 — multiply right products (suffix) in reverse:
+//   right=1
+//   i=3: res[3]=6*1=6,  right=1*4=4
+//   i=2: res[2]=2*4=8,  right=4*3=12
+//   i=1: res[1]=1*12=12, right=12*2=24
+//   i=0: res[0]=1*24=24, right=24*1=24
+//   res = [24,12,8,6] ✓</span>
+
+<span class="kw">public int</span>[] <span class="fn">productExceptSelf</span>(<span class="kw">int</span>[] nums) {
+    <span class="kw">int</span> n = nums.length;
+    <span class="kw">int</span>[] res = <span class="kw">new int</span>[n];
+    res[<span class="num">0</span>] = <span class="num">1</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">1</span>; i &lt; n; i++) res[i] = res[i-<span class="num">1</span>] * nums[i-<span class="num">1</span>]; <span class="cmt">// prefix</span>
+    <span class="kw">int</span> right = <span class="num">1</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i = n-<span class="num">1</span>; i &gt;= <span class="num">0</span>; i--) { res[i] *= right; right *= nums[i]; } <span class="cmt">// suffix</span>
+    <span class="kw">return</span> res;
+}</pre>
+      <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(1) extra</span></div>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="qq" onclick="toggleQA(this)">
+      <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Kadane's</span><h3>5. Maximum Subarray</h3></div>
+      <span class="qarr">&#9660;</span>
+    </div>
+    <div class="qa-body">
+      <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+<div class="logic-step"><span class="lstep">Brute force?</span> Try all subarrays → O(N²) or O(N³). Possible but slow.</div>
+<div class="logic-step"><span class="lstep">Key decision at each element:</span> Should I <em>extend</em> the current subarray (curr + nums[i]) or <em>start fresh</em> from nums[i]? Start fresh only when the current running sum would make things worse (curr &lt; 0).</div>
+<div class="logic-step"><span class="lstep">Simplify:</span> curr = max(nums[i], curr + nums[i]). This single line captures the decision.</div>
+<div class="logic-pattern">Pattern unlock: <strong>"Optimal substructure — extend or restart"</strong> → Kadane's / greedy DP</div></div><div class="iobox">
+        <div class="io-in"><div class="iolabel">Input</div>[-2,1,-3,4,-1,2,1,-5,4]</div>
+        <div class="io-out"><div class="iolabel">Output</div>6 &nbsp;// [4,-1,2,1]</div>
+      </div>
+<pre><span class="cmt">// PATTERN: Kadane's — at each element: extend current subarray OR restart fresh
+// KEY: curr = max(nums[i], curr+nums[i])
+//
+// DRY RUN: [-2,1,-3,4,-1,2,1,-5,4]
+//   i=0: curr=-2,               max=-2
+//   i=1: curr=max(1,-2+1)=1,    max=1
+//   i=2: curr=max(-3,1-3)=-2,   max=1
+//   i=3: curr=max(4,-2+4)=4,    max=4   ← restart at 4
+//   i=4: curr=max(-1,4-1)=3,    max=4
+//   i=5: curr=max(2,3+2)=5,     max=5
+//   i=6: curr=max(1,5+1)=6,     max=6   ← peak [4,-1,2,1]
+//   i=7: curr=max(-5,6-5)=1,    max=6
+//   i=8: curr=max(4,1+4)=5,     max=6
+//   return 6 ✓</span>
+
+<span class="kw">public int</span> <span class="fn">maxSubArray</span>(<span class="kw">int</span>[] nums) {
+    <span class="kw">int</span> curr = nums[<span class="num">0</span>], maxSum = nums[<span class="num">0</span>];
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">1</span>; i &lt; nums.length; i++) {
+        curr   = <span class="type">Math</span>.<span class="fn">max</span>(nums[i], curr + nums[i]); <span class="cmt">// restart or extend</span>
+        maxSum = <span class="type">Math</span>.<span class="fn">max</span>(maxSum, curr);
+    }
+    <span class="kw">return</span> maxSum;
+}</pre>
+      <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(1)</span></div>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="qq" onclick="toggleQA(this)">
+      <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">Boyer-Moore Vote</span><h3>6. Majority Element (&gt; n/2 times)</h3></div>
+      <span class="qarr">&#9660;</span>
+    </div>
+    <div class="qa-body">
+      <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+<div class="logic-step"><span class="lstep">Brute force?</span> Count every element with HashMap → O(N) time, O(N) space. Can we do O(1) space?</div>
+<div class="logic-step"><span class="lstep">Key insight:</span> Majority element appears &gt;N/2 times. Even if it fights against every other element 1-vs-1, it still has votes left over.</div>
+<div class="logic-step"><span class="lstep">Visualize:</span> Think of it as an election. Each non-majority vote cancels one majority vote. Majority still wins.</div>
+<div class="logic-step"><span class="lstep">Algorithm:</span> Maintain a candidate. Same element → reinforce (+1). Different → cancel (−1). When count hits 0, pick a new candidate.</div>
+<div class="logic-pattern">Pattern unlock: <strong>"Guaranteed winner, O(1) space"</strong> → Boyer-Moore Voting</div></div><div class="iobox">
+        <div class="io-in"><div class="iolabel">Input</div>[2,2,1,1,1,2,2]</div>
+        <div class="io-out"><div class="iolabel">Output</div>2</div>
+      </div>
+<pre><span class="cmt">// PATTERN: Boyer-Moore Voting
+// KEY: majority cancels ALL minorities. Last standing wins.
+//
+// DRY RUN: [2,2,1,1,1,2,2]
+//   num=2: count=0 → candidate=2, count=1
+//   num=2: candidate==2 → count=2
+//   num=1: candidate!=1 → count=1
+//   num=1: candidate!=1 → count=0
+//   num=1: count=0 → candidate=1, count=1
+//   num=2: candidate!=2 → count=0
+//   num=2: count=0 → candidate=2, count=1
+//   return 2 ✓
+// WHY: majority appears &gt;n/2 times — even cancelling every other element, it survives</span>
+
+<span class="kw">public int</span> <span class="fn">majorityElement</span>(<span class="kw">int</span>[] nums) {
+    <span class="kw">int</span> candidate = <span class="num">0</span>, count = <span class="num">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> n : nums) {
+        <span class="kw">if</span> (count == <span class="num">0</span>) candidate = n;
+        count += (n == candidate) ? <span class="num">1</span> : -<span class="num">1</span>; <span class="cmt">// reinforce or cancel</span>
+    }
+    <span class="kw">return</span> candidate;
+}</pre>
+      <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(1)</span></div>
+      <div class="tip">&#128161; Follow-up: "What if majority not guaranteed?" &#8594; verify with second pass counting candidate occurrences.</div>
+    </div>
+  </div>
+</div>
+
+<!-- STRINGS -->
+<div id="strings" class="sec">
+  <div class="stitle"><em>Strings</em></div>
+  <div class="ssub">Strings are character arrays. Master palindromes, anagrams, and expand-around-center patterns.</div>
+
+  <div class="qa">
+    <div class="qq" onclick="toggleQA(this)">
+      <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">Freq Array</span><h3>7. Valid Anagram</h3></div>
+      <span class="qarr">&#9660;</span>
+    </div>
+    <div class="qa-body">
+      <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+<div class="logic-step"><span class="lstep">What makes an anagram?</span> Same characters, same counts. Order doesn't matter.</div>
+<div class="logic-step"><span class="lstep">Approach 1:</span> Sort both strings, compare → O(N log N). Correct but slow.</div>
+<div class="logic-step"><span class="lstep">Approach 2:</span> Count frequency of each char in s, subtract for t. If all counts are zero → anagram. Use a 26-int array (only lowercase letters) for O(1) space.</div>
+<div class="logic-step"><span class="lstep">Trick:</span> Do both in one pass — increment for s[i], decrement for t[i] simultaneously.</div>
+<div class="logic-pattern">Pattern unlock: <strong>"Same character distribution?"</strong> → Frequency count array</div></div><div class="iobox">
+        <div class="io-in"><div class="iolabel">Input</div>s="anagram", t="nagaram"</div>
+        <div class="io-out"><div class="iolabel">Output</div>true</div>
+      </div>
+      <div class="iobox">
+        <div class="io-in"><div class="iolabel">Input 2</div>s="rat", t="car"</div>
+        <div class="io-out"><div class="iolabel">Output 2</div>false</div>
+      </div>
+<pre><span class="cmt">// PATTERN: Single-pass frequency delta — increment for s, decrement for t
+//
+// DRY RUN: s="rat", t="car"
+//   i=0: s[0]='r'→freq[17]++, t[0]='c'→freq[2]--
+//   i=1: s[1]='a'→freq[0]++,  t[1]='a'→freq[0]--  (cancel out)
+//   i=2: s[2]='t'→freq[19]++, t[2]='r'→freq[17]--  (cancel out)
+//   final freq: freq[2]=-1 (extra 'c' in t), freq[19]=1 (extra 't' in s)
+//   found non-zero → return false ✓
+//
+// For s="anagram",t="nagaram": all chars cancel → all freq=0 → return true ✓</span>
+
+<span class="kw">public boolean</span> <span class="fn">isAnagram</span>(<span class="type">String</span> s, <span class="type">String</span> t) {
+    <span class="kw">if</span> (s.<span class="fn">length</span>() != t.<span class="fn">length</span>()) <span class="kw">return false</span>;
+    <span class="kw">int</span>[] freq = <span class="kw">new int</span>[<span class="num">26</span>];
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; s.<span class="fn">length</span>(); i++) {
+        freq[s.<span class="fn">charAt</span>(i)-<span class="str">'a'</span>]++;
+        freq[t.<span class="fn">charAt</span>(i)-<span class="str">'a'</span>]--;
+    }
+    <span class="kw">for</span> (<span class="kw">int</span> f : freq) <span class="kw">if</span> (f != <span class="num">0</span>) <span class="kw">return false</span>;
+    <span class="kw">return true</span>;
+}</pre>
+      <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(1)</span></div>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="qq" onclick="toggleQA(this)">
+      <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">Two Pointers</span><h3>8. Valid Palindrome</h3></div>
+      <span class="qarr">&#9660;</span>
+    </div>
+    <div class="qa-body">
+      <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+<div class="logic-step"><span class="lstep">What is a palindrome?</span> Reads same forward and backward. So the first char must match the last, second must match second-to-last, etc.</div>
+<div class="logic-step"><span class="lstep">Two pointers naturally models this:</span> Start one pointer at left end, one at right end. Move them inward, comparing as you go.</div>
+<div class="logic-step"><span class="lstep">Complication:</span> Skip non-alphanumeric chars. Just add inner while loops that advance the pointer past junk before comparing.</div>
+<div class="logic-pattern">Pattern unlock: <strong>"Mirror symmetry check"</strong> → Two pointers from ends</div></div><div class="iobox">
+        <div class="io-in"><div class="iolabel">Input</div>"A man, a plan, a canal: Panama"</div>
+        <div class="io-out"><div class="iolabel">Output</div>true</div>
+      </div>
+      <div class="iobox">
+        <div class="io-in"><div class="iolabel">Input 2</div>"race a car"</div>
+        <div class="io-out"><div class="iolabel">Output 2</div>false</div>
+      </div>
+<pre><span class="cmt">// PATTERN: Two pointers from ends, skip non-alphanumeric
+//
+// DRY RUN: "race a car" → cleaned: "raceacar"
+//   l=0'r', r=7'r': match → l=1, r=6
+//   l=1'a', r=6'a': match → l=2, r=5
+//   l=2'c', r=5'c': match → l=3, r=4
+//   l=3'e', r=4'a': 'e'!='a' → return false ✓</span>
+
+<span class="kw">public boolean</span> <span class="fn">isPalindrome</span>(<span class="type">String</span> s) {
+    <span class="kw">int</span> l = <span class="num">0</span>, r = s.<span class="fn">length</span>()-<span class="num">1</span>;
+    <span class="kw">while</span> (l &lt; r) {
+        <span class="kw">while</span> (l &lt; r && !<span class="type">Character</span>.<span class="fn">isLetterOrDigit</span>(s.<span class="fn">charAt</span>(l))) l++;
+        <span class="kw">while</span> (l &lt; r && !<span class="type">Character</span>.<span class="fn">isLetterOrDigit</span>(s.<span class="fn">charAt</span>(r))) r--;
+        <span class="kw">if</span> (<span class="type">Character</span>.<span class="fn">toLowerCase</span>(s.<span class="fn">charAt</span>(l)) != <span class="type">Character</span>.<span class="fn">toLowerCase</span>(s.<span class="fn">charAt</span>(r)))
+            <span class="kw">return false</span>;
+        l++; r--;
+    }
+    <span class="kw">return true</span>;
+}</pre>
+      <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(1)</span></div>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="qq" onclick="toggleQA(this)">
+      <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">Vertical Scan</span><h3>9. Longest Common Prefix</h3></div>
+      <span class="qarr">&#9660;</span>
+    </div>
+    <div class="qa-body">
+      <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+<div class="logic-step"><span class="lstep">Think about it:</span> The common prefix can be at most as long as the shortest string. It's limited by the first mismatch across ANY string.</div>
+<div class="logic-step"><span class="lstep">Vertical scan strategy:</span> Go column by column. At each position, check if ALL strings have the same character. First mismatch (or string end) → stop.</div>
+<div class="logic-step"><span class="lstep">Why not compare pairs?</span> You'd need to reduce pairwise — vertical scan is cleaner and stops as early as possible.</div>
+<div class="logic-pattern">Pattern unlock: <strong>"Shared property across all elements"</strong> → Column-wise scan</div></div><div class="iobox">
+        <div class="io-in"><div class="iolabel">Input</div>["flower","flow","flight"]</div>
+        <div class="io-out"><div class="iolabel">Output</div>"fl"</div>
+      </div>
+<pre><span class="cmt">// PATTERN: Vertical scan — compare column by column across all strings
+//
+// DRY RUN: ["flower","flow","flight"]
+//   col=0: f,f,f → all match → prefix so far: "f"
+//   col=1: l,l,l → all match → prefix: "fl"
+//   col=2: o,o,i → MISMATCH → return "fl" ✓</span>
+
+<span class="kw">public</span> <span class="type">String</span> <span class="fn">longestCommonPrefix</span>(<span class="type">String</span>[] strs) {
+    <span class="kw">for</span> (<span class="kw">int</span> col = <span class="num">0</span>; col &lt; strs[<span class="num">0</span>].<span class="fn">length</span>(); col++) {
+        <span class="kw">char</span> c = strs[<span class="num">0</span>].<span class="fn">charAt</span>(col);
+        <span class="kw">for</span> (<span class="kw">int</span> row = <span class="num">1</span>; row &lt; strs.length; row++)
+            <span class="kw">if</span> (col == strs[row].<span class="fn">length</span>() || strs[row].<span class="fn">charAt</span>(col) != c)
+                <span class="kw">return</span> strs[<span class="num">0</span>].<span class="fn">substring</span>(<span class="num">0</span>, col);
+    }
+    <span class="kw">return</span> strs[<span class="num">0</span>];
+}</pre>
+      <div class="cx-wrap"><span class="cx cxt">Time: O(S) total chars</span><span class="cx cxs">Space: O(1)</span></div>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="qq" onclick="toggleQA(this)">
+      <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Expand Around Center</span><h3>10. Longest Palindromic Substring</h3></div>
+      <span class="qarr">&#9660;</span>
+    </div>
+    <div class="qa-body">
+      <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+<div class="logic-step"><span class="lstep">Key observation:</span> Every palindrome has a center. For odd length: one char center. For even length: gap between two chars.</div>
+<div class="logic-step"><span class="lstep">Strategy:</span> Try every possible center (2N−1 centers total). From each center, expand outward as long as chars match. Track the longest.</div>
+<div class="logic-step"><span class="lstep">Why not DP?</span> DP is O(N²) time AND space. Expand-around-center is O(N²) time, O(1) space — better for interviews.</div>
+<div class="logic-step"><span class="lstep">Manacher's algorithm:</span> Solves in O(N) but complex — not worth memorizing for most interviews.</div>
+<div class="logic-pattern">Pattern unlock: <strong>"All palindromes have a center"</strong> → Expand around center</div></div><div class="iobox">
+        <div class="io-in"><div class="iolabel">Input</div>s="babad"</div>
+        <div class="io-out"><div class="iolabel">Output</div>"bab" or "aba"</div>
+      </div>
+<pre><span class="cmt">// PATTERN: Try each character as center, expand while chars match
+// Two cases: odd-length (center=char) and even-length (center=between two chars)
+//
+// DRY RUN: "babad"
+//   center=0('b'): odd only 'b' (len=1)
+//   center=1('a'): odd → expand: s[0]='b'==s[2]='b' → "bab" (len=3) ← best
+//   center=1-2("ab"): even → 'a'!='b' → no expansion
+//   center=2('b'): odd → expand: s[1]='a'==s[3]='a' → "aba" (len=3) tie
+//   center=3('a'): just "a"
+//   return "bab" (start=0, len=3) ✓</span>
+
+<span class="kw">public</span> <span class="type">String</span> <span class="fn">longestPalindrome</span>(<span class="type">String</span> s) {
+    <span class="kw">int</span> start = <span class="num">0</span>, maxLen = <span class="num">1</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; s.<span class="fn">length</span>(); i++) {
+        <span class="kw">int</span> odd  = <span class="fn">expand</span>(s, i, i);
+        <span class="kw">int</span> even = <span class="fn">expand</span>(s, i, i+<span class="num">1</span>);
+        <span class="kw">int</span> len  = <span class="type">Math</span>.<span class="fn">max</span>(odd, even);
+        <span class="kw">if</span> (len &gt; maxLen) { maxLen = len; start = i - (len-<span class="num">1</span>)/<span class="num">2</span>; }
+    }
+    <span class="kw">return</span> s.<span class="fn">substring</span>(start, start + maxLen);
+}
+<span class="kw">private int</span> <span class="fn">expand</span>(<span class="type">String</span> s, <span class="kw">int</span> l, <span class="kw">int</span> r) {
+    <span class="kw">while</span> (l &gt;= <span class="num">0</span> &amp;&amp; r &lt; s.<span class="fn">length</span>() &amp;&amp; s.<span class="fn">charAt</span>(l) == s.<span class="fn">charAt</span>(r)) { l--; r++; }
+    <span class="kw">return</span> r - l - <span class="num">1</span>; <span class="cmt">// length of palindrome</span>
+}</pre>
+      <div class="cx-wrap"><span class="cx cxt">Time: O(N&sup2;)</span><span class="cx cxs">Space: O(1)</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TWO POINTERS -->
+<div id="twoptr" class="sec">
+  <div class="stitle"><em>Two Pointers</em></div>
+  <div class="ssub">Use on sorted arrays to find pairs/triplets, or to partition in-place. O(N) instead of O(N&sup2;).</div>
+
+  <div class="qa">
+    <div class="qq" onclick="toggleQA(this)">
+      <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Sort + Two Pointers</span><h3>11. 3Sum — All Triplets Summing to Zero</h3></div>
+      <span class="qarr">&#9660;</span>
+    </div>
+    <div class="qa-body">
+      <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+<div class="logic-step"><span class="lstep">Brute force?</span> 3 nested loops → O(N³). Can we do better?</div>
+<div class="logic-step"><span class="lstep">Reduce to a known problem:</span> Fix one element (nums[i]). Now find two others that sum to −nums[i] → this is 2Sum on a sorted array → two pointers → O(N).</div>
+<div class="logic-step"><span class="lstep">Why sort first?</span> Sorted array lets two pointers work. Also makes duplicate-skipping easy (adjacent duplicates).</div>
+<div class="logic-step"><span class="lstep">Total:</span> O(N) for outer loop × O(N) for two-pointer inner = O(N²). Better than O(N³).</div>
+<div class="logic-pattern">Pattern unlock: <strong>"K-sum → fix one, reduce to (K−1)-sum"</strong> → Sort + nested two pointers</div></div><div class="iobox">
+        <div class="io-in"><div class="iolabel">Input</div>[-1,0,1,2,-1,-4]</div>
+        <div class="io-out"><div class="iolabel">Output</div>[[-1,-1,2],[-1,0,1]]</div>
+      </div>
+<pre><span class="cmt">// PATTERN: Sort → fix one element → two-pointer for remainder
+//
+// DRY RUN: sorted=[-4,-1,-1,0,1,2]
+//   i=0(-4): target=4, l=1,r=5: -1+2=1&lt;4→l++; -1+2=1&lt;4→l++; 0+2=2&lt;4→l++; 1+2=3&lt;4→l++ → l=r done
+//   i=1(-1): target=1, l=2,r=5: -1+2=1==1 → add[-1,-1,2], l=3,r=4: 0+1=1==1 → add[-1,0,1], l=r done
+//   i=2(-1): skip (dup of i=1)
+//   i=3( 0): target=0, l=4,r=5: 1+2=3&gt;0 → r--; l=r done
+//   return [[-1,-1,2],[-1,0,1]] ✓</span>
+
+<span class="kw">public</span> <span class="type">List</span>&lt;<span class="type">List</span>&lt;<span class="type">Integer</span>&gt;&gt; <span class="fn">threeSum</span>(<span class="kw">int</span>[] nums) {
+    <span class="type">List</span>&lt;<span class="type">List</span>&lt;<span class="type">Integer</span>&gt;&gt; res = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+    <span class="type">Arrays</span>.<span class="fn">sort</span>(nums);
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; nums.length-<span class="num">2</span>; i++) {
+        <span class="kw">if</span> (i &gt; <span class="num">0</span> &amp;&amp; nums[i] == nums[i-<span class="num">1</span>]) <span class="kw">continue</span>; <span class="cmt">// skip duplicate i</span>
+        <span class="kw">int</span> l = i+<span class="num">1</span>, r = nums.length-<span class="num">1</span>;
+        <span class="kw">while</span> (l &lt; r) {
+            <span class="kw">int</span> sum = nums[i]+nums[l]+nums[r];
+            <span class="kw">if</span> (sum == <span class="num">0</span>) {
+                res.<span class="fn">add</span>(<span class="type">Arrays</span>.<span class="fn">asList</span>(nums[i],nums[l],nums[r]));
+                <span class="kw">while</span>(l&lt;r&amp;&amp;nums[l]==nums[l+<span class="num">1</span>])l++; <span class="cmt">// skip dup left</span>
+                <span class="kw">while</span>(l&lt;r&amp;&amp;nums[r]==nums[r-<span class="num">1</span>])r--; <span class="cmt">// skip dup right</span>
+                l++; r--;
+            } <span class="kw">else if</span> (sum &lt; <span class="num">0</span>) l++; <span class="kw">else</span> r--;
+        }
+    }
+    <span class="kw">return</span> res;
+}</pre>
+      <div class="cx-wrap"><span class="cx cxt">Time: O(N&sup2;)</span><span class="cx cxs">Space: O(1) extra</span></div>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="qq" onclick="toggleQA(this)">
+      <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Greedy Two Pointers</span><h3>12. Container With Most Water</h3></div>
+      <span class="qarr">&#9660;</span>
+    </div>
+    <div class="qa-body">
+      <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+<div class="logic-step"><span class="lstep">Brute force?</span> Try all pairs of walls → O(N²).</div>
+<div class="logic-step"><span class="lstep">Key formula:</span> water = min(h[l], h[r]) × (r − l). Width shrinks as we move pointers in. So to gain, we need the height to increase.</div>
+<div class="logic-step"><span class="lstep">Greedy insight:</span> The shorter wall is the bottleneck. Moving the taller wall inward can only make things worse (width decreases, height can't improve). So always move the <em>shorter</em> wall inward.</div>
+<div class="logic-step"><span class="lstep">Why is this safe?</span> By moving the shorter side, we're discarding it from future consideration — and that's correct because keeping it can never beat the current max with it.</div>
+<div class="logic-pattern">Pattern unlock: <strong>"Bottleneck limits outcome"</strong> → Greedy: move the weaker side</div></div><div class="iobox">
+        <div class="io-in"><div class="iolabel">Input</div>[1,8,6,2,5,4,8,3,7]</div>
+        <div class="io-out"><div class="iolabel">Output</div>49 &nbsp;// h=8 &amp; h=7, width=7</div>
+      </div>
+<pre><span class="cmt">// PATTERN: Always move the SHORTER wall inward
+// water = min(h[l],h[r]) * (r-l). Moving taller wall only decreases width.
+//
+// DRY RUN: [1,8,6,2,5,4,8,3,7]
+//   l=0(h=1),r=8(h=7): water=min(1,7)*8=8,  max=8.  h[l]&lt;h[r]→l++
+//   l=1(h=8),r=8(h=7): water=min(8,7)*7=49, max=49. h[r]&lt;h[l]→r--
+//   l=1(h=8),r=7(h=3): water=min(8,3)*6=18, max=49. r--
+//   l=1(h=8),r=6(h=8): water=min(8,8)*5=40, max=49. r--
+//   ... max never exceeds 49 → return 49 ✓</span>
+
+<span class="kw">public int</span> <span class="fn">maxArea</span>(<span class="kw">int</span>[] h) {
+    <span class="kw">int</span> l=<span class="num">0</span>, r=h.length-<span class="num">1</span>, max=<span class="num">0</span>;
+    <span class="kw">while</span>(l&lt;r){
+        max = <span class="type">Math</span>.<span class="fn">max</span>(max, <span class="type">Math</span>.<span class="fn">min</span>(h[l],h[r])*(r-l));
+        <span class="kw">if</span>(h[l]&lt;h[r]) l++; <span class="kw">else</span> r--; <span class="cmt">// move shorter wall inward</span>
+    }
+    <span class="kw">return</span> max;
+}</pre>
+      <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(1)</span></div>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="qq" onclick="toggleQA(this)">
+      <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">Write Pointer</span><h3>13. Move Zeroes to End</h3></div>
+      <span class="qarr">&#9660;</span>
+    </div>
+    <div class="qa-body">
+      <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+<div class="logic-step"><span class="lstep">Goal:</span> Move all zeros to end, preserve relative order of non-zeros. In-place.</div>
+<div class="logic-step"><span class="lstep">Think of two roles:</span> A <em>reader</em> scanning every element, and a <em>writer</em> placing non-zero elements at the front.</div>
+<div class="logic-step"><span class="lstep">Writer pointer i:</span> Points to the next slot where a non-zero should go. Starts at 0. Only advances when it writes.</div>
+<div class="logic-step"><span class="lstep">After all non-zeros are placed:</span> Everything from i onwards is a zero (already there from swaps).</div>
+<div class="logic-pattern">Pattern unlock: <strong>"Partition in-place, preserve order"</strong> → Write pointer (two-speed scan)</div></div><div class="iobox">
+        <div class="io-in"><div class="iolabel">Input</div>[0,1,0,3,12]</div>
+        <div class="io-out"><div class="iolabel">Output</div>[1,3,12,0,0]</div>
+      </div>
+<pre><span class="cmt">// PATTERN: Write pointer i = next slot for non-zero
+//
+// DRY RUN: [0,1,0,3,12]
+//   j=0(0): zero → skip, i=0
+//   j=1(1): non-zero → swap nums[0]↔nums[1]=[1,0,0,3,12], i=1
+//   j=2(0): zero → skip, i=1
+//   j=3(3): non-zero → swap nums[1]↔nums[3]=[1,3,0,0,12], i=2
+//   j=4(12): non-zero → swap nums[2]↔nums[4]=[1,3,12,0,0], i=3
+//   result: [1,3,12,0,0] ✓</span>
+
+<span class="kw">public void</span> <span class="fn">moveZeroes</span>(<span class="kw">int</span>[] nums) {
+    <span class="kw">int</span> i = <span class="num">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> j = <span class="num">0</span>; j &lt; nums.length; j++)
+        <span class="kw">if</span> (nums[j] != <span class="num">0</span>) { <span class="kw">int</span> tmp=nums[i]; nums[i]=nums[j]; nums[j]=tmp; i++; }
+}</pre>
+      <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(1)</span></div>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="qq" onclick="toggleQA(this)">
+      <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag hard">Hard</span><span class="ptag">Two Ptrs + Running Max</span><h3>14. Trapping Rain Water</h3></div>
+      <span class="qarr">&#9660;</span>
+    </div>
+    <div class="qa-body">
+      <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+<div class="logic-step"><span class="lstep">Key insight:</span> Water level at position i = min(tallest wall to LEFT, tallest wall to RIGHT) − height[i]. If this is negative, no water (height[i] is a peak).</div>
+<div class="logic-step"><span class="lstep">Brute force:</span> For each i, scan left for maxLeft and right for maxRight → O(N²).</div>
+<div class="logic-step"><span class="lstep">Better — precompute:</span> Build maxLeft[] and maxRight[] arrays → O(N) time, O(N) space.</div>
+<div class="logic-step"><span class="lstep">Best — two pointers:</span> When h[l] ≤ h[r], we know maxRight ≥ h[r] ≥ h[l] ≥ maxLeft (from our tracking), so maxLeft is the true bottleneck. Process left side. Otherwise process right.</div>
+<div class="logic-step"><span class="lstep">The magic:</span> You don't need the exact maxRight value when processing left — you just need to know it's ≥ maxLeft.</div>
+<div class="logic-pattern">Pattern unlock: <strong>"Value bounded by two extremes — process the smaller one"</strong> → Two pointers + running max</div></div><div class="iobox">
+        <div class="io-in"><div class="iolabel">Input</div>[0,1,0,2,1,0,1,3,2,1,2,1]</div>
+        <div class="io-out"><div class="iolabel">Output</div>6</div>
+      </div>
+<pre><span class="cmt">// PATTERN: water at i = min(maxLeft,maxRight) - height[i]
+// Move the side with the shorter maxWall — it's the bottleneck.
+//
+// DRY RUN: [0,1,0,2,1,0,1,3,2,1,2,1]
+//   l=0,r=11,maxL=0,maxR=1
+//   h[l]=0 &lt;= h[r]=1 → maxL=max(0,0)=0, water+=0-0=0, l=1, total=0
+//   h[l]=1 &lt;= h[r]=1 → maxL=max(0,1)=1, water+=1-1=0, l=2, total=0
+//   h[l]=0 &lt;= h[r]=1 → maxL=max(1,0)=1, water+=1-0=1, l=3, total=1
+//   h[l]=2 &gt;  h[r]=1 → maxR=max(1,1)=1, water+=1-1=0, r=10,total=1
+//   ... continues accumulating → total=6 ✓</span>
+
+<span class="kw">public int</span> <span class="fn">trap</span>(<span class="kw">int</span>[] h) {
+    <span class="kw">int</span> l=<span class="num">0</span>,r=h.length-<span class="num">1</span>,maxL=<span class="num">0</span>,maxR=<span class="num">0</span>,water=<span class="num">0</span>;
+    <span class="kw">while</span>(l&lt;r){
+        <span class="kw">if</span>(h[l]&lt;=h[r]){ maxL=<span class="type">Math</span>.<span class="fn">max</span>(maxL,h[l]); water+=maxL-h[l]; l++; }
+        <span class="kw">else</span>           { maxR=<span class="type">Math</span>.<span class="fn">max</span>(maxR,h[r]); water+=maxR-h[r]; r--; }
+    }
+    <span class="kw">return</span> water;
+}</pre>
+      <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(1)</span></div>
+      <div class="warn">&#9888;&#65039; Classic hard problem. The trick: when processing left side, you know maxR &ge; maxL (since h[l] &le; h[r]), so maxL is the true bottleneck.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDING WINDOW -->
+<div id="sliding" class="sec">
+  <div class="stitle"><em>Sliding Window</em></div>
+  <div class="ssub">For contiguous subarray/substring problems. Expand right, shrink left. Converts O(N&sup2;) &rarr; O(N).</div>
+  <div class="card"><table>
+    <tr><th>Type</th><th>When</th><th>Action on shrink</th></tr>
+    <tr><td>Fixed size k</td><td>"window of size k"</td><td>Remove leftmost when size &gt; k</td></tr>
+    <tr><td>Variable — max window</td><td>"longest with condition"</td><td>Shrink left when window invalid</td></tr>
+    <tr><td>Variable — min window</td><td>"shortest with condition"</td><td>Shrink when condition satisfied, track min</td></tr>
+  </table></div>
+
+  <div class="qa">
+    <div class="qq" onclick="toggleQA(this)">
+      <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Variable Window</span><h3>15. Longest Substring Without Repeating Characters</h3></div>
+      <span class="qarr">&#9660;</span>
+    </div>
+    <div class="qa-body">
+      <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+<div class="logic-step"><span class="lstep">Brute force?</span> Try all substrings, check each for duplicates → O(N²) or O(N³).</div>
+<div class="logic-step"><span class="lstep">Observation:</span> When we find a duplicate at position r, we don't start over from scratch — we just need to move the left boundary past the previous occurrence of that character.</div>
+<div class="logic-step"><span class="lstep">Window invariant:</span> All characters in [left, right] are unique. When uniqueness breaks, shrink from left.</div>
+<div class="logic-step"><span class="lstep">HashMap stores:</span> char → last seen index. When duplicate found, jump left to max(left, lastSeen+1). The max() prevents left from moving backward.</div>
+<div class="logic-pattern">Pattern unlock: <strong>"Longest valid window"</strong> → Sliding window + last-seen map</div></div><div class="iobox">
+        <div class="io-in"><div class="iolabel">Input</div>s="abcabcbb"</div>
+        <div class="io-out"><div class="iolabel">Output</div>3 ("abc")</div>
+      </div>
+<pre><span class="cmt">// PATTERN: Variable window — shrink (jump left) when duplicate enters
+//
+// DRY RUN: "abcabcbb"
+//   r=0'a': map={a:0},          window=[0,0], max=1
+//   r=1'b': map={a:0,b:1},      window=[0,1], max=2
+//   r=2'c': map={a:0,b:1,c:2},  window=[0,2], max=3
+//   r=3'a': 'a' last at 0, left=max(0,0+1)=1, map={a:3,b:1,c:2}, max=3
+//   r=4'b': 'b' last at 1, left=max(1,1+1)=2, map={a:3,b:4,c:2}, max=3
+//   r=5'c': 'c' last at 2, left=max(2,2+1)=3, window=[3,5],       max=3
+//   r=6'b': 'b' last at 4, left=max(3,4+1)=5, window=[5,6],       max=2
+//   r=7'b': 'b' last at 6, left=max(5,6+1)=7, window=[7,7],       max=1
+//   return 3 ✓</span>
+
+<span class="kw">public int</span> <span class="fn">lengthOfLongestSubstring</span>(<span class="type">String</span> s) {
+    <span class="type">Map</span>&lt;<span class="type">Character</span>,<span class="type">Integer</span>&gt; map = <span class="kw">new</span> <span class="type">HashMap</span>&lt;&gt;(); <span class="cmt">// char → last index</span>
+    <span class="kw">int</span> max=<span class="num">0</span>, left=<span class="num">0</span>;
+    <span class="kw">for</span>(<span class="kw">int</span> r=<span class="num">0</span>; r&lt;s.<span class="fn">length</span>(); r++){
+        <span class="kw">char</span> c=s.<span class="fn">charAt</span>(r);
+        <span class="kw">if</span>(map.<span class="fn">containsKey</span>(c)) left=<span class="type">Math</span>.<span class="fn">max</span>(left, map.<span class="fn">get</span>(c)+<span class="num">1</span>); <span class="cmt">// jump past duplicate</span>
+        map.<span class="fn">put</span>(c,r);
+        max=<span class="type">Math</span>.<span class="fn">max</span>(max, r-left+<span class="num">1</span>);
+    }
+    <span class="kw">return</span> max;
+}</pre>
+      <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(N)</span></div>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="qq" onclick="toggleQA(this)">
+      <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag hard">Hard</span><span class="ptag">Variable Window + Freq</span><h3>16. Minimum Window Substring</h3></div>
+      <span class="qarr">&#9660;</span>
+    </div>
+    <div class="qa-body">
+      <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+<div class="logic-step"><span class="lstep">Goal:</span> Find shortest substring of s containing all chars of t.</div>
+<div class="logic-step"><span class="lstep">Two-phase thinking:</span> (1) Expand right until all required chars are in window. (2) Shrink left as much as possible while still valid. Record minimum. Then expand again.</div>
+<div class="logic-step"><span class="lstep">How to know "all chars present"?</span> Track how many distinct char requirements are fully met ("have"). When have == need (distinct required chars) → window is valid.</div>
+<div class="logic-step"><span class="lstep">Shrinking:</span> When you remove a char from left that was meeting a requirement, "have" drops — stop shrinking.</div>
+<div class="logic-pattern">Pattern unlock: <strong>"Shortest window satisfying condition"</strong> → Expand to satisfy, shrink to minimize</div></div><div class="iobox">
+        <div class="io-in"><div class="iolabel">Input</div>s="ADOBECODEBANC", t="ABC"</div>
+        <div class="io-out"><div class="iolabel">Output</div>"BANC"</div>
+      </div>
+<pre><span class="cmt">// PATTERN: Expand right to satisfy requirement, shrink left to minimize
+// 'have' = distinct chars in window matching required count
+// When have==required → valid window, try shrinking
+//
+// DRY RUN: t="ABC" → need={A:1,B:1,C:1}, required=3
+//   Expand: r=0'A'→have=1; r=3'B'→have=2; r=5'C'→have=3 (window "ADOBEC")
+//   Shrink: remove 'A' at l=0 → have=2, l=1. Stop.
+//   Expand: r=9'B' (already had 1, no change); r=10'A'→have=3 (window "DOBECODEBA")
+//   Shrink: l=1'D'→not needed; l=2'O'→not needed; l=3'B'→window loses B→have=2, l=4. Stop.
+//   Expand: r=11'N'→not needed; r=12'C'→have=3 (window "ODEBANC")
+//   Shrink: l=4'E',l=5'C'→lose C→have=2... 
+//   Smallest found: "BANC" (len=4) ✓</span>
+
+<span class="kw">public</span> <span class="type">String</span> <span class="fn">minWindow</span>(<span class="type">String</span> s, <span class="type">String</span> t) {
+    <span class="type">Map</span>&lt;<span class="type">Character</span>,<span class="type">Integer</span>&gt; need = <span class="kw">new</span> <span class="type">HashMap</span>&lt;&gt;(), win = <span class="kw">new</span> <span class="type">HashMap</span>&lt;&gt;();
+    <span class="kw">for</span>(<span class="kw">char</span> c:t.<span class="fn">toCharArray</span>()) need.<span class="fn">merge</span>(c,<span class="num">1</span>,<span class="type">Integer</span>::sum);
+    <span class="kw">int</span> have=<span class="num">0</span>, req=need.<span class="fn">size</span>(), l=<span class="num">0</span>, minL=<span class="num">0</span>, minLen=<span class="type">Integer</span>.MAX_VALUE;
+    <span class="kw">for</span>(<span class="kw">int</span> r=<span class="num">0</span>; r&lt;s.<span class="fn">length</span>(); r++){
+        <span class="kw">char</span> c=s.<span class="fn">charAt</span>(r);
+        win.<span class="fn">merge</span>(c,<span class="num">1</span>,<span class="type">Integer</span>::sum);
+        <span class="kw">if</span>(need.<span class="fn">containsKey</span>(c)&amp;&amp;win.<span class="fn">get</span>(c).<span class="fn">equals</span>(need.<span class="fn">get</span>(c))) have++;
+        <span class="kw">while</span>(have==req){
+            <span class="kw">if</span>(r-l+<span class="num">1</span>&lt;minLen){minLen=r-l+<span class="num">1</span>;minL=l;}
+            <span class="kw">char</span> lc=s.<span class="fn">charAt</span>(l++);
+            win.<span class="fn">merge</span>(lc,-<span class="num">1</span>,<span class="type">Integer</span>::sum);
+            <span class="kw">if</span>(need.<span class="fn">containsKey</span>(lc)&amp;&amp;win.<span class="fn">get</span>(lc)&lt;need.<span class="fn">get</span>(lc)) have--;
+        }
+    }
+    <span class="kw">return</span> minLen==<span class="type">Integer</span>.MAX_VALUE?<span class="str">""</span>:s.<span class="fn">substring</span>(minL,minL+minLen);
+}</pre>
+      <div class="cx-wrap"><span class="cx cxt">Time: O(|s|+|t|)</span><span class="cx cxs">Space: O(|t|)</span></div>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="qq" onclick="toggleQA(this)">
+      <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Variable Window</span><h3>17. Max Consecutive Ones III (flip at most k zeros)</h3></div>
+      <span class="qarr">&#9660;</span>
+    </div>
+    <div class="qa-body">
+      <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+<div class="logic-step"><span class="lstep">Reframe the problem:</span> "Flip at most k zeros" = "window can contain at most k zeros". Find the longest such window.</div>
+<div class="logic-step"><span class="lstep">Window invariant:</span> Count of zeros in [left, right] ≤ k. When a new zero makes count exceed k, shrink left until count ≤ k again.</div>
+<div class="logic-step"><span class="lstep">Why is this O(N)?</span> Each element is added to window once (right moves right) and removed at most once (left moves right). Total 2N operations.</div>
+<div class="logic-pattern">Pattern unlock: <strong>"Longest window with at most K of something"</strong> → Variable sliding window with counter</div></div><div class="iobox">
+        <div class="io-in"><div class="iolabel">Input</div>nums=[1,1,1,0,0,0,1,1,1,1,0], k=2</div>
+        <div class="io-out"><div class="iolabel">Output</div>6</div>
+      </div>
+<pre><span class="cmt">// PATTERN: Variable window allowing at most k zeros inside
+//
+// DRY RUN: [1,1,1,0,0,0,1,1,1,1,0], k=2
+//   r=0..2 (ones): zeros=0, window grows freely
+//   r=3 (zero): zeros=1 ≤ 2 → keep expanding
+//   r=4 (zero): zeros=2 ≤ 2 → keep expanding
+//   r=5 (zero): zeros=3 &gt; 2 → shrink:
+//     l=0(1): zeros still 3, l=1
+//     l=1(1): zeros still 3, l=2
+//     l=2(1): zeros still 3, l=3
+//     l=3(0): zeros=2 ≤ 2 → stop. window=[3,5] len=3
+//   r=6..9 (ones): zeros=2, window=[3,9] len=7 ← max!
+//   r=10 (zero): zeros=3 → shrink until valid
+//   return 6 ✓ (after shrinking, best window was [4,9] len=6)</span>
+
+<span class="kw">public int</span> <span class="fn">longestOnes</span>(<span class="kw">int</span>[] nums, <span class="kw">int</span> k) {
+    <span class="kw">int</span> l=<span class="num">0</span>, zeros=<span class="num">0</span>, max=<span class="num">0</span>;
+    <span class="kw">for</span>(<span class="kw">int</span> r=<span class="num">0</span>; r&lt;nums.length; r++){
+        <span class="kw">if</span>(nums[r]==<span class="num">0</span>) zeros++;
+        <span class="kw">while</span>(zeros&gt;k) <span class="kw">if</span>(nums[l++]==<span class="num">0</span>) zeros--;
+        max=<span class="type">Math</span>.<span class="fn">max</span>(max, r-l+<span class="num">1</span>);
+    }
+    <span class="kw">return</span> max;
+}</pre>
+      <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(1)</span></div>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="qq" onclick="toggleQA(this)">
+      <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag hard">Hard</span><span class="ptag">Monotonic Deque</span><h3>18. Sliding Window Maximum</h3></div>
+      <span class="qarr">&#9660;</span>
+    </div>
+    <div class="qa-body">
+      <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+<div class="logic-step"><span class="lstep">Brute force?</span> For each window, scan k elements for max → O(N×k).</div>
+<div class="logic-step"><span class="lstep">Key observation:</span> When a larger element enters the window, all smaller elements already in the window can NEVER be the maximum for any future window (they'll leave before the larger one). So discard them.</div>
+<div class="logic-step"><span class="lstep">Data structure:</span> A deque (double-ended queue) that maintains a <em>monotonically decreasing</em> sequence of indices. Front = current max.</div>
+<div class="logic-step"><span class="lstep">Two cleanup steps per element:</span> (1) Remove front if it's outside the current window. (2) Remove all back elements smaller than current (they're useless).</div>
+<div class="logic-pattern">Pattern unlock: <strong>"Running maximum/minimum over a window"</strong> → Monotonic deque</div></div><div class="iobox">
+        <div class="io-in"><div class="iolabel">Input</div>nums=[1,3,-1,-3,5,3,6,7], k=3</div>
+        <div class="io-out"><div class="iolabel">Output</div>[3,3,5,5,6,7]</div>
+      </div>
+<pre><span class="cmt">// PATTERN: Monotonic decreasing deque — front always = index of current max
+// 1) Remove front if out of window  2) Remove back if smaller than new element
+//
+// DRY RUN: [1,3,-1,-3,5,3,6,7], k=3
+//   i=0(1):  dq=[0]
+//   i=1(3):  3&gt;1 → pop 0, add 1 → dq=[1]
+//   i=2(-1): -1&lt;3 → add → dq=[1,2]  window full → res[0]=nums[1]=3
+//   i=3(-3): -3&lt;-1 → add → dq=[1,2,3]
+//             front=1, in [1,3]? yes → res[1]=nums[1]=3
+//   i=4(5):  5&gt;-3→pop3, 5&gt;-1→pop2, 5&gt;3→pop1 → add 4 → dq=[4]
+//             res[2]=nums[4]=5
+//   i=5(3):  3&lt;5 → add → dq=[4,5] → res[3]=nums[4]=5
+//   i=6(6):  6&gt;3→pop5, 6&gt;5→pop4 → add 6 → dq=[6] → res[4]=nums[6]=6
+//   i=7(7):  7&gt;6→pop6 → add 7 → dq=[7] → res[5]=nums[7]=7
+//   return [3,3,5,5,6,7] ✓</span>
+
+<span class="kw">public int</span>[] <span class="fn">maxSlidingWindow</span>(<span class="kw">int</span>[] nums, <span class="kw">int</span> k) {
+    <span class="kw">int</span>[] res = <span class="kw">new int</span>[nums.length-k+<span class="num">1</span>];
+    <span class="type">Deque</span>&lt;<span class="type">Integer</span>&gt; dq = <span class="kw">new</span> <span class="type">ArrayDeque</span>&lt;&gt;();
+    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">0</span>; i&lt;nums.length; i++){
+        <span class="kw">while</span>(!dq.<span class="fn">isEmpty</span>()&amp;&amp;dq.<span class="fn">peekFirst</span>()&lt;i-k+<span class="num">1</span>) dq.<span class="fn">pollFirst</span>(); <span class="cmt">// out of window</span>
+        <span class="kw">while</span>(!dq.<span class="fn">isEmpty</span>()&amp;&amp;nums[dq.<span class="fn">peekLast</span>()]&lt;nums[i]) dq.<span class="fn">pollLast</span>();  <span class="cmt">// useless</span>
+        dq.<span class="fn">addLast</span>(i);
+        <span class="kw">if</span>(i&gt;=k-<span class="num">1</span>) res[i-k+<span class="num">1</span>]=nums[dq.<span class="fn">peekFirst</span>()];
+    }
+    <span class="kw">return</span> res;
+}</pre>
+      <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(K)</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PREFIX SUM -->
+<div id="prefix" class="sec">
+  <div class="stitle"><em>Prefix Sum</em></div>
+  <div class="ssub">Pre-compute cumulative sums for O(1) range queries. Crucial for subarray sum problems with negatives.</div>
+  <div class="card">
+    <h3 style="font-size:.9rem;margin-bottom:.75rem">&#128161; Core Idea</h3>
+<pre><span class="cmt">// pre[i] = sum of nums[0..i-1]
+// sum(l, r) = pre[r+1] - pre[l]
+//
+// Example: nums = [2,4,1,3,5]
+//          pre  = [0,2,6,7,10,15]
+// sum(1,3) = pre[4]-pre[1] = 10-2 = 8  (4+1+3=8) ✓</span>
+
+<span class="kw">int</span>[] pre = <span class="kw">new int</span>[n+<span class="num">1</span>];
+<span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">0</span>; i&lt;n; i++) pre[i+<span class="num">1</span>] = pre[i] + nums[i];</pre>
+  </div>
+
+  <div class="qa">
+    <div class="qq" onclick="toggleQA(this)">
+      <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Prefix + HashMap</span><h3>19. Subarray Sum Equals K</h3></div>
+      <span class="qarr">&#9660;</span>
+    </div>
+    <div class="qa-body">
+      <p style="color:#94a3b8;margin-bottom:.75rem">Count subarrays whose sum equals k. Array may contain negatives (so sliding window won't work).</p><div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+<div class="logic-step"><span class="lstep">Why not sliding window?</span> Array has negatives — window sum isn't monotonic. Can't decide whether to expand or shrink.</div>
+<div class="logic-step"><span class="lstep">Prefix sum insight:</span> sum(l, r) = prefix[r] − prefix[l−1]. So we need prefix[r] − prefix[l−1] = k, i.e., prefix[l−1] = prefix[r] − k.</div>
+<div class="logic-step"><span class="lstep">Strategy:</span> As we compute prefix sums left to right, ask: "How many earlier prefix sums equal (currentPrefix − k)?" Each one is a valid subarray ending here.</div>
+<div class="logic-step"><span class="lstep">HashMap stores:</span> prefixSum → how many times it has occurred. Base case: map.put(0, 1) handles subarrays starting from index 0.</div>
+<div class="logic-pattern">Pattern unlock: <strong>"Count subarrays with exact sum (with negatives)"</strong> → Prefix sum + frequency map</div></div>
+      <div class="iobox">
+        <div class="io-in"><div class="iolabel">Input</div>nums=[1,1,1], k=2</div>
+        <div class="io-out"><div class="iolabel">Output</div>2</div>
+      </div>
+      <div class="iobox">
+        <div class="io-in"><div class="iolabel">Input 2</div>nums=[1,2,3], k=3</div>
+        <div class="io-out"><div class="iolabel">Output 2</div>2 ([3] and [1,2])</div>
+      </div>
+<pre><span class="cmt">// KEY INSIGHT: sum(l,r) = prefix[r] - prefix[l-1]
+// If prefix[r] - k == some earlier prefix → that's a valid subarray!
+// Count how many times each prefix sum appeared.
+//
+// DRY RUN: [1,1,1], k=2
+//   map={0:1}  (base case: empty prefix)
+//   i=0: prefix=1, need=1-2=-1, map has -1? No.  map={0:1,1:1}
+//   i=1: prefix=2, need=2-2=0,  map has 0→count+=1. map={0:1,1:1,2:1}
+//   i=2: prefix=3, need=3-2=1,  map has 1→count+=1. map={0:1,1:1,2:1,3:1}
+//   return count=2 ✓
+//
+// DRY RUN 2: [1,2,3], k=3
+//   i=0: prefix=1, need=-2, no. map={0:1,1:1}
+//   i=1: prefix=3, need=0, count+=1. map={...,3:1}
+//   i=2: prefix=6, need=3, map has 3→count+=1. return 2 ✓</span>
+
+<span class="kw">public int</span> <span class="fn">subarraySum</span>(<span class="kw">int</span>[] nums, <span class="kw">int</span> k) {
+    <span class="type">Map</span>&lt;<span class="type">Integer</span>,<span class="type">Integer</span>&gt; map = <span class="kw">new</span> <span class="type">HashMap</span>&lt;&gt;();
+    map.<span class="fn">put</span>(<span class="num">0</span>,<span class="num">1</span>); <span class="cmt">// empty prefix sum = 0, seen once</span>
+    <span class="kw">int</span> prefix=<span class="num">0</span>, count=<span class="num">0</span>;
+    <span class="kw">for</span>(<span class="kw">int</span> n:nums){
+        prefix+=n;
+        count+=map.<span class="fn">getOrDefault</span>(prefix-k,<span class="num">0</span>);
+        map.<span class="fn">merge</span>(prefix,<span class="num">1</span>,<span class="type">Integer</span>::sum);
+    }
+    <span class="kw">return</span> count;
+}</pre>
+      <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(N)</span></div>
+      <div class="warn">&#9888;&#65039; Sliding window fails here because negatives exist. Must use prefix + hashmap.</div>
+    </div>
+  </div>
+
+  <div class="qa">
+    <div class="qq" onclick="toggleQA(this)">
+      <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag easy">Easy</span><span class="ptag">Prefix Array</span><h3>20. Range Sum Query — Immutable</h3></div>
+      <span class="qarr">&#9660;</span>
+    </div>
+    <div class="qa-body">
+      <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+<div class="logic-step"><span class="lstep">Brute force?</span> For each query, add up elements l to r → O(N) per query. With Q queries: O(N×Q).</div>
+<div class="logic-step"><span class="lstep">Observation:</span> If we spend O(N) upfront to precompute cumulative sums, each query becomes a simple subtraction: O(1).</div>
+<div class="logic-step"><span class="lstep">pre[i] = sum of first i elements.</span> sum(l,r) = pre[r+1] − pre[l]. This is the most fundamental prefix sum application.</div>
+<div class="logic-step"><span class="lstep">Trade-off:</span> O(N) build time, O(N) space → O(1) per query. Worth it whenever Q &gt; 1.</div>
+<div class="logic-pattern">Pattern unlock: <strong>"Many range sum queries on static array"</strong> → Precompute prefix sums</div></div><div class="iobox">
+        <div class="io-in"><div class="iolabel">Input</div>nums=[-2,0,3,-5,2,-1]<br>sumRange(0,2); sumRange(2,5)</div>
+        <div class="io-out"><div class="iolabel">Output</div>1<br>-1</div>
+      </div>
+<pre><span class="cmt">// DRY RUN: nums=[-2,0,3,-5,2,-1]
+//   Build pre=[0,-2,-2,1,-4,-2,-3]
+//   sumRange(0,2) = pre[3]-pre[0] = 1-0 = 1 ✓ (-2+0+3=1)
+//   sumRange(2,5) = pre[6]-pre[2] = -3-(-2) = -1 ✓ (3-5+2-1=-1)</span>
+
+<span class="kw">class</span> <span class="type">NumArray</span> {
+    <span class="kw">private int</span>[] pre;
+    <span class="kw">public</span> <span class="type">NumArray</span>(<span class="kw">int</span>[] nums) {
+        pre = <span class="kw">new int</span>[nums.length+<span class="num">1</span>];
+        <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">0</span>; i&lt;nums.length; i++) pre[i+<span class="num">1</span>]=pre[i]+nums[i];
+    }
+    <span class="kw">public int</span> <span class="fn">sumRange</span>(<span class="kw">int</span> l, <span class="kw">int</span> r){ <span class="kw">return</span> pre[r+<span class="num">1</span>]-pre[l]; }
+}</pre>
+      <div class="cx-wrap"><span class="cx cxt">Build: O(N) | Query: O(1)</span><span class="cx cxs">Space: O(N)</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PROGRESS TRACKER -->
+<div id="tracker" class="sec">
+  <div class="stitle">&#128203; <em>Progress</em> Tracker</div>
+  <div class="ssub">Tick off each problem as you solve it. Progress bars update live.</div>
+  <div class="pgrid">
+    <div class="pc"><div class="plabel">Arrays</div><div class="pbwrap"><div class="pb" id="pb-arr" style="background:var(--accent)"></div></div><div class="pval" id="pv-arr">0%</div></div>
+    <div class="pc"><div class="plabel">Strings</div><div class="pbwrap"><div class="pb" id="pb-str" style="background:var(--accent3)"></div></div><div class="pval" id="pv-str" style="color:var(--accent3)">0%</div></div>
+    <div class="pc"><div class="plabel">Two Pointers</div><div class="pbwrap"><div class="pb" id="pb-tp" style="background:var(--warn)"></div></div><div class="pval" id="pv-tp" style="color:var(--warn)">0%</div></div>
+    <div class="pc"><div class="plabel">Sliding Window</div><div class="pbwrap"><div class="pb" id="pb-sw" style="background:var(--accent2)"></div></div><div class="pval" id="pv-sw" style="color:#a78bfa">0%</div></div>
+    <div class="pc"><div class="plabel">Prefix Sum</div><div class="pbwrap"><div class="pb" id="pb-pre" style="background:var(--pink)"></div></div><div class="pval" id="pv-pre" style="color:var(--pink)">0%</div></div>
+    <div class="pc"><div class="plabel">Overall Part 1</div><div class="pbwrap"><div class="pb" id="pb-all" style="background:var(--orange)"></div></div><div class="pval" id="pv-all" style="color:var(--orange)">0%</div></div>
+  </div>
+  <div class="card">
+    <div class="tl">
+      <div class="tli"><div class="tldot" style="background:var(--accent)"></div><div class="tlday">ARRAYS &mdash; 6 problems</div><div class="tltitle">Target: 2 days</div>
+        <ul class="cklist" id="cl-arr">
+          <li onclick="tick(this,'arr')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>1. Two Sum &mdash; HashMap complement</span></li>
+          <li onclick="tick(this,'arr')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>2. Best Time to Buy/Sell Stock &mdash; Running min</span></li>
+          <li onclick="tick(this,'arr')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>3. Contains Duplicate &mdash; HashSet</span></li>
+          <li onclick="tick(this,'arr')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>4. Product Except Self &mdash; Prefix &times; Suffix</span></li>
+          <li onclick="tick(this,'arr')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>5. Maximum Subarray &mdash; Kadane's</span></li>
+          <li onclick="tick(this,'arr')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>6. Majority Element &mdash; Boyer-Moore Vote</span></li>
+        </ul>
+      </div>
+      <div class="tli"><div class="tldot" style="background:var(--accent3)"></div><div class="tlday">STRINGS &mdash; 4 problems</div><div class="tltitle">Target: 1 day</div>
+        <ul class="cklist" id="cl-str">
+          <li onclick="tick(this,'str')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>7. Valid Anagram &mdash; Frequency delta</span></li>
+          <li onclick="tick(this,'str')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>8. Valid Palindrome &mdash; Two pointers</span></li>
+          <li onclick="tick(this,'str')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>9. Longest Common Prefix &mdash; Vertical scan</span></li>
+          <li onclick="tick(this,'str')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>10. Longest Palindromic Substring &mdash; Expand around center</span></li>
+        </ul>
+      </div>
+      <div class="tli"><div class="tldot" style="background:var(--warn)"></div><div class="tlday">TWO POINTERS &mdash; 4 problems</div><div class="tltitle">Target: 1 day</div>
+        <ul class="cklist" id="cl-tp">
+          <li onclick="tick(this,'tp')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>11. 3Sum &mdash; Sort + two pointers</span></li>
+          <li onclick="tick(this,'tp')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>12. Container With Most Water &mdash; Greedy</span></li>
+          <li onclick="tick(this,'tp')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>13. Move Zeroes &mdash; Write pointer</span></li>
+          <li onclick="tick(this,'tp')"><div class="chk"></div><span class="chlabel"><span class="tag hard" style="margin-right:.4rem">Hard</span>14. Trapping Rain Water &mdash; Two ptrs + running max</span></li>
+        </ul>
+      </div>
+      <div class="tli"><div class="tldot" style="background:var(--accent2)"></div><div class="tlday">SLIDING WINDOW &mdash; 4 problems</div><div class="tltitle">Target: 1 day</div>
+        <ul class="cklist" id="cl-sw">
+          <li onclick="tick(this,'sw')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>15. Longest Substring Without Repeating Chars</span></li>
+          <li onclick="tick(this,'sw')"><div class="chk"></div><span class="chlabel"><span class="tag hard" style="margin-right:.4rem">Hard</span>16. Minimum Window Substring</span></li>
+          <li onclick="tick(this,'sw')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>17. Max Consecutive Ones III</span></li>
+          <li onclick="tick(this,'sw')"><div class="chk"></div><span class="chlabel"><span class="tag hard" style="margin-right:.4rem">Hard</span>18. Sliding Window Maximum &mdash; Monotonic deque</span></li>
+        </ul>
+      </div>
+      <div class="tli"><div class="tldot" style="background:var(--pink)"></div><div class="tlday">PREFIX SUM &mdash; 2 problems</div><div class="tltitle">Target: 0.5 day</div>
+        <ul class="cklist" id="cl-pre">
+          <li onclick="tick(this,'pre')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>19. Subarray Sum Equals K</span></li>
+          <li onclick="tick(this,'pre')"><div class="chk"></div><span class="chlabel"><span class="tag easy" style="margin-right:.4rem">Easy</span>20. Range Sum Query &mdash; Immutable</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="tip" style="margin-top:1rem">&#128640; <strong>Part 2 coming next:</strong> Linked List (reverse, cycle detection, merge K lists), Stack (monotonic, valid brackets, next greater element), Queue (BFS patterns, deque). Same format with full dry runs.</div>
+</div>
+
+</main>
+<script>
+function show(id,btn){
+  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('active')});
+  document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('active')});
+  var el=document.getElementById(id);
+  if(el) el.classList.add('active');
+  if(btn) btn.classList.add('active');
+  window.scrollTo(0,0);
+}
+function toggleQA(el){ el.parentElement.classList.toggle('open'); }
+var totals={arr:6,str:4,tp:4,sw:4,pre:2};
+function tick(li,cat){
+  li.classList.toggle('done');
+  var list=document.getElementById('cl-'+cat);
+  if(!list) return;
+  var done=list.querySelectorAll('li.done').length;
+  var pct=Math.round(done/totals[cat]*100);
+  var pb=document.getElementById('pb-'+cat);
+  var pv=document.getElementById('pv-'+cat);
+  if(pb) pb.style.width=pct+'%';
+  if(pv) pv.textContent=pct+'%';
+  var allDone=0,allTotal=0;
+  Object.keys(totals).forEach(function(c){
+    var l=document.getElementById('cl-'+c);
+    if(l) allDone+=l.querySelectorAll('li.done').length;
+    allTotal+=totals[c];
+  });
+  var apct=Math.round(allDone/allTotal*100);
+  document.getElementById('pb-all').style.width=apct+'%';
+  document.getElementById('pv-all').textContent=apct+'%';
+}
+</script>
+</body>
+</html>
