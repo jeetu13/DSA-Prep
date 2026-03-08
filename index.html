@@ -3,33 +3,66 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DSA Master Sheet — Index</title>
+<title>DSA Master Sheet</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#04060b;--surface:#0a0f18;--card:#0e1520;--border:#162030;--p1:#00e5ff;--p2:#a78bfa;--p3:#10b981;--p4:#f59e0b;--p5:#f472b6;--p6:#fb923c;--text:#e2e8f0;--muted:#4a6174}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden}
-.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:4rem 2rem;position:relative;overflow:hidden}
+
+/* HERO */
+.hero{min-height:85vh;display:flex;flex-direction:column;justify-content:center;padding:4rem 2rem;position:relative;overflow:hidden}
 .hero::before{content:'';position:absolute;top:10%;left:60%;width:600px;height:600px;background:radial-gradient(circle,rgba(0,229,255,.05),transparent 60%);pointer-events:none}
-.hero::after{content:'';position:absolute;bottom:0;left:10%;width:500px;height:400px;background:radial-gradient(circle,rgba(245,158,11,.04),transparent 60%);pointer-events:none}
-.grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,229,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.02) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:0;left:5%;width:500px;height:400px;background:radial-gradient(circle,rgba(245,158,11,.04),transparent 60%);pointer-events:none}
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(0,229,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.018) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
 .hero-inner{max-width:900px;margin:0 auto;width:100%;position:relative}
 .badge{display:inline-flex;background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.2);color:var(--p1);font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.4rem 1rem;border-radius:2px;letter-spacing:.15em;margin-bottom:2rem;animation:up .6s ease both}
 h1{font-size:clamp(2.5rem,7vw,5.5rem);font-weight:900;line-height:1;letter-spacing:-.04em;margin-bottom:1rem;animation:up .6s .1s ease both}
 h1 em{color:var(--p1);font-style:normal;display:block}
 h1 span{color:var(--muted)}
 .sub{font-size:clamp(.95rem,2vw,1.15rem);color:var(--muted);max-width:520px;line-height:1.6;margin-bottom:2.5rem;font-weight:300;animation:up .6s .2s ease both}
-.stats{display:flex;gap:2.5rem;flex-wrap:wrap;margin-bottom:3rem;animation:up .6s .3s ease both}
+.hero-stats{display:flex;gap:2.5rem;flex-wrap:wrap;animation:up .6s .3s ease both}
 .sn{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:var(--p1);line-height:1}
 .sl{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:.2rem}
-.hint{display:flex;align-items:center;gap:.5rem;color:var(--muted);font-size:.75rem;font-family:'JetBrains Mono',monospace;animation:up .6s .5s ease both}
-.hint::before{content:'';width:28px;height:1px;background:var(--border)}
-section{max-width:1080px;margin:0 auto;padding:4rem 2rem}
+
+/* SECTIONS */
+.wrap{max-width:1080px;margin:0 auto;padding:3.5rem 2rem}
 .lbl{font-family:'JetBrains Mono',monospace;font-size:.64rem;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.7rem}
-.stitle{font-size:clamp(1.4rem,3vw,1.9rem);font-weight:800;letter-spacing:-.03em;margin-bottom:.4rem}
+.stitle{font-size:clamp(1.3rem,3vw,1.8rem);font-weight:800;letter-spacing:-.03em;margin-bottom:.4rem}
 .ssub{color:var(--muted);font-size:.85rem;margin-bottom:2rem;line-height:1.6}
-.grid6{display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:1.1rem}
+
+/* PROGRESS TRACKER */
+.tracker-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.75rem;margin-bottom:2.5rem}
+.tracker-top{display:flex;align-items:flex-end;gap:1.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.big-ring{position:relative;width:90px;height:90px;flex-shrink:0}
+.ring-svg{width:90px;height:90px;transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:#0d1e30;stroke-width:8}
+.ring-fill{fill:none;stroke:var(--p1);stroke-width:8;stroke-linecap:round;stroke-dasharray:226;stroke-dashoffset:226;transition:stroke-dashoffset .8s ease}
+.ring-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-pct{font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:var(--p1);line-height:1}
+.ring-label{font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:.15rem}
+.tracker-meta{flex:1;min-width:180px}
+.tracker-meta h3{font-size:1.1rem;font-weight:800;margin-bottom:.3rem}
+.tracker-meta p{font-size:.82rem;color:var(--muted);line-height:1.5}
+.done-count{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--p1);margin-top:.3rem}
+
+.parts-progress{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.75rem}
+.pp-card{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:1rem;transition:border-color .2s}
+.pp-card:hover{border-color:#1e3050}
+.pp-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem}
+.pp-name{font-weight:700;font-size:.85rem}
+.pp-pct{font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700}
+.pp-bar-wrap{background:#091420;border-radius:8px;height:6px;overflow:hidden;margin-bottom:.45rem}
+.pp-bar{height:100%;border-radius:8px;transition:width .6s ease;width:0%}
+.pp-detail{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.pp-topics{font-size:.7rem;color:var(--muted);margin-top:.3rem;line-height:1.4}
+.pp-link{display:inline-flex;align-items:center;gap:.3rem;font-size:.7rem;font-family:'JetBrains Mono',monospace;margin-top:.5rem;color:var(--muted);text-decoration:none;transition:color .15s}
+.pp-link:hover{color:var(--text)}
+.locked-tag{font-size:.62rem;font-family:'JetBrains Mono',monospace;color:var(--muted);background:rgba(255,255,255,.03);border:1px solid var(--border);padding:.12rem .4rem;border-radius:3px}
+
+/* PARTS GRID */
+.parts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:1.1rem}
 .pc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.6rem;position:relative;overflow:hidden;text-decoration:none;display:block;color:inherit;transition:all .22s}
 .pc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0}
 .pc:not(.locked):hover{border-color:#243447;transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.5)}
@@ -62,88 +95,191 @@ section{max-width:1080px;margin:0 auto;padding:4rem 2rem}
 .p2:hover .glow{background:radial-gradient(circle,rgba(167,139,250,.07),transparent 70%);opacity:1}
 .p3:hover .glow{background:radial-gradient(circle,rgba(16,185,129,.07),transparent 70%);opacity:1}
 .p4:hover .glow{background:radial-gradient(circle,rgba(245,158,11,.07),transparent 70%);opacity:1}
-.feats{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.65rem;margin-top:2.5rem}
+
+/* FEATURES */
+.feats{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.65rem;margin-top:2rem}
 .feat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.85rem}
 .fi{font-size:1.1rem;margin-bottom:.35rem}
 .ft{font-weight:700;font-size:.81rem;margin-bottom:.2rem}
 .fd{font-size:.71rem;color:var(--muted);line-height:1.4}
+
 footer{padding:2rem;text-align:center;color:var(--muted);font-size:.76rem;border-top:1px solid var(--border)}
 footer em{color:var(--p1);font-style:normal}
+
 @keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:640px){.hero{padding:3rem 1.5rem;padding-top:5rem;min-height:auto}section{padding:2.5rem 1.5rem}.stats{gap:1.5rem}.sn{font-size:1.5rem}}
+@media(max-width:640px){.hero{padding:3rem 1.5rem;min-height:auto}.wrap{padding:2.5rem 1.5rem}.hero-stats{gap:1.5rem}.sn{font-size:1.5rem}.parts-progress{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
+<!-- HERO -->
 <div class="hero">
-  <div class="grid"></div>
+  <div class="grid-bg"></div>
   <div class="hero-inner">
     <div class="badge">&#9654;&nbsp; DSA INTERVIEW PREP &nbsp;&middot;&nbsp; JAVA EDITION</div>
     <h1><span>Master</span><em>DSA in Java</em></h1>
     <p class="sub">Every pattern. Every problem. Dry runs, logic building, and Java solutions &mdash; so you understand the <em style="color:var(--p4);font-style:normal">why</em>, not just the what.</p>
-    <div class="stats">
+    <div class="hero-stats">
       <div><div class="sn">103</div><div class="sl">Total Problems</div></div>
       <div><div class="sn">6</div><div class="sl">Parts Total</div></div>
       <div><div class="sn">4</div><div class="sl">Parts Ready</div></div>
       <div><div class="sn">18+</div><div class="sl">Patterns</div></div>
     </div>
-    <div class="hint">scroll to explore all parts</div>
   </div>
 </div>
 
-<section>
+<!-- PROGRESS TRACKER -->
+<div class="wrap" style="padding-top:3rem">
+  <div class="lbl">Your Progress</div>
+  <div class="stitle">Consolidated Tracker</div>
+  <div class="ssub">Progress is saved in each part file. Check off problems there &mdash; come back here to see the big picture.</div>
+
+  <div class="tracker-card">
+    <div class="tracker-top">
+      <div class="big-ring">
+        <svg class="ring-svg" viewBox="0 0 90 90">
+          <circle class="ring-bg" cx="45" cy="45" r="36"/>
+          <circle class="ring-fill" id="overall-ring" cx="45" cy="45" r="36"/>
+        </svg>
+        <div class="ring-text">
+          <div class="ring-pct" id="overall-pct">0%</div>
+          <div class="ring-label">overall</div>
+        </div>
+      </div>
+      <div class="tracker-meta">
+        <h3>All Parts Combined</h3>
+        <p>Tick off problems inside each part, then refresh this page to update the overall view.</p>
+        <div class="done-count" id="overall-count">0 / 68 problems done (Parts 1–4)</div>
+      </div>
+    </div>
+
+    <div class="parts-progress">
+
+      <!-- Part 1 -->
+      <div class="pp-card">
+        <div class="pp-top">
+          <div class="pp-name" style="color:var(--p1)">Part 1 &middot; Arrays</div>
+          <span class="pp-pct" style="color:var(--p1)" id="p1-pct">0%</span>
+        </div>
+        <div class="pp-bar-wrap"><div class="pp-bar" id="p1-bar" style="background:var(--p1)"></div></div>
+        <div class="pp-detail"><span id="p1-done">0 / 20</span><span>5 patterns</span></div>
+        <div class="pp-topics">Arrays &middot; Strings &middot; Two Pointers &middot; Sliding Window &middot; Prefix Sum</div>
+        <a href="dsa_part1.html" class="pp-link">Open Part 1 &#8594;</a>
+      </div>
+
+      <!-- Part 2 -->
+      <div class="pp-card">
+        <div class="pp-top">
+          <div class="pp-name" style="color:var(--p2)">Part 2 &middot; LL &amp; Stack</div>
+          <span class="pp-pct" style="color:var(--p2)" id="p2-pct">0%</span>
+        </div>
+        <div class="pp-bar-wrap"><div class="pp-bar" id="p2-bar" style="background:var(--p2)"></div></div>
+        <div class="pp-detail"><span id="p2-done">0 / 15</span><span>4 patterns</span></div>
+        <div class="pp-topics">Linked List &middot; Fast/Slow &middot; Stack &middot; Queue &middot; Monotonic Stack</div>
+        <a href="dsa_part2.html" class="pp-link">Open Part 2 &#8594;</a>
+      </div>
+
+      <!-- Part 3 -->
+      <div class="pp-card">
+        <div class="pp-top">
+          <div class="pp-name" style="color:var(--p3)">Part 3 &middot; BS &amp; BT</div>
+          <span class="pp-pct" style="color:var(--p3)" id="p3-pct">0%</span>
+        </div>
+        <div class="pp-bar-wrap"><div class="pp-bar" id="p3-bar" style="background:var(--p3)"></div></div>
+        <div class="pp-detail"><span id="p3-done">0 / 15</span><span>3 patterns</span></div>
+        <div class="pp-topics">Binary Search &middot; Recursion &middot; D&amp;C &middot; Backtracking</div>
+        <a href="dsa_part3.html" class="pp-link">Open Part 3 &#8594;</a>
+      </div>
+
+      <!-- Part 4 -->
+      <div class="pp-card">
+        <div class="pp-top">
+          <div class="pp-name" style="color:var(--p4)">Part 4 &middot; Trees</div>
+          <span class="pp-pct" style="color:var(--p4)" id="p4-pct">0%</span>
+        </div>
+        <div class="pp-bar-wrap"><div class="pp-bar" id="p4-bar" style="background:var(--p4)"></div></div>
+        <div class="pp-detail"><span id="p4-done">0 / 18</span><span>4 patterns</span></div>
+        <div class="pp-topics">DFS/BFS &middot; Path Sum &middot; LCA &middot; BST &middot; Serialize</div>
+        <a href="dsa_part4.html" class="pp-link">Open Part 4 &#8594;</a>
+      </div>
+
+      <!-- Part 5 locked -->
+      <div class="pp-card" style="opacity:.4">
+        <div class="pp-top">
+          <div class="pp-name" style="color:var(--p5)">Part 5 &middot; Graphs</div>
+          <span class="locked-tag">Upcoming</span>
+        </div>
+        <div class="pp-bar-wrap"><div class="pp-bar" style="background:var(--p5);width:0%"></div></div>
+        <div class="pp-detail"><span>0 / 16</span><span>4 patterns</span></div>
+        <div class="pp-topics">DFS/BFS &middot; Union-Find &middot; Dijkstra &middot; Topo Sort &middot; Heaps</div>
+      </div>
+
+      <!-- Part 6 locked -->
+      <div class="pp-card" style="opacity:.4">
+        <div class="pp-top">
+          <div class="pp-name" style="color:var(--p6)">Part 6 &middot; DP</div>
+          <span class="locked-tag">Upcoming</span>
+        </div>
+        <div class="pp-bar-wrap"><div class="pp-bar" style="background:var(--p6);width:0%"></div></div>
+        <div class="pp-detail"><span>0 / 15</span><span>5 patterns</span></div>
+        <div class="pp-topics">1D/2D DP &middot; Knapsack &middot; LCS &middot; LIS &middot; State Machine</div>
+      </div>
+
+    </div><!-- /parts-progress -->
+
+    <p style="margin-top:1.25rem;font-size:.72rem;color:var(--muted);font-family:'JetBrains Mono',monospace;border-top:1px solid var(--border);padding-top:.9rem">
+      &#9432;&nbsp; Progress is stored in localStorage per part. Tick off problems inside each part file &mdash; the counts below update when you visit each part. This page reads those saved counts automatically on load.
+    </p>
+  </div><!-- /tracker-card -->
+</div>
+
+<!-- PARTS GRID -->
+<div class="wrap" style="padding-top:0">
   <div class="lbl">DSA Master Sheet</div>
   <div class="stitle">6-Part Series</div>
-  <div class="ssub">Striver-inspired curriculum. Every problem: I/O examples &middot; dry-run trace &middot; logic building &middot; Java solution &middot; complexity analysis.</div>
+  <div class="ssub">Striver-inspired. Every problem: I/O examples &middot; dry-run trace &middot; logic building &middot; Java solution &middot; complexity.</div>
 
-  <div class="grid6">
-
+  <div class="parts-grid">
     <a href="dsa_part1.html" class="pc p1">
       <div class="glow"></div>
       <div class="pch"><span class="pnum">PART 01</span><span class="pst sd">&#10003; Ready</span></div>
       <div class="ptitle">Arrays &amp; Strings</div>
-      <div class="ptopics">Two Pointers &middot; Sliding Window &middot; Prefix Sum &middot; Kadane's &middot; Boyer-Moore Voting</div>
+      <div class="ptopics">Two Pointers &middot; Sliding Window &middot; Prefix Sum &middot; Kadane's &middot; Boyer-Moore</div>
       <div class="pft"><div class="ppills"><span class="ppill">20 problems</span><span class="ppill">5 patterns</span></div><span class="parr">&#8594;</span></div>
     </a>
-
     <a href="dsa_part2.html" class="pc p2">
       <div class="glow"></div>
       <div class="pch"><span class="pnum">PART 02</span><span class="pst sd">&#10003; Ready</span></div>
       <div class="ptitle">Linked List &amp; Stack</div>
-      <div class="ptopics">Fast/Slow Pointers &middot; Floyd's Cycle &middot; Dummy Node &middot; Monotonic Stack &middot; BFS Queue</div>
+      <div class="ptopics">Fast/Slow Pointers &middot; Floyd's Cycle &middot; Dummy Node &middot; Monotonic Stack &middot; BFS</div>
       <div class="pft"><div class="ppills"><span class="ppill">15 problems</span><span class="ppill">4 patterns</span></div><span class="parr">&#8594;</span></div>
     </a>
-
     <a href="dsa_part3.html" class="pc p3">
       <div class="glow"></div>
       <div class="pch"><span class="pnum">PART 03</span><span class="pst sd">&#10003; Ready</span></div>
       <div class="ptitle">Binary Search &amp; Backtracking</div>
-      <div class="ptopics">3 BS Templates &middot; BS on Answer Space &middot; Subsets &middot; Permutations &middot; N-Queens &middot; Sudoku</div>
+      <div class="ptopics">3 BS Templates &middot; BS on Answer &middot; Subsets &middot; Permutations &middot; N-Queens</div>
       <div class="pft"><div class="ppills"><span class="ppill">15 problems</span><span class="ppill">3 patterns</span></div><span class="parr">&#8594;</span></div>
     </a>
-
     <a href="dsa_part4.html" class="pc p4">
       <div class="glow"></div>
       <div class="pch"><span class="pnum">PART 04</span><span class="pst sd">&#10003; Ready</span></div>
       <div class="ptitle">Binary Trees &amp; BST</div>
-      <div class="ptopics">DFS/BFS &middot; Diameter &middot; Max Path Sum &middot; LCA &middot; BST Ops &middot; Serialize/Deserialize</div>
+      <div class="ptopics">DFS/BFS &middot; Diameter &middot; Max Path Sum &middot; LCA &middot; BST Ops &middot; Serialize</div>
       <div class="pft"><div class="ppills"><span class="ppill">18 problems</span><span class="ppill">4 patterns</span></div><span class="parr">&#8594;</span></div>
     </a>
-
     <div class="pc p5 locked">
       <div class="pch"><span class="pnum">PART 05</span><span class="pst ss">&#9711; Upcoming</span></div>
       <div class="ptitle">Graphs, Heaps &amp; Greedy</div>
-      <div class="ptopics">DFS/BFS &middot; Union-Find &middot; Dijkstra &middot; Topological Sort &middot; Top-K &middot; Merge K Lists</div>
+      <div class="ptopics">DFS/BFS &middot; Union-Find &middot; Dijkstra &middot; Topological Sort &middot; Top-K</div>
       <div class="pft"><div class="ppills"><span class="ppill">16 problems</span><span class="ppill">4 patterns</span></div><span class="parr" style="opacity:.3">&#8594;</span></div>
     </div>
-
     <div class="pc p6 locked">
       <div class="pch"><span class="pnum">PART 06</span><span class="pst ss">&#9711; Upcoming</span></div>
       <div class="ptitle">Dynamic Programming</div>
-      <div class="ptopics">1D/2D DP &middot; Knapsack &middot; LCS &middot; LIS &middot; Coin Change &middot; State Machine DP</div>
+      <div class="ptopics">1D/2D DP &middot; Knapsack &middot; LCS &middot; LIS &middot; Coin Change &middot; State Machine</div>
       <div class="pft"><div class="ppills"><span class="ppill">15 problems</span><span class="ppill">5 patterns</span></div><span class="parr" style="opacity:.3">&#8594;</span></div>
     </div>
-
   </div>
 
   <div class="lbl" style="margin-top:3rem">Every Problem Includes</div>
@@ -153,11 +289,62 @@ footer em{color:var(--p1);font-style:normal}
     <div class="feat"><div class="fi">&#128228;</div><div class="ft">I/O Examples</div><div class="fd">Multiple test cases including edge cases</div></div>
     <div class="feat"><div class="fi">&#9749;</div><div class="ft">Java Solution</div><div class="fd">Clean interview-ready Java with comments</div></div>
     <div class="feat"><div class="fi">&#9203;</div><div class="ft">Complexity</div><div class="fd">Time &amp; space with explanation</div></div>
-    <div class="feat"><div class="fi">&#9989;</div><div class="ft">Progress Tracker</div><div class="fd">Live checkboxes &amp; bars per section</div></div>
+    <div class="feat"><div class="fi">&#9989;</div><div class="ft">Progress Tracker</div><div class="fd">Per-problem checkboxes in each part</div></div>
   </div>
-</section>
+</div>
 
-<footer>Parts <em>1 &ndash; 4</em> available &nbsp;&middot;&nbsp; Parts 5 &amp; 6 coming soon &nbsp;&middot;&nbsp; 103 problems total</footer>
+<footer>Parts <em>1&ndash;4</em> available &nbsp;&middot;&nbsp; Parts 5 &amp; 6 coming soon &nbsp;&middot;&nbsp; 103 problems total</footer>
 
+<script>
+// Read localStorage keys written by each part's tick() function
+// Each part stores: dsa_p1_arr, dsa_p1_str, etc.
+// We need to count done items from each part's checklist storage
+
+var config = {
+  p1: { total: 20, cats: ['arr','str','tp','sw','pre'], prefix: 'p1' },
+  p2: { total: 15, cats: ['ll','st','q','mn'],          prefix: 'p2' },
+  p3: { total: 15, cats: ['bs','rc','bt'],              prefix: 'p3' },
+  p4: { total: 18, cats: ['tr','ps','bst','adv'],       prefix: 'p4' },
+};
+
+// Each part saves done count per category in localStorage as "dsa_pX_cat" = number
+function getPartDone(prefix, cats) {
+  var done = 0;
+  cats.forEach(function(c) {
+    var val = localStorage.getItem('dsa_' + prefix + '_' + c);
+    if (val) done += parseInt(val) || 0;
+  });
+  return done;
+}
+
+function updateTracker() {
+  var grandDone = 0, grandTotal = 68;
+
+  ['p1','p2','p3','p4'].forEach(function(p) {
+    var cfg = config[p];
+    var done = getPartDone(cfg.prefix, cfg.cats);
+    grandDone += done;
+    var pct = Math.round(done / cfg.total * 100);
+
+    var bar = document.getElementById(p + '-bar');
+    var pctEl = document.getElementById(p + '-pct');
+    var doneEl = document.getElementById(p + '-done');
+    if (bar) bar.style.width = pct + '%';
+    if (pctEl) pctEl.textContent = pct + '%';
+    if (doneEl) doneEl.textContent = done + ' / ' + cfg.total;
+  });
+
+  var overallPct = Math.round(grandDone / grandTotal * 100);
+  var ring = document.getElementById('overall-ring');
+  var circumference = 226;
+  if (ring) ring.style.strokeDashoffset = circumference - (circumference * overallPct / 100);
+  var pctEl = document.getElementById('overall-pct');
+  if (pctEl) pctEl.textContent = overallPct + '%';
+  var countEl = document.getElementById('overall-count');
+  if (countEl) countEl.textContent = grandDone + ' / 68 problems done (Parts 1\u20134)';
+}
+
+updateTracker();
+</script>
 </body>
 </html>
