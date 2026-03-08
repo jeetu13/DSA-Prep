@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Part 5 — Graphs, Heaps &amp; Greedy</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07090f;--surface:#0d1117;--card:#0f1520;--card2:#0c1219;--border:#1a2535;--accent:#f472b6;--accent2:#a78bfa;--accent3:#10b981;--cyan:#00e5ff;--amber:#f59e0b;--danger:#ef4444;--text:#e2e8f0;--muted:#4a6174;--code-bg:#060c13}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh}
+
+/* HOME BAR */
+.home-bar{display:flex;align-items:center;gap:.75rem;padding:.55rem 1.5rem;background:#060810;border-bottom:1px solid #111d2a}
+.home-btn{display:inline-flex;align-items:center;gap:.45rem;background:none;border:1px solid #1e2d3d;color:#64748b;font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:600;padding:.35rem .85rem;border-radius:4px;cursor:pointer;text-decoration:none;transition:all .18s}
+.home-btn:hover{color:#e2e8f0;border-color:#243447;background:rgba(255,255,255,.03)}
+.home-btn svg{width:13px;height:13px;flex-shrink:0}
+.part-crumb{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#1e2d3d;margin:0 .25rem}
+.part-label{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;color:var(--accent)}
+
+/* HEADER */
+header{background:linear-gradient(135deg,#07090f 0%,#1a0620 60%,#07090f 100%);border-bottom:1px solid var(--border);padding:2rem 2rem 1.5rem;position:relative;overflow:hidden}
+header::before{content:'';position:absolute;top:-80px;right:-80px;width:450px;height:450px;background:radial-gradient(circle,rgba(244,114,182,.07) 0%,transparent 65%);pointer-events:none}
+header::after{content:'';position:absolute;bottom:-60px;left:-60px;width:350px;height:350px;background:radial-gradient(circle,rgba(167,139,250,.05) 0%,transparent 65%);pointer-events:none}
+.hbadge{display:inline-flex;align-items:center;background:rgba(244,114,182,.1);border:1px solid rgba(244,114,182,.3);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.3rem .8rem;border-radius:2px;letter-spacing:.12em;margin-bottom:.9rem}
+h1{font-size:clamp(1.7rem,4vw,2.6rem);font-weight:800;letter-spacing:-.03em;line-height:1.1}
+h1 em{color:var(--accent);font-style:normal}
+h1 small{display:block;font-size:.42em;font-weight:400;color:var(--muted);margin-top:.3rem;letter-spacing:.01em}
+.hpills{margin-top:1rem;display:flex;gap:.6rem;flex-wrap:wrap}
+.pill{background:var(--surface);border:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.2rem .65rem;border-radius:3px;color:var(--muted)}
+
+/* NAV */
+nav{display:flex;gap:.25rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:100}
+nav::-webkit-scrollbar{display:none}
+.nb{background:none;border:1px solid transparent;color:var(--muted);font-family:'Outfit',sans-serif;font-size:.78rem;font-weight:600;padding:.4rem 1rem;border-radius:4px;cursor:pointer;white-space:nowrap;transition:all .18s}
+.nb:hover{color:var(--text);border-color:var(--border)}
+.nb.active{color:var(--accent);border-color:var(--accent);background:rgba(244,114,182,.07)}
+
+main{max-width:980px;margin:0 auto;padding:2rem}
+.sec{display:none}.sec.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.stitle{font-size:1.5rem;font-weight:800;margin-bottom:.4rem;letter-spacing:-.02em}
+.stitle em{color:var(--accent);font-style:normal}
+.ssub{color:var(--muted);font-size:.85rem;margin-bottom:1.5rem;line-height:1.6}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.4rem;margin-bottom:1rem}
+
+/* TAGS */
+.tag{font-family:'JetBrains Mono',monospace;font-size:.63rem;font-weight:700;padding:.18rem .55rem;border-radius:3px;letter-spacing:.08em;text-transform:uppercase}
+.easy{background:rgba(16,185,129,.15);color:var(--accent3);border:1px solid rgba(16,185,129,.3)}
+.medium{background:rgba(244,114,182,.12);color:var(--accent);border:1px solid rgba(244,114,182,.25)}
+.hard{background:rgba(239,68,68,.15);color:var(--danger);border:1px solid rgba(239,68,68,.3)}
+.ptag{background:rgba(244,114,182,.1);color:var(--accent);border:1px solid rgba(244,114,182,.2);font-family:'JetBrains Mono',monospace;font-size:.63rem;padding:.18rem .55rem;border-radius:3px}
+
+/* ACCORDION */
+.qa{border:1px solid var(--border);border-radius:8px;margin-bottom:.6rem;overflow:hidden}
+.qq{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.2rem;cursor:pointer;background:var(--card2);transition:background .15s;gap:1rem}
+.qq:hover{background:#0e1a28}
+.qq h3{font-size:.92rem;font-weight:600;line-height:1.4}
+.qarr{color:var(--muted);font-size:.75rem;flex-shrink:0;transition:transform .2s}
+.qa.open .qarr{transform:rotate(180deg)}
+.qa-body{display:none;padding:1.2rem;border-top:1px solid var(--border);background:var(--card)}
+.qa.open .qa-body{display:block}
+
+/* CODE */
+pre{background:var(--code-bg);border:1px solid #1a2535;border-radius:6px;padding:1.1rem 1.2rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.65;margin:.75rem 0;white-space:pre}
+.kw{color:#ff7b72}.type{color:#79c0ff}.fn{color:#d2a8ff}.str{color:#a5d6ff}.num{color:#f2cc60}.cmt{color:#4a6174;font-style:italic}
+
+/* IO */
+.iobox{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:.75rem 0}
+.io-in,.io-out{background:var(--code-bg);border-radius:5px;padding:.65rem .9rem;font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:1.5;border:1px solid #1a2535}
+.iolabel{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem;font-weight:700}
+.io-in .iolabel{color:var(--accent)}.io-out .iolabel{color:var(--accent3)}
+
+/* TIPS */
+.tip{background:rgba(244,114,182,.05);border-left:3px solid var(--accent);padding:.7rem 1rem;border-radius:0 5px 5px 0;margin:.75rem 0;font-size:.83rem;color:#94a3b8}
+.note{background:rgba(167,139,250,.05);border-left:3px solid var(--accent2);padding:.7rem 1rem;border-radius:0 5px 5px 0;margin:.75rem 0;font-size:.83rem;color:#94a3b8}
+.warn{background:rgba(245,158,11,.05);border-left:3px solid var(--amber);padding:.7rem 1rem;border-radius:0 5px 5px 0;margin:.75rem 0;font-size:.83rem;color:#94a3b8}
+
+/* LOGIC */
+.logic{background:rgba(244,114,182,.04);border:1px solid rgba(244,114,182,.15);border-radius:8px;padding:1rem;margin-bottom:.9rem}
+.logic-title{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--accent);font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.7rem}
+.logic-step{font-size:.82rem;color:#94a3b8;margin-bottom:.45rem;line-height:1.5;padding-left:.5rem;border-left:2px solid rgba(244,114,182,.2)}
+.logic-step .lstep{color:var(--text);font-weight:600;margin-right:.4rem}
+.logic-pattern{margin-top:.75rem;padding:.5rem .75rem;background:rgba(244,114,182,.1);border-radius:4px;font-size:.78rem;color:var(--accent);border:1px solid rgba(244,114,182,.2)}
+
+/* COMPLEXITY */
+.cx-wrap{display:inline-flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap}
+.cx{font-family:'JetBrains Mono',monospace;font-size:.67rem;padding:.15rem .5rem;border-radius:3px}
+.cxt{background:rgba(244,114,182,.1);color:var(--accent);border:1px solid rgba(244,114,182,.2)}
+.cxs{background:rgba(167,139,250,.1);color:var(--accent2);border:1px solid rgba(167,139,250,.2)}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:.8rem;margin:.75rem 0}
+th{background:var(--surface);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.55rem .75rem;text-align:left;border:1px solid var(--border)}
+td{padding:.5rem .75rem;border:1px solid var(--border);color:#94a3b8;vertical-align:top}
+tr:nth-child(even) td{background:rgba(10,18,30,.5)}
+
+/* TRACKER */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.6rem;margin-bottom:1.5rem}
+.pc{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.8rem}
+.plabel{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.5rem;font-family:'JetBrains Mono',monospace}
+.pbwrap{background:#0d1a26;border-radius:10px;height:5px;overflow:hidden;margin-bottom:.35rem}
+.pb{height:100%;border-radius:10px;transition:width .4s ease;width:0%}
+.pval{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--accent)}
+.cklist{list-style:none;padding:0}
+.cklist li{display:flex;align-items:flex-start;gap:.75rem;padding:.55rem 0;border-bottom:1px solid rgba(26,37,53,.5);cursor:pointer}
+.cklist li:last-child{border-bottom:none}
+.chk{width:17px;height:17px;border:2px solid var(--border);border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-top:2px;font-size:.65rem;color:transparent}
+.cklist li.done .chk{background:var(--accent3);border-color:var(--accent3);color:#fff}
+.cklist li.done .chk::after{content:'✓'}
+.cklist li.done .chlabel{text-decoration:line-through;color:var(--muted)}
+.chlabel{font-size:.83rem;line-height:1.45}
+.tl{position:relative;padding-left:1.8rem}
+.tl::before{content:'';position:absolute;left:.35rem;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),var(--accent2),var(--accent3))}
+.tli{position:relative;margin-bottom:1.75rem}
+.tldot{position:absolute;left:-1.6rem;top:.25rem;width:11px;height:11px;border-radius:50%;border:2px solid var(--bg)}
+.tlday{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--accent);font-weight:700;margin-bottom:.2rem}
+.tltitle{font-size:.92rem;font-weight:700;margin-bottom:.6rem}
+
+@media(max-width:640px){main{padding:1rem}header{padding:1.5rem 1rem 1rem}nav{padding:.5rem .75rem}.iobox{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="home-bar">
+  <a href="index.html" class="home-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+    Home
+  </a>
+  <span class="part-crumb">&#9654;</span>
+  <span class="part-label">Part 5</span>
+</div>
+
+<header>
+  <div class="hbadge">&#9654; DSA MASTER SHEET &middot; PART 5 OF 6</div>
+  <h1><em>Graphs, Heaps</em> &amp; Greedy<small>DFS &middot; BFS &middot; Union-Find &middot; Dijkstra &middot; Topological Sort &middot; Top-K &middot; Intervals</small></h1>
+  <div class="hpills">
+    <span class="pill">16 Problems</span>
+    <span class="pill">5 Patterns</span>
+    <span class="pill">Java &middot; Dry Runs</span>
+    <span class="pill">Logic Building</span>
+    <span class="pill">Part 5 / 6</span>
+  </div>
+</header>
+
+<nav>
+  <button class="nb active" onclick="show('overview',this)">Overview</button>
+  <button class="nb" onclick="show('graphs',this)">Graphs</button>
+  <button class="nb" onclick="show('unionfind',this)">Union-Find</button>
+  <button class="nb" onclick="show('heaps',this)">Heaps &amp; Top-K</button>
+  <button class="nb" onclick="show('greedy',this)">Greedy</button>
+  <button class="nb" onclick="show('tracker',this)">&#128203; Progress</button>
+</nav>
+
+<main>
+
+<!-- OVERVIEW -->
+<div id="overview" class="sec active">
+  <div class="stitle">Part 5 <em>Overview</em></div>
+  <div class="ssub">Three distinct worlds — graphs (relationships), heaps (ordered access), greedy (local → global). Each has a signature template. Master the template, and the problems fall into place.</div>
+
+  <div class="card">
+    <h3 style="font-size:.95rem;margin-bottom:.8rem">&#127775; The Three Core Templates</h3>
+    <table>
+      <tr><th>Pattern</th><th>When to Use</th><th>Data Structure</th><th>Time</th></tr>
+      <tr><td><strong>Graph DFS</strong></td><td>Connected components, cycle detection, paths</td><td>Stack / Recursion + visited[]</td><td>O(V+E)</td></tr>
+      <tr><td><strong>Graph BFS</strong></td><td>Shortest path (unweighted), level order</td><td>Queue + visited[]</td><td>O(V+E)</td></tr>
+      <tr><td><strong>Union-Find</strong></td><td>Dynamic connectivity, MST, grouping</td><td>parent[] + rank[]</td><td>O(α(N)) ≈ O(1)</td></tr>
+      <tr><td><strong>Dijkstra</strong></td><td>Shortest path (weighted, non-negative)</td><td>Min-heap + dist[]</td><td>O((V+E) log V)</td></tr>
+      <tr><td><strong>Topo Sort</strong></td><td>Dependency ordering, DAG scheduling</td><td>Queue (Kahn's) / DFS</td><td>O(V+E)</td></tr>
+      <tr><td><strong>Heap / Top-K</strong></td><td>K largest/smallest, merge K sorted</td><td>PriorityQueue</td><td>O(N log K)</td></tr>
+      <tr><td><strong>Greedy + Intervals</strong></td><td>Scheduling, merging, covering</td><td>Sort + sweep</td><td>O(N log N)</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3 style="font-size:.9rem;margin-bottom:.6rem">&#128218; Series Roadmap</h3>
+    <table>
+      <tr><th>Part</th><th>Topics</th><th>Status</th></tr>
+      <tr><td>Part 1</td><td>Arrays, Strings, Two Pointers, Sliding Window, Prefix Sum</td><td style="color:var(--accent3)">&#10003; Done (20p)</td></tr>
+      <tr><td>Part 2</td><td>Linked List, Stack, Queue, Monotonic Stack</td><td style="color:var(--accent3)">&#10003; Done (15p)</td></tr>
+      <tr><td>Part 3</td><td>Binary Search, Recursion, Backtracking</td><td style="color:var(--accent3)">&#10003; Done (15p)</td></tr>
+      <tr><td>Part 4</td><td>Binary Trees, BST</td><td style="color:var(--accent3)">&#10003; Done (18p)</td></tr>
+      <tr><td><strong>Part 5</strong></td><td>Graphs, Heaps, Greedy</td><td style="color:var(--accent)">&#9654; YOU ARE HERE</td></tr>
+      <tr><td>Part 6</td><td>Dynamic Programming</td><td style="color:var(--muted)">Upcoming</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3 style="font-size:.9rem;margin-bottom:.6rem">&#9889; Graph Representation Cheat Sheet</h3>
+<pre><span class="cmt">// Adjacency List — most common for interview graphs</span>
+<span class="type">List</span>&lt;<span class="type">List</span>&lt;<span class="type">Integer</span>&gt;&gt; adj = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+<span class="kw">for</span> (<span class="kw">int</span> i=<span class="num">0</span>;i&lt;n;i++) adj.<span class="fn">add</span>(<span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;());
+adj.<span class="fn">get</span>(u).<span class="fn">add</span>(v); adj.<span class="fn">get</span>(v).<span class="fn">add</span>(u); <span class="cmt">// undirected</span>
+
+<span class="cmt">// Grid as graph — 4-directional neighbors</span>
+<span class="kw">int</span>[][] dirs = {{<span class="num">0</span>,<span class="num">1</span>},{<span class="num">0</span>,<span class="num">-1</span>},{<span class="num">1</span>,<span class="num">0</span>},{<span class="num">-1</span>,<span class="num">0</span>}};
+<span class="kw">for</span> (<span class="kw">int</span>[] d : dirs) {
+    <span class="kw">int</span> nr=r+d[<span class="num">0</span>], nc=c+d[<span class="num">1</span>];
+    <span class="kw">if</span> (nr&gt;=<span class="num">0</span> &amp;&amp; nr&lt;rows &amp;&amp; nc&gt;=<span class="num">0</span> &amp;&amp; nc&lt;cols) { <span class="cmt">/* valid neighbor */</span> }
+}</pre>
+  </div>
+</div>
+
+<!-- GRAPHS -->
+<div id="graphs" class="sec">
+  <div class="stitle"><em>Graph</em> Traversals &amp; Shortest Path</div>
+  <div class="ssub">DFS for connectivity/components, BFS for shortest path, Dijkstra for weighted shortest path, Topo sort for ordering.</div>
+
+  <!-- 1. Number of Islands -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Grid DFS</span><h3>1. Number of Islands</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Grid as graph:</span> Each '1' cell is a node. Edges connect adjacent '1' cells (up/down/left/right). An island = a connected component.</div>
+      <div class="logic-step"><span class="lstep">Strategy:</span> Scan every cell. When you find a '1', increment island count and DFS to mark all connected '1's as visited (flip to '0'). Next unvisited '1' = new island.</div>
+      <div class="logic-step"><span class="lstep">Mark visited in-place</span> by overwriting '1'→'0' — no separate visited array needed. This is the standard interview trick.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Count connected components in grid"</strong> &#8594; DFS from each unvisited node, sink the island</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Grid</div>11110<br>11010<br>11000<br>00000</div>
+      <div class="io-out"><div class="iolabel">Output</div>1</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: grid[0][0]='1' → island++, DFS sinks all connected 1s
+// After DFS: entire top-left mass → '0'. No more '1's → return 1 ✓</span>
+
+<span class="kw">public int</span> <span class="fn">numIslands</span>(<span class="kw">char</span>[][] grid) {
+    <span class="kw">int</span> count = <span class="num">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> r=<span class="num">0</span>; r&lt;grid.length; r++)
+        <span class="kw">for</span> (<span class="kw">int</span> c=<span class="num">0</span>; c&lt;grid[<span class="num">0</span>].length; c++)
+            <span class="kw">if</span> (grid[r][c] == <span class="str">'1'</span>) { count++; <span class="fn">dfs</span>(grid,r,c); }
+    <span class="kw">return</span> count;
+}
+<span class="kw">private void</span> <span class="fn">dfs</span>(<span class="kw">char</span>[][] g, <span class="kw">int</span> r, <span class="kw">int</span> c) {
+    <span class="kw">if</span> (r&lt;<span class="num">0</span>||r&gt;=g.length||c&lt;<span class="num">0</span>||c&gt;=g[<span class="num">0</span>].length||g[r][c]!= <span class="str">'1'</span>) <span class="kw">return</span>;
+    g[r][c] = <span class="str">'0'</span>; <span class="cmt">// sink: mark visited in-place</span>
+    <span class="fn">dfs</span>(g,r+<span class="num">1</span>,c); <span class="fn">dfs</span>(g,r-<span class="num">1</span>,c); <span class="fn">dfs</span>(g,r,c+<span class="num">1</span>); <span class="fn">dfs</span>(g,r,c-<span class="num">1</span>);
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(R×C)</span><span class="cx cxs">Space: O(R×C) stack</span></div>
+  </div></div>
+
+  <!-- 2. Clone Graph -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">DFS + HashMap</span><h3>2. Clone Graph</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Deep copy a graph:</span> Every node needs a new clone, and all neighbor references must point to the NEW clones, not the originals.</div>
+      <div class="logic-step"><span class="lstep">HashMap as visited + mapping:</span> Map&lt;original, clone&gt;. Before recursing into a neighbor, check if it already has a clone in the map — this prevents infinite loops on cycles.</div>
+      <div class="logic-step"><span class="lstep">DFS recipe:</span> Create clone → store in map → recurse into each neighbor → add neighbor clones to current clone's list.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Graph deep copy with cycle handling"</strong> &#8594; HashMap to track original→clone, DFS</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Graph (adj list)</div>1:[2,4], 2:[1,3], 3:[2,4], 4:[1,3]</div>
+      <div class="io-out"><div class="iolabel">Output</div>Deep copy with same structure</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: clone(1)
+//   map={1→clone1}. For neighbor 2: not in map → clone(2)
+//     map={1→c1,2→c2}. For neighbor 1: IN map → use c1. For neighbor 3: clone(3)...
+//   c2.neighbors=[c1,c3]. c1.neighbors=[c2,c4] etc. ✓</span>
+
+<span class="type">Map</span>&lt;<span class="type">Node</span>,<span class="type">Node</span>&gt; map = <span class="kw">new</span> <span class="type">HashMap</span>&lt;&gt;();
+
+<span class="kw">public</span> <span class="type">Node</span> <span class="fn">cloneGraph</span>(<span class="type">Node</span> node) {
+    <span class="kw">if</span> (node == <span class="kw">null</span>) <span class="kw">return null</span>;
+    <span class="kw">if</span> (map.<span class="fn">containsKey</span>(node)) <span class="kw">return</span> map.<span class="fn">get</span>(node); <span class="cmt">// already cloned</span>
+    <span class="type">Node</span> clone = <span class="kw">new</span> <span class="type">Node</span>(node.val);
+    map.<span class="fn">put</span>(node, clone);                              <span class="cmt">// store BEFORE recursing (cycle guard)</span>
+    <span class="kw">for</span> (<span class="type">Node</span> nb : node.neighbors)
+        clone.neighbors.<span class="fn">add</span>(<span class="fn">cloneGraph</span>(nb));           <span class="cmt">// recurse, get cloned neighbor</span>
+    <span class="kw">return</span> clone;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(V+E)</span><span class="cx cxs">Space: O(V)</span></div>
+  </div></div>
+
+  <!-- 3. Course Schedule (Cycle Detection) -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Topo Sort / Cycle Detection</span><h3>3. Course Schedule — Can Finish?</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Model as directed graph:</span> [a,b] means "to take a, first take b" → edge b→a. "Can finish all courses?" = "Is the graph a DAG (no cycle)?"</div>
+      <div class="logic-step"><span class="lstep">Kahn's Algorithm (BFS topo sort):</span> Compute in-degree for every node. Add all nodes with in-degree 0 to queue (no prerequisites). Process queue: for each node, reduce neighbors' in-degree by 1; if neighbor's in-degree hits 0, add to queue.</div>
+      <div class="logic-step"><span class="lstep">Cycle detection:</span> If we processed all N nodes → no cycle → can finish. If queue empties before processing all N → cycle exists → can't finish.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Detect cycle in directed graph / dependency ordering"</strong> &#8594; Kahn's BFS topo sort, count processed nodes</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">n=2, prereqs</div>[[1,0]] (take 0 before 1)</div>
+      <div class="io-out"><div class="iolabel">Output</div>true (0 then 1)</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: n=2, prereqs=[[1,0]] → graph: 0→1
+// inDegree=[0,1]. Queue=[0] (in-degree 0)
+// Process 0: neighbor 1 → inDegree[1]=0 → queue=[1]. count=1
+// Process 1: no neighbors. count=2
+// count==n → no cycle → return true ✓
+//
+// Cycle case: [[1,0],[0,1]] → 0→1, 1→0
+// inDegree=[1,1]. Queue=[] (no zero in-degrees) → stuck → count=0 ≠ 2 → false ✓</span>
+
+<span class="kw">public boolean</span> <span class="fn">canFinish</span>(<span class="kw">int</span> n, <span class="kw">int</span>[][] prereqs) {
+    <span class="type">List</span>&lt;<span class="type">List</span>&lt;<span class="type">Integer</span>&gt;&gt; adj = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+    <span class="kw">int</span>[] inDeg = <span class="kw">new int</span>[n];
+    <span class="kw">for</span> (<span class="kw">int</span> i=<span class="num">0</span>;i&lt;n;i++) adj.<span class="fn">add</span>(<span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;());
+    <span class="kw">for</span> (<span class="kw">int</span>[] p : prereqs) { adj.<span class="fn">get</span>(p[<span class="num">1</span>]).<span class="fn">add</span>(p[<span class="num">0</span>]); inDeg[p[<span class="num">0</span>]]++; }
+    <span class="type">Queue</span>&lt;<span class="type">Integer</span>&gt; q = <span class="kw">new</span> <span class="type">LinkedList</span>&lt;&gt;();
+    <span class="kw">for</span> (<span class="kw">int</span> i=<span class="num">0</span>;i&lt;n;i++) <span class="kw">if</span>(inDeg[i]==<span class="num">0</span>) q.<span class="fn">offer</span>(i);
+    <span class="kw">int</span> count = <span class="num">0</span>;
+    <span class="kw">while</span> (!q.<span class="fn">isEmpty</span>()) {
+        <span class="kw">int</span> node = q.<span class="fn">poll</span>(); count++;
+        <span class="kw">for</span> (<span class="kw">int</span> nb : adj.<span class="fn">get</span>(node))
+            <span class="kw">if</span> (--inDeg[nb] == <span class="num">0</span>) q.<span class="fn">offer</span>(nb);
+    }
+    <span class="kw">return</span> count == n; <span class="cmt">// processed all = no cycle</span>
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(V+E)</span><span class="cx cxs">Space: O(V+E)</span></div>
+  </div></div>
+
+  <!-- 4. Course Schedule II (Topo Order) -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Kahn's Topo Sort</span><h3>4. Course Schedule II — Return Order</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Same Kahn's BFS as Course Schedule I</span> — just collect the processed nodes into a result array instead of counting them.</div>
+      <div class="logic-step"><span class="lstep">Each node we dequeue is "safe to take" (all prerequisites done).</span> The order we dequeue them = a valid course ordering.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Topological ordering of DAG"</strong> &#8594; Kahn's BFS, collect dequeue order</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">n=4, prereqs</div>[[1,0],[2,0],[3,1],[3,2]]</div>
+      <div class="io-out"><div class="iolabel">Output</div>[0,1,2,3] or [0,2,1,3]</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: graph: 0→[1,2], 1→[3], 2→[3]
+// inDeg=[0,1,1,2]. Queue=[0]
+// Process 0 → res=[0]. neighbors 1,2: inDeg=[0,0,0,2] → queue=[1,2]
+// Process 1 → res=[0,1]. neighbor 3: inDeg[3]=1 → queue=[2]
+// Process 2 → res=[0,1,2]. neighbor 3: inDeg[3]=0 → queue=[3]
+// Process 3 → res=[0,1,2,3] ✓</span>
+
+<span class="kw">public int</span>[] <span class="fn">findOrder</span>(<span class="kw">int</span> n, <span class="kw">int</span>[][] prereqs) {
+    <span class="type">List</span>&lt;<span class="type">List</span>&lt;<span class="type">Integer</span>&gt;&gt; adj = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+    <span class="kw">int</span>[] inDeg = <span class="kw">new int</span>[n];
+    <span class="kw">for</span> (<span class="kw">int</span> i=<span class="num">0</span>;i&lt;n;i++) adj.<span class="fn">add</span>(<span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;());
+    <span class="kw">for</span> (<span class="kw">int</span>[] p : prereqs) { adj.<span class="fn">get</span>(p[<span class="num">1</span>]).<span class="fn">add</span>(p[<span class="num">0</span>]); inDeg[p[<span class="num">0</span>]]++; }
+    <span class="type">Queue</span>&lt;<span class="type">Integer</span>&gt; q = <span class="kw">new</span> <span class="type">LinkedList</span>&lt;&gt;();
+    <span class="kw">for</span> (<span class="kw">int</span> i=<span class="num">0</span>;i&lt;n;i++) <span class="kw">if</span>(inDeg[i]==<span class="num">0</span>) q.<span class="fn">offer</span>(i);
+    <span class="kw">int</span>[] res = <span class="kw">new int</span>[n]; <span class="kw">int</span> idx=<span class="num">0</span>;
+    <span class="kw">while</span>(!q.<span class="fn">isEmpty</span>()) {
+        <span class="kw">int</span> node=q.<span class="fn">poll</span>(); res[idx++]=node;
+        <span class="kw">for</span>(<span class="kw">int</span> nb:adj.<span class="fn">get</span>(node)) <span class="kw">if</span>(--inDeg[nb]==<span class="num">0</span>) q.<span class="fn">offer</span>(nb);
+    }
+    <span class="kw">return</span> idx==n ? res : <span class="kw">new int</span>[<span class="num">0</span>]; <span class="cmt">// empty = cycle</span>
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(V+E)</span><span class="cx cxs">Space: O(V+E)</span></div>
+  </div></div>
+
+  <!-- 5. Dijkstra / Network Delay -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Dijkstra Min-Heap</span><h3>5. Network Delay Time — Dijkstra's Algorithm</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Single-source shortest path on weighted directed graph.</span> Find the minimum time for a signal to reach all nodes from source k. Answer = max of all shortest distances.</div>
+      <div class="logic-step"><span class="lstep">Dijkstra template:</span> dist[] initialized to ∞, dist[source]=0. Use a min-heap of (distance, node). Greedily pick the node with smallest known distance, relax its neighbors.</div>
+      <div class="logic-step"><span class="lstep">Relaxation:</span> If dist[node] + edge_weight &lt; dist[neighbor] → update dist[neighbor] and push to heap.</div>
+      <div class="logic-step"><span class="lstep">Why min-heap?</span> We always want to process the currently closest unvisited node — greedy choice that guarantees optimality when all weights are non-negative.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Shortest path in weighted graph"</strong> &#8594; Dijkstra: min-heap + dist[] relaxation</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">times, n=4, k=2</div>[[2,1,1],[2,3,1],[3,4,1]]</div>
+      <div class="io-out"><div class="iolabel">Output</div>2</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: source=2, graph: 2→1(1), 2→3(1), 3→4(1)
+// dist=[∞,∞,0,∞,∞] (1-indexed). heap=[(0,2)]
+// Pop (0,2): relax 1→dist[1]=1, relax 3→dist[3]=1. heap=[(1,1),(1,3)]
+// Pop (1,1): no outgoing edges. heap=[(1,3)]
+// Pop (1,3): relax 4→dist[4]=2. heap=[(2,4)]
+// Pop (2,4): no edges.
+// dist=[∞,1,0,1,2]. max(1,0,1,2)=2 ✓</span>
+
+<span class="kw">public int</span> <span class="fn">networkDelayTime</span>(<span class="kw">int</span>[][] times, <span class="kw">int</span> n, <span class="kw">int</span> k) {
+    <span class="type">Map</span>&lt;<span class="type">Integer</span>,<span class="type">List</span>&lt;<span class="kw">int</span>[]&gt;&gt; adj = <span class="kw">new</span> <span class="type">HashMap</span>&lt;&gt;();
+    <span class="kw">for</span> (<span class="kw">int</span>[] t : times) adj.<span class="fn">computeIfAbsent</span>(t[<span class="num">0</span>], x-&gt;<span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;()).<span class="fn">add</span>(<span class="kw">new int</span>[]{t[<span class="num">1</span>],t[<span class="num">2</span>]});
+    <span class="kw">int</span>[] dist = <span class="kw">new int</span>[n+<span class="num">1</span>];
+    <span class="type">Arrays</span>.<span class="fn">fill</span>(dist, <span class="type">Integer</span>.MAX_VALUE);
+    dist[k] = <span class="num">0</span>;
+    <span class="type">PriorityQueue</span>&lt;<span class="kw">int</span>[]&gt; pq = <span class="kw">new</span> <span class="type">PriorityQueue</span>&lt;&gt;((a,b)->a[<span class="num">0</span>]-b[<span class="num">0</span>]); <span class="cmt">// min-heap by dist</span>
+    pq.<span class="fn">offer</span>(<span class="kw">new int</span>[]{<span class="num">0</span>,k});
+    <span class="kw">while</span>(!pq.<span class="fn">isEmpty</span>()) {
+        <span class="kw">int</span>[] cur=pq.<span class="fn">poll</span>();
+        <span class="kw">int</span> d=cur[<span class="num">0</span>], u=cur[<span class="num">1</span>];
+        <span class="kw">if</span>(d&gt;dist[u]) <span class="kw">continue</span>; <span class="cmt">// stale entry</span>
+        <span class="kw">for</span>(<span class="kw">int</span>[] nb : adj.<span class="fn">getOrDefault</span>(u, <span class="type">Collections</span>.<span class="fn">emptyList</span>())) {
+            <span class="kw">int</span> nd=d+nb[<span class="num">1</span>];
+            <span class="kw">if</span>(nd&lt;dist[nb[<span class="num">0</span>]]) { dist[nb[<span class="num">0</span>]]=nd; pq.<span class="fn">offer</span>(<span class="kw">new int</span>[]{nd,nb[<span class="num">0</span>]}); }
+        }
+    }
+    <span class="kw">int</span> ans=<span class="num">0</span>;
+    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">1</span>;i&lt;=n;i++) { <span class="kw">if</span>(dist[i]==<span class="type">Integer</span>.MAX_VALUE) <span class="kw">return</span> -<span class="num">1</span>; ans=<span class="type">Math</span>.<span class="fn">max</span>(ans,dist[i]); }
+    <span class="kw">return</span> ans;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O((V+E) log V)</span><span class="cx cxs">Space: O(V+E)</span></div>
+    <div class="warn">&#9888; Dijkstra fails with negative weights. Use Bellman-Ford for those.</div>
+  </div></div>
+
+  <!-- 6. Pacific Atlantic Water Flow -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Reverse BFS Multi-source</span><h3>6. Pacific Atlantic Water Flow</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Naive approach:</span> For each cell, DFS to check if water can reach both oceans. O(R²C²) — too slow.</div>
+      <div class="logic-step"><span class="lstep">Reverse thinking:</span> Instead of water flowing DOWN from cell to ocean, think of water flowing UP from ocean to cells. BFS/DFS from all Pacific border cells, then from all Atlantic border cells. Any cell reachable from BOTH = answer.</div>
+      <div class="logic-step"><span class="lstep">Reverse condition:</span> In reverse flow, water can go from cell A to cell B if B.height &gt;= A.height (uphill = reverse of downhill).</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Reverse the flow direction → multi-source BFS from boundaries"</strong></div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Heights grid (5×5)</div>[[1,2,2,3,5],[3,2,3,4,4],...]</div>
+      <div class="io-out"><div class="iolabel">Output</div>Cells reachable from both oceans</div>
+    </div>
+<pre><span class="cmt">// BFS from Pacific (top row + left col) → pac[][] reachable
+// BFS from Atlantic (bottom row + right col) → atl[][] reachable
+// Answer: cells where pac[r][c] && atl[r][c]</span>
+
+<span class="kw">public</span> <span class="type">List</span>&lt;<span class="type">List</span>&lt;<span class="type">Integer</span>&gt;&gt; <span class="fn">pacificAtlantic</span>(<span class="kw">int</span>[][] h) {
+    <span class="kw">int</span> R=h.length, C=h[<span class="num">0</span>].length;
+    <span class="kw">boolean</span>[][] pac=<span class="kw">new boolean</span>[R][C], atl=<span class="kw">new boolean</span>[R][C];
+    <span class="type">Queue</span>&lt;<span class="kw">int</span>[]&gt; pq=<span class="kw">new</span> <span class="type">LinkedList</span>&lt;&gt;(), aq=<span class="kw">new</span> <span class="type">LinkedList</span>&lt;&gt;();
+    <span class="kw">for</span>(<span class="kw">int</span> r=<span class="num">0</span>;r&lt;R;r++){
+        pq.<span class="fn">offer</span>(<span class="kw">new int</span>[]{r,<span class="num">0</span>});  pac[r][<span class="num">0</span>]=<span class="kw">true</span>;   <span class="cmt">// left col → Pacific</span>
+        aq.<span class="fn">offer</span>(<span class="kw">new int</span>[]{r,C-<span class="num">1</span>}); atl[r][C-<span class="num">1</span>]=<span class="kw">true</span>; <span class="cmt">// right col → Atlantic</span>
+    }
+    <span class="kw">for</span>(<span class="kw">int</span> c=<span class="num">0</span>;c&lt;C;c++){
+        pq.<span class="fn">offer</span>(<span class="kw">new int</span>[]{<span class="num">0</span>,c});  pac[<span class="num">0</span>][c]=<span class="kw">true</span>;   <span class="cmt">// top row → Pacific</span>
+        aq.<span class="fn">offer</span>(<span class="kw">new int</span>[]{R-<span class="num">1</span>,c}); atl[R-<span class="num">1</span>][c]=<span class="kw">true</span>; <span class="cmt">// bottom row → Atlantic</span>
+    }
+    <span class="fn">bfs</span>(h,pq,pac,R,C); <span class="fn">bfs</span>(h,aq,atl,R,C);
+    <span class="type">List</span>&lt;<span class="type">List</span>&lt;<span class="type">Integer</span>&gt;&gt; res=<span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+    <span class="kw">for</span>(<span class="kw">int</span> r=<span class="num">0</span>;r&lt;R;r++) <span class="kw">for</span>(<span class="kw">int</span> c=<span class="num">0</span>;c&lt;C;c++)
+        <span class="kw">if</span>(pac[r][c]&amp;&amp;atl[r][c]) res.<span class="fn">add</span>(<span class="type">Arrays</span>.<span class="fn">asList</span>(r,c));
+    <span class="kw">return</span> res;
+}
+<span class="kw">private void</span> <span class="fn">bfs</span>(<span class="kw">int</span>[][] h, <span class="type">Queue</span>&lt;<span class="kw">int</span>[]&gt; q, <span class="kw">boolean</span>[][] vis, <span class="kw">int</span> R, <span class="kw">int</span> C) {
+    <span class="kw">int</span>[][] dirs={{<span class="num">0</span>,<span class="num">1</span>},{<span class="num">0</span>,-<span class="num">1</span>},{<span class="num">1</span>,<span class="num">0</span>},{-<span class="num">1</span>,<span class="num">0</span>}};
+    <span class="kw">while</span>(!q.<span class="fn">isEmpty</span>()) {
+        <span class="kw">int</span>[] cur=q.<span class="fn">poll</span>(); <span class="kw">int</span> r=cur[<span class="num">0</span>],c=cur[<span class="num">1</span>];
+        <span class="kw">for</span>(<span class="kw">int</span>[] d:dirs) {
+            <span class="kw">int</span> nr=r+d[<span class="num">0</span>],nc=c+d[<span class="num">1</span>];
+            <span class="kw">if</span>(nr&gt;=<span class="num">0</span>&amp;&amp;nr&lt;R&amp;&amp;nc&gt;=<span class="num">0</span>&amp;&amp;nc&lt;C&amp;&amp;!vis[nr][nc]&amp;&amp;h[nr][nc]&gt;=h[r][c]) {
+                vis[nr][nc]=<span class="kw">true</span>; q.<span class="fn">offer</span>(<span class="kw">new int</span>[]{nr,nc});
+            }
+        }
+    }
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(R×C)</span><span class="cx cxs">Space: O(R×C)</span></div>
+  </div></div>
+</div>
+
+<!-- UNION-FIND -->
+<div id="unionfind" class="sec">
+  <div class="stitle"><em>Union-Find</em> (Disjoint Set Union)</div>
+  <div class="ssub">Union-Find answers "are these two nodes connected?" in near O(1) time. The magic: path compression + union by rank.</div>
+
+  <div class="card">
+    <h3 style="font-size:.9rem;margin-bottom:.6rem">&#127775; The Universal DSU Template</h3>
+<pre><span class="kw">int</span>[] parent, rank;
+<span class="kw">void</span> <span class="fn">init</span>(<span class="kw">int</span> n) {
+    parent=<span class="kw">new int</span>[n]; rank=<span class="kw">new int</span>[n];
+    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">0</span>;i&lt;n;i++) parent[i]=i; <span class="cmt">// each node is its own parent</span>
+}
+<span class="kw">int</span> <span class="fn">find</span>(<span class="kw">int</span> x) {
+    <span class="kw">if</span>(parent[x]!=x) parent[x]=<span class="fn">find</span>(parent[x]); <span class="cmt">// path compression</span>
+    <span class="kw">return</span> parent[x];
+}
+<span class="kw">boolean</span> <span class="fn">union</span>(<span class="kw">int</span> x, <span class="kw">int</span> y) {
+    <span class="kw">int</span> px=<span class="fn">find</span>(x), py=<span class="fn">find</span>(y);
+    <span class="kw">if</span>(px==py) <span class="kw">return false</span>; <span class="cmt">// already connected → adding this edge = cycle</span>
+    <span class="kw">if</span>(rank[px]&lt;rank[py]) { <span class="kw">int</span> t=px;px=py;py=t; }
+    parent[py]=px;                         <span class="cmt">// union by rank</span>
+    <span class="kw">if</span>(rank[px]==rank[py]) rank[px]++;
+    <span class="kw">return true</span>;
+}</pre>
+  </div>
+
+  <!-- 7. Number of Connected Components -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">DSU Components</span><h3>7. Number of Connected Components in Undirected Graph</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Start with n separate components (every node is its own island).</span></div>
+      <div class="logic-step"><span class="lstep">For each edge [u,v]:</span> If u and v are in different components → union them → components-- . If already connected → skip (would create cycle).</div>
+      <div class="logic-step"><span class="lstep">Final answer:</span> The remaining number of components.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Dynamic connectivity → components count"</strong> &#8594; DSU: start=n, decrement on each successful union</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">n=5, edges</div>[[0,1],[1,2],[3,4]]</div>
+      <div class="io-out"><div class="iolabel">Output</div>2</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: n=5, components=5
+// union(0,1): different → merge → components=4
+// union(1,2): different → merge → components=3
+// union(3,4): different → merge → components=2
+// return 2 ✓</span>
+
+<span class="kw">public int</span> <span class="fn">countComponents</span>(<span class="kw">int</span> n, <span class="kw">int</span>[][] edges) {
+    <span class="kw">int</span>[] parent=<span class="kw">new int</span>[n], rank=<span class="kw">new int</span>[n];
+    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">0</span>;i&lt;n;i++) parent[i]=i;
+    <span class="kw">int</span> comps=n;
+    <span class="kw">for</span>(<span class="kw">int</span>[] e:edges) <span class="kw">if</span>(<span class="fn">union</span>(parent,rank,e[<span class="num">0</span>],e[<span class="num">1</span>])) comps--;
+    <span class="kw">return</span> comps;
+}
+<span class="cmt">// (use find/union helpers from template above)</span></pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N·α(N))</span><span class="cx cxs">Space: O(N)</span></div>
+  </div></div>
+
+  <!-- 8. Redundant Connection -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">DSU Cycle Edge</span><h3>8. Redundant Connection — Find the Cycle Edge</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Given a tree with one extra edge that creates a cycle — find that edge.</span></div>
+      <div class="logic-step"><span class="lstep">DSU insight:</span> Process edges one by one. The first edge [u,v] where find(u)==find(v) means u and v are ALREADY connected — adding this edge creates the cycle. That edge is the answer.</div>
+      <div class="logic-step"><span class="lstep">If multiple such edges exist</span>, return the last one in the input (problem constraint). Since we return immediately on first cycle, and the problem guarantees exactly one redundant edge, this always works.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Find cycle-creating edge"</strong> &#8594; DSU: return first edge where find(u)==find(v)</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">edges</div>[[1,2],[1,3],[2,3]]</div>
+      <div class="io-out"><div class="iolabel">Output</div>[2,3]</div>
+    </div>
+<pre><span class="cmt">// DRY RUN:
+// [1,2]: find(1)=1, find(2)=2 → different → union. parent=[_,1,1,3]
+// [1,3]: find(1)=1, find(3)=3 → different → union. parent=[_,1,1,1]
+// [2,3]: find(2)=find(1)=1, find(3)=find(1)=1 → SAME → cycle! return [2,3] ✓</span>
+
+<span class="kw">public int</span>[] <span class="fn">findRedundantConnection</span>(<span class="kw">int</span>[][] edges) {
+    <span class="kw">int</span> n=edges.length;
+    <span class="kw">int</span>[] par=<span class="kw">new int</span>[n+<span class="num">1</span>], rank=<span class="kw">new int</span>[n+<span class="num">1</span>];
+    <span class="kw">for</span>(<span class="kw">int</span> i=<span class="num">0</span>;i&lt;=n;i++) par[i]=i;
+    <span class="kw">for</span>(<span class="kw">int</span>[] e:edges) {
+        <span class="kw">int</span> pu=<span class="fn">find</span>(par,e[<span class="num">0</span>]), pv=<span class="fn">find</span>(par,e[<span class="num">1</span>]);
+        <span class="kw">if</span>(pu==pv) <span class="kw">return</span> e;  <span class="cmt">// already connected → this edge is redundant</span>
+        <span class="kw">if</span>(rank[pu]&lt;rank[pv]) { <span class="kw">int</span> t=pu;pu=pv;pv=t; }
+        par[pv]=pu; <span class="kw">if</span>(rank[pu]==rank[pv]) rank[pu]++;
+    }
+    <span class="kw">return new int</span>[<span class="num">0</span>];
+}
+<span class="kw">int</span> <span class="fn">find</span>(<span class="kw">int</span>[] p, <span class="kw">int</span> x){ <span class="kw">return</span> p[x]==x?x:(p[x]=<span class="fn">find</span>(p,p[x])); }</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N·α(N))</span><span class="cx cxs">Space: O(N)</span></div>
+  </div></div>
+</div>
+
+<!-- HEAPS -->
+<div id="heaps" class="sec">
+  <div class="stitle"><em>Heaps</em> &amp; Top-K Problems</div>
+  <div class="ssub">Java's PriorityQueue is a min-heap by default. For max-heap: new PriorityQueue&lt;&gt;(Collections.reverseOrder()). For Top-K largest: keep a min-heap of size K.</div>
+
+  <div class="card" style="margin-bottom:1rem">
+    <h3 style="font-size:.9rem;margin-bottom:.5rem">&#127775; Heap Pattern Decision Tree</h3>
+    <table>
+      <tr><th>Problem type</th><th>Heap type</th><th>Size</th><th>Answer</th></tr>
+      <tr><td>K largest elements</td><td>Min-heap</td><td>K</td><td>Entire heap</td></tr>
+      <tr><td>K smallest elements</td><td>Max-heap</td><td>K</td><td>Entire heap</td></tr>
+      <tr><td>Kth largest</td><td>Min-heap</td><td>K</td><td>heap.peek()</td></tr>
+      <tr><td>Kth smallest</td><td>Max-heap</td><td>K</td><td>heap.peek()</td></tr>
+      <tr><td>Merge K sorted lists</td><td>Min-heap</td><td>K heads</td><td>Poll + push next</td></tr>
+    </table>
+  </div>
+
+  <!-- 9. Kth Largest Element -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Min-Heap Size K</span><h3>9. Kth Largest Element in an Array</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Why min-heap of size K for "K largest"?</span> Keep the K largest seen so far in a min-heap. The smallest of them (heap.peek()) is the Kth largest. When a new element arrives: if it's larger than the smallest in heap → it deserves a spot → push it, pop the smallest.</div>
+      <div class="logic-step"><span class="lstep">After processing all elements:</span> heap.peek() = Kth largest overall.</div>
+      <div class="logic-step"><span class="lstep">Alternative — QuickSelect:</span> O(N) average, O(N²) worst. Heap is O(N log K) and more predictable for interviews.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Kth largest → min-heap of size K → peek is answer"</strong></div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">nums, k=2</div>[3,2,1,5,6,4]</div>
+      <div class="io-out"><div class="iolabel">Output</div>5</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: k=2, nums=[3,2,1,5,6,4]
+// Add 3: heap=[3]
+// Add 2: heap=[2,3]  (size=k=2)
+// Add 1: 1 < peek(2) → skip
+// Add 5: 5 > peek(2) → pop 2, push 5 → heap=[3,5]
+// Add 6: 6 > peek(3) → pop 3, push 6 → heap=[5,6]
+// Add 4: 4 < peek(5) → skip
+// peek()=5 = 2nd largest ✓</span>
+
+<span class="kw">public int</span> <span class="fn">findKthLargest</span>(<span class="kw">int</span>[] nums, <span class="kw">int</span> k) {
+    <span class="type">PriorityQueue</span>&lt;<span class="type">Integer</span>&gt; minH = <span class="kw">new</span> <span class="type">PriorityQueue</span>&lt;&gt;(); <span class="cmt">// min-heap</span>
+    <span class="kw">for</span> (<span class="kw">int</span> n : nums) {
+        minH.<span class="fn">offer</span>(n);
+        <span class="kw">if</span> (minH.<span class="fn">size</span>() > k) minH.<span class="fn">poll</span>(); <span class="cmt">// evict smallest → keep K largest</span>
+    }
+    <span class="kw">return</span> minH.<span class="fn">peek</span>(); <span class="cmt">// smallest of K largest = Kth largest</span>
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N log K)</span><span class="cx cxs">Space: O(K)</span></div>
+  </div></div>
+
+  <!-- 10. Top K Frequent Elements -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Freq Map + Min-Heap</span><h3>10. Top K Frequent Elements</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Two steps:</span> (1) Count frequencies with a HashMap. (2) Use a min-heap of size K ordered by frequency to find the K most frequent elements.</div>
+      <div class="logic-step"><span class="lstep">Same min-heap-of-size-K trick:</span> Compare by frequency. If new element's frequency &gt; smallest frequency in heap → replace it.</div>
+      <div class="logic-step"><span class="lstep">Bucket sort alternative:</span> O(N) — create frequency buckets (index = freq, value = list of nums). Scan from high to low frequency. Great follow-up to mention.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Top K by frequency"</strong> &#8594; HashMap + min-heap by frequency</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">nums, k=2</div>[1,1,1,2,2,3]</div>
+      <div class="io-out"><div class="iolabel">Output</div>[1,2]</div>
+    </div>
+<pre><span class="cmt">// freq: {1:3, 2:2, 3:1}
+// min-heap by freq, size k=2:
+//   push [1,3]: heap=[[1,3]]
+//   push [2,2]: heap=[[2,2],[1,3]]
+//   push [3,1]: freq(3)=1 < peek freq=2 → skip
+// Result from heap: [1,2] ✓</span>
+
+<span class="kw">public int</span>[] <span class="fn">topKFrequent</span>(<span class="kw">int</span>[] nums, <span class="kw">int</span> k) {
+    <span class="type">Map</span>&lt;<span class="type">Integer</span>,<span class="type">Integer</span>&gt; freq = <span class="kw">new</span> <span class="type">HashMap</span>&lt;&gt;();
+    <span class="kw">for</span> (<span class="kw">int</span> n:nums) freq.<span class="fn">merge</span>(n,<span class="num">1</span>,<span class="type">Integer</span>::sum);
+    <span class="type">PriorityQueue</span>&lt;<span class="type">Integer</span>&gt; minH = <span class="kw">new</span> <span class="type">PriorityQueue</span>&lt;&gt;((a,b)->freq.<span class="fn">get</span>(a)-freq.<span class="fn">get</span>(b));
+    <span class="kw">for</span> (<span class="kw">int</span> n:freq.<span class="fn">keySet</span>()) {
+        minH.<span class="fn">offer</span>(n);
+        <span class="kw">if</span>(minH.<span class="fn">size</span>()>k) minH.<span class="fn">poll</span>();
+    }
+    <span class="kw">return</span> minH.<span class="fn">stream</span>().<span class="fn">mapToInt</span>(<span class="type">Integer</span>::intValue).<span class="fn">toArray</span>();
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N log K)</span><span class="cx cxs">Space: O(N)</span></div>
+  </div></div>
+
+  <!-- 11. Merge K Sorted Lists -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag hard">Hard</span><span class="ptag">Min-Heap K Pointers</span><h3>11. Merge K Sorted Linked Lists</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Brute force:</span> Collect all values, sort, rebuild. O(N log N) where N = total nodes.</div>
+      <div class="logic-step"><span class="lstep">Better — min-heap on K list heads:</span> Push the head of each list into a min-heap. Repeatedly: poll the minimum node → add to result → push that node's next (if non-null) into heap.</div>
+      <div class="logic-step"><span class="lstep">Why better?</span> O(N log K) — the heap always has at most K elements. Much better than O(N log N) when K &lt;&lt; N.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Merge K sorted sequences"</strong> &#8594; Min-heap of K current pointers, poll+push-next</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Lists</div>1→4→5, 1→3→4, 2→6</div>
+      <div class="io-out"><div class="iolabel">Output</div>1→1→2→3→4→4→5→6</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: heap initially=[1(L1),1(L2),2(L3)] (min-heap by val)
+// Poll 1(L1) → result: 1. Push L1.next=4. heap=[1(L2),2(L3),4(L1)]
+// Poll 1(L2) → result: 1→1. Push L2.next=3. heap=[2(L3),3(L2),4(L1)]
+// Poll 2(L3) → result: 1→1→2. Push 6. heap=[3(L2),4(L1),6(L3)]
+// ... continues until heap empty → 1→1→2→3→4→4→5→6 ✓</span>
+
+<span class="kw">public</span> <span class="type">ListNode</span> <span class="fn">mergeKLists</span>(<span class="type">ListNode</span>[] lists) {
+    <span class="type">PriorityQueue</span>&lt;<span class="type">ListNode</span>&gt; pq = <span class="kw">new</span> <span class="type">PriorityQueue</span>&lt;&gt;((a,b)->a.val-b.val);
+    <span class="kw">for</span> (<span class="type">ListNode</span> h:lists) <span class="kw">if</span>(h!=<span class="kw">null</span>) pq.<span class="fn">offer</span>(h); <span class="cmt">// init with all heads</span>
+    <span class="type">ListNode</span> dummy=<span class="kw">new</span> <span class="type">ListNode</span>(<span class="num">0</span>), cur=dummy;
+    <span class="kw">while</span>(!pq.<span class="fn">isEmpty</span>()) {
+        cur.next=pq.<span class="fn">poll</span>();    <span class="cmt">// take minimum</span>
+        cur=cur.next;
+        <span class="kw">if</span>(cur.next!=<span class="kw">null</span>) pq.<span class="fn">offer</span>(cur.next); <span class="cmt">// push next node of same list</span>
+    }
+    <span class="kw">return</span> dummy.next;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N log K)</span><span class="cx cxs">Space: O(K)</span></div>
+  </div></div>
+
+  <!-- 12. Find Median from Data Stream -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag hard">Hard</span><span class="ptag">Two Heaps</span><h3>12. Find Median from Data Stream</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Two heaps partition the data at the median:</span> A max-heap holds the lower half, a min-heap holds the upper half. The median is always at the tops of these heaps.</div>
+      <div class="logic-step"><span class="lstep">Invariant:</span> (1) All elements in max-heap ≤ all elements in min-heap. (2) Sizes differ by at most 1. Always add to max-heap first, then rebalance.</div>
+      <div class="logic-step"><span class="lstep">Add(num):</span> Push to max-heap. Pop max-heap's top → push to min-heap (ensures cross-heap ordering). If min-heap is larger → pop its top back to max-heap.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Running median"</strong> &#8594; Max-heap (lower half) + min-heap (upper half), maintain balance</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">Stream</div>addNum(1), addNum(2), findMedian(), addNum(3), findMedian()</div>
+      <div class="io-out"><div class="iolabel">Output</div>1.5, 2.0</div>
+    </div>
+<pre><span class="cmt">// DRY RUN:
+// add(1): maxH=[1], minH=[]. rebalance: maxH=[1],minH=[]
+// add(2): push 1 to maxH → maxH=[1,2]? No — push 2 to maxH, pop max(2) to minH
+//         maxH=[1], minH=[2]. sizes equal → median=(1+2)/2=1.5 ✓
+// add(3): push 3 to maxH → maxH=[1,3]? push 3, pop max(3) to minH=[2,3]
+//         minH.size > maxH.size → pop min(2) back to maxH=[1,2]
+//         maxH=[1,2], minH=[3]. maxH.size > → median=maxH.peek()=2.0 ✓</span>
+
+<span class="type">PriorityQueue</span>&lt;<span class="type">Integer</span>&gt; lo = <span class="kw">new</span> <span class="type">PriorityQueue</span>&lt;&gt;(<span class="type">Collections</span>.<span class="fn">reverseOrder</span>()); <span class="cmt">// max-heap</span>
+<span class="type">PriorityQueue</span>&lt;<span class="type">Integer</span>&gt; hi = <span class="kw">new</span> <span class="type">PriorityQueue</span>&lt;&gt;();                          <span class="cmt">// min-heap</span>
+
+<span class="kw">public void</span> <span class="fn">addNum</span>(<span class="kw">int</span> num) {
+    lo.<span class="fn">offer</span>(num);
+    hi.<span class="fn">offer</span>(lo.<span class="fn">poll</span>());         <span class="cmt">// ensure max of lo ≤ min of hi</span>
+    <span class="kw">if</span>(hi.<span class="fn">size</span>()>lo.<span class="fn">size</span>()) lo.<span class="fn">offer</span>(hi.<span class="fn">poll</span>()); <span class="cmt">// balance sizes</span>
+}
+<span class="kw">public double</span> <span class="fn">findMedian</span>() {
+    <span class="kw">return</span> lo.<span class="fn">size</span>()>hi.<span class="fn">size</span>() ? lo.<span class="fn">peek</span>() : (lo.<span class="fn">peek</span>()+hi.<span class="fn">peek</span>())/2.0;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Add: O(log N)</span><span class="cx cxs">Find: O(1)</span></div>
+  </div></div>
+</div>
+
+<!-- GREEDY -->
+<div id="greedy" class="sec">
+  <div class="stitle"><em>Greedy</em> &amp; Intervals</div>
+  <div class="ssub">Greedy works when a locally optimal choice leads to a globally optimal solution. Interval problems almost always need sorting first.</div>
+
+  <!-- 13. Meeting Rooms II -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Sort + Min-Heap</span><h3>13. Meeting Rooms II — Minimum Rooms Required</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">How many rooms needed = max overlapping meetings at any point.</span></div>
+      <div class="logic-step"><span class="lstep">Sort by start time.</span> Use a min-heap of end times (end times of meetings currently in rooms). When a new meeting starts: if the earliest ending meeting is done (heap.peek() ≤ new start) → reuse that room (pop old, push new end). Otherwise → need a new room (just push new end).</div>
+      <div class="logic-step"><span class="lstep">Heap size</span> = number of rooms in use at any time. Max heap size ever reached = answer.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Minimum resources for overlapping intervals"</strong> &#8594; Sort by start, min-heap of end times</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">intervals</div>[[0,30],[5,10],[15,20]]</div>
+      <div class="io-out"><div class="iolabel">Output</div>2</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: sorted by start: [0,30],[5,10],[15,20]
+// [0,30]:  heap empty → new room. heap=[30]
+// [5,10]:  5 < peek(30) → overlap → new room. heap=[10,30]
+// [15,20]: 15 > peek(10) → reuse! pop 10, push 20. heap=[20,30]
+// Max heap size = 2 ✓</span>
+
+<span class="kw">public int</span> <span class="fn">minMeetingRooms</span>(<span class="kw">int</span>[][] intervals) {
+    <span class="type">Arrays</span>.<span class="fn">sort</span>(intervals, (a,b)->a[<span class="num">0</span>]-b[<span class="num">0</span>]); <span class="cmt">// sort by start</span>
+    <span class="type">PriorityQueue</span>&lt;<span class="type">Integer</span>&gt; endTimes = <span class="kw">new</span> <span class="type">PriorityQueue</span>&lt;&gt;(); <span class="cmt">// min-heap of end times</span>
+    <span class="kw">for</span>(<span class="kw">int</span>[] iv:intervals) {
+        <span class="kw">if</span>(!endTimes.<span class="fn">isEmpty</span>() &amp;&amp; endTimes.<span class="fn">peek</span>()&lt;=iv[<span class="num">0</span>])
+            endTimes.<span class="fn">poll</span>(); <span class="cmt">// room freed up — reuse it</span>
+        endTimes.<span class="fn">offer</span>(iv[<span class="num">1</span>]);
+    }
+    <span class="kw">return</span> endTimes.<span class="fn">size</span>(); <span class="cmt">// rooms still in use = rooms needed</span>
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N log N)</span><span class="cx cxs">Space: O(N)</span></div>
+  </div></div>
+
+  <!-- 14. Merge Intervals -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Sort + Sweep</span><h3>14. Merge Intervals</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Sort by start time.</span> After sorting, any overlapping intervals must be adjacent. Walk through: if current interval overlaps with the last merged one (cur.start ≤ last.end) → extend last.end = max(last.end, cur.end). Otherwise → start a new merged interval.</div>
+      <div class="logic-step"><span class="lstep">Why sort first?</span> Without sorting, you'd need to compare each interval against all others. Sorting reduces it to a single pass.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Merge overlapping intervals"</strong> &#8594; Sort by start, linear sweep extending or starting</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">intervals</div>[[1,3],[2,6],[8,10],[15,18]]</div>
+      <div class="io-out"><div class="iolabel">Output</div>[[1,6],[8,10],[15,18]]</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: sorted: [1,3],[2,6],[8,10],[15,18]
+// res=[[1,3]]
+// [2,6]: 2≤3 → overlap → extend: res=[[1,6]]
+// [8,10]: 8>6 → new: res=[[1,6],[8,10]]
+// [15,18]: 15>10 → new: res=[[1,6],[8,10],[15,18]] ✓</span>
+
+<span class="kw">public int</span>[][] <span class="fn">merge</span>(<span class="kw">int</span>[][] intervals) {
+    <span class="type">Arrays</span>.<span class="fn">sort</span>(intervals,(a,b)->a[<span class="num">0</span>]-b[<span class="num">0</span>]);
+    <span class="type">List</span>&lt;<span class="kw">int</span>[]&gt; res = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+    <span class="kw">for</span>(<span class="kw">int</span>[] iv:intervals) {
+        <span class="kw">if</span>(res.<span class="fn">isEmpty</span>() || res.<span class="fn">get</span>(res.<span class="fn">size</span>()-<span class="num">1</span>)[<span class="num">1</span>] &lt; iv[<span class="num">0</span>])
+            res.<span class="fn">add</span>(iv);                       <span class="cmt">// no overlap → new interval</span>
+        <span class="kw">else</span>
+            res.<span class="fn">get</span>(res.<span class="fn">size</span>()-<span class="num">1</span>)[<span class="num">1</span>] = <span class="type">Math</span>.<span class="fn">max</span>(res.<span class="fn">get</span>(res.<span class="fn">size</span>()-<span class="num">1</span>)[<span class="num">1</span>],iv[<span class="num">1</span>]); <span class="cmt">// extend</span>
+    }
+    <span class="kw">return</span> res.<span class="fn">toArray</span>(<span class="kw">new int</span>[<span class="num">0</span>][]);
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N log N)</span><span class="cx cxs">Space: O(N)</span></div>
+  </div></div>
+
+  <!-- 15. Jump Game -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Greedy Reach</span><h3>15. Jump Game — Can Reach End?</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Greedy insight:</span> Track the farthest index reachable so far. For each position i (up to current max reach), update maxReach = max(maxReach, i + nums[i]).</div>
+      <div class="logic-step"><span class="lstep">If at any point i > maxReach</span> → we can't reach position i → stuck → return false.</div>
+      <div class="logic-step"><span class="lstep">If maxReach ≥ last index → return true.</span> No need to simulate actual jumps.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Reachability in array"</strong> &#8594; Greedy: track farthest reachable index</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">nums</div>[2,3,1,1,4]</div>
+      <div class="io-out"><div class="iolabel">Output</div>true</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: [2,3,1,1,4]
+// i=0: maxReach=max(0,0+2)=2
+// i=1: 1≤2 ✓ maxReach=max(2,1+3)=4
+// i=2: 2≤4 ✓ maxReach=max(4,2+1)=4
+// i=3: 3≤4 ✓ maxReach=max(4,3+1)=4
+// i=4: 4≤4 ✓ maxReach=max(4,4+4)=8 ≥ last index(4) → true ✓
+//
+// DRY RUN fail: [3,2,1,0,4]
+// i=3: maxReach=max(3,3+0)=3. i=4: 4>3 → false ✓</span>
+
+<span class="kw">public boolean</span> <span class="fn">canJump</span>(<span class="kw">int</span>[] nums) {
+    <span class="kw">int</span> maxReach = <span class="num">0</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> i=<span class="num">0</span>; i&lt;nums.length; i++) {
+        <span class="kw">if</span> (i > maxReach) <span class="kw">return false</span>;              <span class="cmt">// can't reach here</span>
+        maxReach = <span class="type">Math</span>.<span class="fn">max</span>(maxReach, i + nums[i]); <span class="cmt">// extend reach</span>
+    }
+    <span class="kw">return true</span>;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N)</span><span class="cx cxs">Space: O(1)</span></div>
+  </div></div>
+
+  <!-- 16. Non-overlapping Intervals -->
+  <div class="qa"><div class="qq" onclick="toggleQA(this)">
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap"><span class="tag medium">Medium</span><span class="ptag">Greedy Interval Scheduling</span><h3>16. Non-overlapping Intervals — Min Removals</h3></div>
+    <span class="qarr">&#9660;</span></div>
+  <div class="qa-body">
+    <div class="logic"><div class="logic-title">&#129504; Logic Building</div>
+      <div class="logic-step"><span class="lstep">Equivalent to:</span> Find maximum number of non-overlapping intervals → answer = total - max non-overlapping. This is the classic "Activity Selection" greedy problem.</div>
+      <div class="logic-step"><span class="lstep">Greedy rule:</span> Sort by end time. Always greedily pick the interval that ends earliest (leaves most room for future intervals). If next interval overlaps with current → remove it (count removal). If no overlap → update current end to new interval's end.</div>
+      <div class="logic-step"><span class="lstep">Why sort by end?</span> Picking the earliest-ending interval maximizes the remaining time window for subsequent intervals.</div>
+      <div class="logic-pattern">Pattern unlock: <strong>"Max non-overlapping = Activity Selection"</strong> &#8594; Sort by end, greedily keep earliest-ending non-overlapping</div>
+    </div>
+    <div class="iobox">
+      <div class="io-in"><div class="iolabel">intervals</div>[[1,2],[2,3],[3,4],[1,3]]</div>
+      <div class="io-out"><div class="iolabel">Output</div>1 (remove [1,3])</div>
+    </div>
+<pre><span class="cmt">// DRY RUN: sort by end: [1,2],[2,3],[1,3],[3,4]
+// end=2, removals=0
+// [2,3]: start(2)≥end(2) → no overlap → end=3
+// [1,3]: start(1)<end(3) → OVERLAP → remove! removals=1
+// [3,4]: start(3)≥end(3) → no overlap → end=4
+// return 1 ✓</span>
+
+<span class="kw">public int</span> <span class="fn">eraseOverlapIntervals</span>(<span class="kw">int</span>[][] intervals) {
+    <span class="type">Arrays</span>.<span class="fn">sort</span>(intervals,(a,b)->a[<span class="num">1</span>]-b[<span class="num">1</span>]); <span class="cmt">// sort by END time</span>
+    <span class="kw">int</span> removals=<span class="num">0</span>, end=<span class="type">Integer</span>.MIN_VALUE;
+    <span class="kw">for</span>(<span class="kw">int</span>[] iv:intervals) {
+        <span class="kw">if</span>(iv[<span class="num">0</span>] &lt; end) removals++;           <span class="cmt">// overlap → remove this interval</span>
+        <span class="kw">else</span>           end = iv[<span class="num">1</span>];            <span class="cmt">// keep it, update end</span>
+    }
+    <span class="kw">return</span> removals;
+}</pre>
+    <div class="cx-wrap"><span class="cx cxt">Time: O(N log N)</span><span class="cx cxs">Space: O(1)</span></div>
+    <div class="tip">&#128161; The greedy choice of "sort by end time" appears in Meeting Rooms, Activity Selection, and Non-overlapping Intervals. Recognise it as one family.</div>
+  </div></div>
+</div>
+
+<!-- TRACKER -->
+<div id="tracker" class="sec">
+  <div class="stitle">&#128203; <em>Progress</em> Tracker</div>
+  <div class="ssub">Part 5: 16 problems — Graphs, Union-Find, Heaps, Greedy.</div>
+  <div class="pgrid">
+    <div class="pc"><div class="plabel">Graphs</div><div class="pbwrap"><div class="pb" id="pb-gr" style="background:var(--accent)"></div></div><div class="pval" id="pv-gr">0%</div></div>
+    <div class="pc"><div class="plabel">Union-Find</div><div class="pbwrap"><div class="pb" id="pb-uf" style="background:var(--accent2)"></div></div><div class="pval" id="pv-uf" style="color:var(--accent2)">0%</div></div>
+    <div class="pc"><div class="plabel">Heaps</div><div class="pbwrap"><div class="pb" id="pb-hp" style="background:var(--accent3)"></div></div><div class="pval" id="pv-hp" style="color:var(--accent3)">0%</div></div>
+    <div class="pc"><div class="plabel">Greedy</div><div class="pbwrap"><div class="pb" id="pb-gd" style="background:var(--cyan)"></div></div><div class="pval" id="pv-gd" style="color:var(--cyan)">0%</div></div>
+    <div class="pc"><div class="plabel">Overall P5</div><div class="pbwrap"><div class="pb" id="pb-all" style="background:var(--amber)"></div></div><div class="pval" id="pv-all" style="color:var(--amber)">0%</div></div>
+  </div>
+
+  <div class="card"><div class="tl">
+
+    <div class="tli"><div class="tldot" style="background:var(--accent)"></div>
+      <div class="tlday">GRAPHS &mdash; 6 problems</div>
+      <div class="tltitle">DFS, BFS, Dijkstra, Topo Sort</div>
+      <ul class="cklist" id="cl-gr">
+        <li onclick="tick(this,'gr')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>1. Number of Islands</span></li>
+        <li onclick="tick(this,'gr')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>2. Clone Graph</span></li>
+        <li onclick="tick(this,'gr')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>3. Course Schedule — Can Finish?</span></li>
+        <li onclick="tick(this,'gr')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>4. Course Schedule II — Return Order</span></li>
+        <li onclick="tick(this,'gr')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>5. Network Delay Time (Dijkstra)</span></li>
+        <li onclick="tick(this,'gr')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>6. Pacific Atlantic Water Flow</span></li>
+      </ul>
+    </div>
+
+    <div class="tli"><div class="tldot" style="background:var(--accent2)"></div>
+      <div class="tlday">UNION-FIND &mdash; 2 problems</div>
+      <div class="tltitle">DSU: path compression + rank</div>
+      <ul class="cklist" id="cl-uf">
+        <li onclick="tick(this,'uf')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>7. Number of Connected Components</span></li>
+        <li onclick="tick(this,'uf')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>8. Redundant Connection</span></li>
+      </ul>
+    </div>
+
+    <div class="tli"><div class="tldot" style="background:var(--accent3)"></div>
+      <div class="tlday">HEAPS &mdash; 4 problems</div>
+      <div class="tltitle">PriorityQueue mastery</div>
+      <ul class="cklist" id="cl-hp">
+        <li onclick="tick(this,'hp')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>9. Kth Largest Element</span></li>
+        <li onclick="tick(this,'hp')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>10. Top K Frequent Elements</span></li>
+        <li onclick="tick(this,'hp')"><div class="chk"></div><span class="chlabel"><span class="tag hard" style="margin-right:.4rem">Hard</span>11. Merge K Sorted Lists</span></li>
+        <li onclick="tick(this,'hp')"><div class="chk"></div><span class="chlabel"><span class="tag hard" style="margin-right:.4rem">Hard</span>12. Find Median from Data Stream</span></li>
+      </ul>
+    </div>
+
+    <div class="tli"><div class="tldot" style="background:var(--cyan)"></div>
+      <div class="tlday">GREEDY &amp; INTERVALS &mdash; 4 problems</div>
+      <div class="tltitle">Sort first, then sweep</div>
+      <ul class="cklist" id="cl-gd">
+        <li onclick="tick(this,'gd')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>13. Meeting Rooms II</span></li>
+        <li onclick="tick(this,'gd')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>14. Merge Intervals</span></li>
+        <li onclick="tick(this,'gd')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>15. Jump Game</span></li>
+        <li onclick="tick(this,'gd')"><div class="chk"></div><span class="chlabel"><span class="tag medium" style="margin-right:.4rem">Med</span>16. Non-overlapping Intervals</span></li>
+      </ul>
+    </div>
+
+  </div></div>
+  <div class="tip">&#128640; <strong>One more part to go:</strong> Part 6 — Dynamic Programming (1D/2D DP, Knapsack, LCS, LIS, Coin Change, State Machine).</div>
+</div>
+
+</main>
+<script>
+function show(id,btn){document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('active')});document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('active')});var el=document.getElementById(id);if(el)el.classList.add('active');if(btn)btn.classList.add('active');window.scrollTo(0,0);}
+function toggleQA(el){el.parentElement.classList.toggle('open');}
+var totals={gr:6,uf:2,hp:4,gd:4};
+function tick(li,cat){
+  li.classList.toggle('done');
+  var list=document.getElementById('cl-'+cat);
+  if(!list)return;
+  var done=list.querySelectorAll('li.done').length;
+  var pct=Math.round(done/totals[cat]*100);
+  var pb=document.getElementById('pb-'+cat);
+  var pv=document.getElementById('pv-'+cat);
+  if(pb)pb.style.width=pct+'%';
+  if(pv)pv.textContent=pct+'%';
+  try{localStorage.setItem('dsa_p5_'+cat,done);}catch(e){}
+  var allDone=0,allTotal=0;
+  Object.keys(totals).forEach(function(c){
+    var l=document.getElementById('cl-'+c);
+    if(l)allDone+=l.querySelectorAll('li.done').length;
+    allTotal+=totals[c];
+  });
+  var apct=Math.round(allDone/allTotal*100);
+  document.getElementById('pb-all').style.width=apct+'%';
+  document.getElementById('pv-all').textContent=apct+'%';
+}
+</script>
+</body>
+</html>
