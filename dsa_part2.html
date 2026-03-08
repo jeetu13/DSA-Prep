@@ -84,6 +84,13 @@ th{background:var(--surface);color:var(--accent);font-family:'JetBrains Mono',mo
 td{padding:.5rem .75rem;border:1px solid var(--border);color:#94a3b8;vertical-align:top}
 tr:nth-child(even) td{background:rgba(13,25,35,.5)}
 @media(max-width:640px){main{padding:1rem}header{padding:1.5rem 1rem 1rem}nav{padding:.5rem .75rem}.iobox{grid-template-columns:1fr}}
+
+.home-bar{display:flex;align-items:center;gap:.75rem;padding:.55rem 1.5rem;background:#070b12;border-bottom:1px solid #111d2a}
+.home-btn{display:inline-flex;align-items:center;gap:.45rem;background:none;border:1px solid #1e2d3d;color:#64748b;font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:600;padding:.35rem .85rem;border-radius:4px;cursor:pointer;text-decoration:none;transition:all .18s}
+.home-btn:hover{color:#e2e8f0;border-color:#243447;background:rgba(255,255,255,.03)}
+.home-btn svg{width:13px;height:13px;flex-shrink:0}
+.part-crumb{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#1e2d3d;margin:0 .25rem}
+.part-label{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700}
 </style>
 </head>
 <body>
@@ -95,6 +102,14 @@ tr:nth-child(even) td{background:rgba(13,25,35,.5)}
     <span class="pill">Java &middot; Dry Runs</span><span class="pill">Logic Building</span><span class="pill">Part 2 / 6</span>
   </div>
 </header>
+<div class="home-bar">
+  <a href="index.html" class="home-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+    Home
+  </a>
+  <span class="part-crumb">&#9654;</span>
+  <span class="part-label" style="color:#a78bfa">Part 2</span>
+</div>
 <nav>
   <button class="nb active" onclick="show('overview',this)">Overview</button>
   <button class="nb" onclick="show('ll',this)">Linked List</button>
@@ -833,7 +848,7 @@ tr:nth-child(even) td{background:rgba(13,25,35,.5)}
 function show(id,btn){document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('active')});document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('active')});var el=document.getElementById(id);if(el)el.classList.add('active');if(btn)btn.classList.add('active');window.scrollTo(0,0);}
 function toggleQA(el){el.parentElement.classList.toggle('open');}
 var totals={ll:6,st:4,q:3,mn:2};
-function tick(li,cat){li.classList.toggle('done');var list=document.getElementById('cl-'+cat);if(!list)return;var done=list.querySelectorAll('li.done').length;var pct=Math.round(done/totals[cat]*100);var pb=document.getElementById('pb-'+cat);var pv=document.getElementById('pv-'+cat);if(pb)pb.style.width=pct+'%';if(pv)pv.textContent=pct+'%';var allDone=0,allTotal=0;Object.keys(totals).forEach(function(c){var l=document.getElementById('cl-'+c);if(l)allDone+=l.querySelectorAll('li.done').length;allTotal+=totals[c];});var apct=Math.round(allDone/allTotal*100);document.getElementById('pb-all').style.width=apct+'%';document.getElementById('pv-all').textContent=apct+'%';}
+function tick(li,cat){li.classList.toggle('done');var list=document.getElementById('cl-'+cat);if(!list)return;var done=list.querySelectorAll('li.done').length;var pct=Math.round(done/totals[cat]*100);var pb=document.getElementById('pb-'+cat);var pv=document.getElementById('pv-'+cat);if(pb)pb.style.width=pct+'%';if(pv)pv.textContent=pct+'%';try{localStorage.setItem('dsa_p2_'+cat,done);}catch(e){}var allDone=0,allTotal=0;Object.keys(totals).forEach(function(c){var l=document.getElementById('cl-'+c);if(l)allDone+=l.querySelectorAll('li.done').length;allTotal+=totals[c];});var apct=Math.round(allDone/allTotal*100);document.getElementById('pb-all').style.width=apct+'%';document.getElementById('pv-all').textContent=apct+'%';}
 </script>
 </body>
 </html>

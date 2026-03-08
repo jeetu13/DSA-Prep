@@ -95,6 +95,13 @@ tr:nth-child(even) td{background:rgba(13,25,35,.5)}
 .logic-step{font-size:.82rem;color:#94a3b8;margin-bottom:.45rem;line-height:1.5;padding-left:.5rem;border-left:2px solid rgba(0,229,255,.2)}
 .logic-step .lstep{color:var(--text);font-weight:600;margin-right:.4rem}
 .logic-pattern{margin-top:.75rem;padding:.5rem .75rem;background:rgba(124,58,237,.1);border-radius:4px;font-size:.78rem;color:#a78bfa;border:1px solid rgba(124,58,237,.2)}
+
+.home-bar{display:flex;align-items:center;gap:.75rem;padding:.55rem 1.5rem;background:#070b12;border-bottom:1px solid #111d2a}
+.home-btn{display:inline-flex;align-items:center;gap:.45rem;background:none;border:1px solid #1e2d3d;color:#64748b;font-family:'Outfit',sans-serif;font-size:.75rem;font-weight:600;padding:.35rem .85rem;border-radius:4px;cursor:pointer;text-decoration:none;transition:all .18s}
+.home-btn:hover{color:#e2e8f0;border-color:#243447;background:rgba(255,255,255,.03)}
+.home-btn svg{width:13px;height:13px;flex-shrink:0}
+.part-crumb{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:#1e2d3d;margin:0 .25rem}
+.part-label{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700}
 </style>
 </head>
 <body>
@@ -110,6 +117,14 @@ tr:nth-child(even) td{background:rgba(13,25,35,.5)}
   </div>
 </header>
 
+<div class="home-bar">
+  <a href="index.html" class="home-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+    Home
+  </a>
+  <span class="part-crumb">&#9654;</span>
+  <span class="part-label" style="color:#00e5ff">Part 1</span>
+</div>
 <nav>
   <button class="nb active" onclick="show('overview',this)">Overview</button>
   <button class="nb" onclick="show('arrays',this)">Arrays</button>
@@ -1122,6 +1137,7 @@ function tick(li,cat){
   var pv=document.getElementById('pv-'+cat);
   if(pb) pb.style.width=pct+'%';
   if(pv) pv.textContent=pct+'%';
+  try{localStorage.setItem('dsa_p1_'+cat,done);}catch(e){}
   var allDone=0,allTotal=0;
   Object.keys(totals).forEach(function(c){
     var l=document.getElementById('cl-'+c);
