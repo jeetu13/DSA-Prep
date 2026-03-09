@@ -95,6 +95,8 @@ h1 span{color:var(--muted)}
 .p2:hover .glow{background:radial-gradient(circle,rgba(167,139,250,.07),transparent 70%);opacity:1}
 .p3:hover .glow{background:radial-gradient(circle,rgba(16,185,129,.07),transparent 70%);opacity:1}
 .p4:hover .glow{background:radial-gradient(circle,rgba(245,158,11,.07),transparent 70%);opacity:1}
+.p5:hover .glow{background:radial-gradient(circle,rgba(244,114,182,.07),transparent 70%);opacity:1}
+.p6:hover .glow{background:radial-gradient(circle,rgba(251,146,60,.07),transparent 70%);opacity:1}
 
 /* FEATURES */
 .feats{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.65rem;margin-top:2rem}
@@ -120,10 +122,10 @@ footer em{color:var(--p1);font-style:normal}
     <h1><span>Master</span><em>DSA in Java</em></h1>
     <p class="sub">Every pattern. Every problem. Dry runs, logic building, and Java solutions &mdash; so you understand the <em style="color:var(--p4);font-style:normal">why</em>, not just the what.</p>
     <div class="hero-stats">
-      <div><div class="sn">119</div><div class="sl">Total Problems</div></div>
+      <div><div class="sn">99</div><div class="sl">Total Problems</div></div>
       <div><div class="sn">6</div><div class="sl">Parts Total</div></div>
-      <div><div class="sn">5</div><div class="sl">Parts Ready</div></div>
-      <div><div class="sn">18+</div><div class="sl">Patterns</div></div>
+      <div><div class="sn">6</div><div class="sl">Parts Ready</div></div>
+      <div><div class="sn">20+</div><div class="sl">Patterns</div></div>
     </div>
   </div>
 </div>
@@ -149,7 +151,7 @@ footer em{color:var(--p1);font-style:normal}
       <div class="tracker-meta">
         <h3>All Parts Combined</h3>
         <p>Tick off problems inside each part, then refresh this page to update the overall view.</p>
-        <div class="done-count" id="overall-count">0 / 84 problems done (Parts 1–5)</div>
+        <div class="done-count" id="overall-count">0 / 99 problems done (Parts 1–6)</div>
       </div>
     </div>
 
@@ -215,15 +217,16 @@ footer em{color:var(--p1);font-style:normal}
         <a href="dsa_part5.html" class="pp-link">Open Part 5 &#8594;</a>
       </div>
 
-      <!-- Part 6 locked -->
-      <div class="pp-card" style="opacity:.4">
+      <!-- Part 6 -->
+      <div class="pp-card">
         <div class="pp-top">
           <div class="pp-name" style="color:var(--p6)">Part 6 &middot; DP</div>
-          <span class="locked-tag">Upcoming</span>
+          <span class="pp-pct" style="color:var(--p6)" id="p6-pct">0%</span>
         </div>
-        <div class="pp-bar-wrap"><div class="pp-bar" style="background:var(--p6);width:0%"></div></div>
-        <div class="pp-detail"><span>0 / 15</span><span>5 patterns</span></div>
+        <div class="pp-bar-wrap"><div class="pp-bar" id="p6-bar" style="background:var(--p6)"></div></div>
+        <div class="pp-detail"><span id="p6-done">0 / 15</span><span>5 patterns</span></div>
         <div class="pp-topics">1D/2D DP &middot; Knapsack &middot; LCS &middot; LIS &middot; State Machine</div>
+        <a href="dsa_part6.html" class="pp-link">Open Part 6 &#8594;</a>
       </div>
 
     </div><!-- /parts-progress -->
@@ -276,12 +279,13 @@ footer em{color:var(--p1);font-style:normal}
       <div class="ptopics">DFS/BFS &middot; Union-Find &middot; Dijkstra &middot; Topological Sort &middot; Top-K &middot; Intervals</div>
       <div class="pft"><div class="ppills"><span class="ppill">16 problems</span><span class="ppill">5 patterns</span></div><span class="parr">&#8594;</span></div>
     </a>
-    <div class="pc p6 locked">
-      <div class="pch"><span class="pnum">PART 06</span><span class="pst ss">&#9711; Upcoming</span></div>
+    <a href="dsa_part6.html" class="pc p6">
+      <div class="glow"></div>
+      <div class="pch"><span class="pnum">PART 06</span><span class="pst sd">&#10003; Ready</span></div>
       <div class="ptitle">Dynamic Programming</div>
-      <div class="ptopics">1D/2D DP &middot; Knapsack &middot; LCS &middot; LIS &middot; Coin Change &middot; State Machine</div>
-      <div class="pft"><div class="ppills"><span class="ppill">15 problems</span><span class="ppill">5 patterns</span></div><span class="parr" style="opacity:.3">&#8594;</span></div>
-    </div>
+      <div class="ptopics">1D/2D DP &middot; Knapsack &middot; LCS &middot; LIS &middot; Coin Change &middot; State Machine &middot; Interval DP</div>
+      <div class="pft"><div class="ppills"><span class="ppill">15 problems</span><span class="ppill">5 patterns</span></div><span class="parr">&#8594;</span></div>
+    </a>
   </div>
 
   <div class="lbl" style="margin-top:3rem">Every Problem Includes</div>
@@ -295,7 +299,7 @@ footer em{color:var(--p1);font-style:normal}
   </div>
 </div>
 
-<footer>Parts <em>1&ndash;4</em> available &nbsp;&middot;&nbsp; Parts 5 &amp; 6 coming soon &nbsp;&middot;&nbsp; 119 problems total</footer>
+<footer>Parts <em>1&ndash;4</em> available &nbsp;&middot;&nbsp; All 6 parts complete &nbsp;&middot;&nbsp; 99 problems</footer>
 
 <script>
 // Read localStorage keys written by each part's tick() function
@@ -308,6 +312,7 @@ var config = {
   p3: { total: 15, cats: ['bs','rc','bt'],              prefix: 'p3' },
   p4: { total: 18, cats: ['tr','ps','bst','adv'],       prefix: 'p4' },
   p5: { total: 16, cats: ['gr','uf','hp','gd'],         prefix: 'p5' },
+  p6: { total: 15, cats: ['d1','d2','ks','sm'],          prefix: 'p6' },
 };
 
 // Each part saves done count per category in localStorage as "dsa_pX_cat" = number
@@ -321,9 +326,9 @@ function getPartDone(prefix, cats) {
 }
 
 function updateTracker() {
-  var grandDone = 0, grandTotal = 84;
+  var grandDone = 0, grandTotal = 99;
 
-  ['p1','p2','p3','p4','p5'].forEach(function(p) {
+  ['p1','p2','p3','p4','p5','p6'].forEach(function(p) {
     var cfg = config[p];
     var done = getPartDone(cfg.prefix, cfg.cats);
     grandDone += done;
