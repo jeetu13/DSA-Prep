@@ -1,0 +1,2584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Design & Design Patterns — Interview Prep</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07090f;--surface:#0d1117;--card:#111827;--card2:#0f1923;--border:#1e2d3d;--accent:#00e5ff;--accent2:#7c3aed;--accent3:#10b981;--warn:#f59e0b;--danger:#ef4444;--pink:#f472b6;--orange:#fb923c;--text:#e2e8f0;--muted:#64748b;--code-bg:#060d14}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh}
+header{background:linear-gradient(135deg,#07090f 0%,#0d1320 60%,#07090f 100%);border-bottom:1px solid var(--border);padding:2rem 2rem 1.5rem;position:relative;overflow:hidden}
+header::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(124,58,237,.09) 0%,transparent 65%);pointer-events:none}
+header::after{content:'';position:absolute;bottom:-60px;left:30%;width:300px;height:300px;background:radial-gradient(circle,rgba(0,229,255,.05) 0%,transparent 65%);pointer-events:none}
+.hbadge{display:inline-flex;align-items:center;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.3);color:#a78bfa;font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.3rem .8rem;border-radius:2px;letter-spacing:.12em;margin-bottom:.9rem}
+h1{font-size:clamp(1.7rem,4vw,2.6rem);font-weight:800;letter-spacing:-.03em;line-height:1.1}
+h1 em{color:var(--accent2);font-style:normal}
+h1 small{display:block;font-size:.45em;font-weight:400;color:var(--muted);margin-top:.3rem}
+.hpills{margin-top:1rem;display:flex;gap:.6rem;flex-wrap:wrap}
+.pill{background:var(--surface);border:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.2rem .65rem;border-radius:3px;color:var(--muted)}
+nav{display:flex;gap:.25rem;padding:.75rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:100}
+nav::-webkit-scrollbar{display:none}
+.nb{background:none;border:1px solid transparent;color:var(--muted);font-family:'Outfit',sans-serif;font-size:.78rem;font-weight:600;padding:.4rem 1rem;border-radius:4px;cursor:pointer;white-space:nowrap;transition:all .18s}
+.nb:hover{color:var(--text);border-color:var(--border)}
+.nb.active{color:#a78bfa;border-color:var(--accent2);background:rgba(124,58,237,.08)}
+main{max-width:1020px;margin:0 auto;padding:2rem}
+.sec{display:none}
+.sec.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.stitle{font-size:1.5rem;font-weight:800;margin-bottom:.4rem;letter-spacing:-.02em}
+.stitle em{color:var(--accent2);font-style:normal}
+.ssub{color:var(--muted);font-size:.85rem;margin-bottom:1.5rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.4rem;margin-bottom:1rem}
+.card-purple{background:linear-gradient(135deg,#0f0d1e 0%,#111827 100%);border:1px solid rgba(124,58,237,.25);border-radius:10px;padding:1.4rem;margin-bottom:1rem}
+.card-cyan{background:linear-gradient(135deg,#060f14 0%,#0d1117 100%);border:1px solid rgba(0,229,255,.2);border-radius:10px;padding:1.4rem;margin-bottom:1rem}
+.card-green{background:linear-gradient(135deg,#06120f 0%,#0d1117 100%);border:1px solid rgba(16,185,129,.2);border-radius:10px;padding:1.4rem;margin-bottom:1rem}
+.tag{font-family:'JetBrains Mono',monospace;font-size:.63rem;font-weight:700;padding:.18rem .55rem;border-radius:3px;letter-spacing:.08em;text-transform:uppercase}
+.t-solid{background:rgba(124,58,237,.15);color:#a78bfa;border:1px solid rgba(124,58,237,.3)}
+.t-creational{background:rgba(0,229,255,.1);color:var(--accent);border:1px solid rgba(0,229,255,.25)}
+.t-structural{background:rgba(16,185,129,.12);color:var(--accent3);border:1px solid rgba(16,185,129,.25)}
+.t-behavioral{background:rgba(245,158,11,.12);color:var(--warn);border:1px solid rgba(245,158,11,.25)}
+.t-sysdesign{background:rgba(244,114,182,.12);color:var(--pink);border:1px solid rgba(244,114,182,.25)}
+.qa{border:1px solid var(--border);border-radius:8px;margin-bottom:.6rem;overflow:hidden}
+.qq{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.2rem;cursor:pointer;background:var(--card2);transition:background .15s;gap:1rem}
+.qq:hover{background:#131e2d}
+.qq h3{font-size:.92rem;font-weight:600;line-height:1.4}
+.qarr{color:var(--muted);font-size:.75rem;flex-shrink:0;transition:transform .2s}
+.qa.open .qarr{transform:rotate(180deg)}
+.qa-body{display:none;padding:1.2rem;border-top:1px solid var(--border);background:var(--card)}
+.qa.open .qa-body{display:block}
+pre{background:var(--code-bg);border:1px solid #1a2535;border-radius:6px;padding:1.1rem 1.2rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.76rem;line-height:1.7;margin:.75rem 0;white-space:pre}
+.kw{color:#ff7b72}.type{color:#79c0ff}.fn{color:#d2a8ff}.str{color:#a5d6ff}.num{color:#f2cc60}.cmt{color:#4a6174;font-style:italic}.ann{color:#ffa657}.iface{color:#56d364}
+.tip{background:rgba(0,229,255,.05);border-left:3px solid var(--accent);padding:.7rem 1rem;border-radius:0 5px 5px 0;margin:.75rem 0;font-size:.83rem;color:#94a3b8}
+.warn-box{background:rgba(245,158,11,.05);border-left:3px solid var(--warn);padding:.7rem 1rem;border-radius:0 5px 5px 0;margin:.75rem 0;font-size:.83rem;color:#94a3b8}
+.note{background:rgba(124,58,237,.05);border-left:3px solid #7c3aed;padding:.7rem 1rem;border-radius:0 5px 5px 0;margin:.75rem 0;font-size:.83rem;color:#94a3b8}
+.good{background:rgba(16,185,129,.05);border-left:3px solid var(--accent3);padding:.7rem 1rem;border-radius:0 5px 5px 0;margin:.75rem 0;font-size:.83rem;color:#94a3b8}
+h4{font-size:.95rem;font-weight:700;margin:1rem 0 .45rem;color:var(--text)}
+h5{font-size:.82rem;font-weight:700;margin:.8rem 0 .35rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-family:'JetBrains Mono',monospace}
+p{font-size:.86rem;line-height:1.7;color:#94a3b8;margin-bottom:.6rem}
+ul,ol{padding-left:1.4rem;margin:.5rem 0}
+li{font-size:.84rem;line-height:1.65;color:#94a3b8;margin-bottom:.25rem}
+strong{color:var(--text)}
+/* Principle Cards */
+.principle-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin:1rem 0}
+.pcrd{border-radius:10px;padding:1.2rem;position:relative;overflow:hidden}
+.pcrd::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:.15}
+.pcrd-s{background:linear-gradient(135deg,#0f0b1e,#111827);border:1px solid rgba(124,58,237,.3)}
+.pcrd-s::before{background:#7c3aed}
+.pcrd-o{background:linear-gradient(135deg,#060f14,#0d1117);border:1px solid rgba(0,229,255,.25)}
+.pcrd-o::before{background:#00e5ff}
+.pcrd-l{background:linear-gradient(135deg,#0a1208,#0d1117);border:1px solid rgba(16,185,129,.25)}
+.pcrd-l::before{background:#10b981}
+.pcrd-i{background:linear-gradient(135deg,#12090a,#111827);border:1px solid rgba(244,114,182,.25)}
+.pcrd-i::before{background:#f472b6}
+.pcrd-d{background:linear-gradient(135deg,#120e05,#111827);border:1px solid rgba(245,158,11,.25)}
+.pcrd-d::before{background:#f59e0b}
+.pletter{font-size:2.5rem;font-weight:900;line-height:1;margin-bottom:.3rem;font-family:'Outfit',sans-serif}
+.pcrd-s .pletter{color:#a78bfa}
+.pcrd-o .pletter{color:var(--accent)}
+.pcrd-l .pletter{color:var(--accent3)}
+.pcrd-i .pletter{color:var(--pink)}
+.pcrd-d .pletter{color:var(--warn)}
+.pname{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.6rem;font-family:'JetBrains Mono',monospace;color:var(--muted)}
+.pdesc{font-size:.81rem;line-height:1.6;color:#94a3b8;margin-bottom:.7rem}
+/* Pattern meta */
+.pattern-header{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1rem}
+.pattern-icon{width:42px;height:42px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.pattern-meta h4{font-size:1rem;font-weight:700;margin:0 0 .3rem}
+.pattern-meta p{font-size:.81rem;margin:0;color:var(--muted)}
+.uml{background:var(--code-bg);border:1px solid #1a2535;border-radius:6px;padding:1rem;margin:.75rem 0;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#56d364;line-height:1.5}
+/* System Design */
+.arch-diagram{background:var(--code-bg);border:1px solid #1a2535;border-radius:8px;padding:1.2rem;margin:.8rem 0;font-family:'JetBrains Mono',monospace;font-size:.72rem;line-height:1.8;color:#94a3b8}
+.arch-diagram .box{color:var(--accent);font-weight:700}
+.arch-diagram .arrow{color:var(--muted)}
+.arch-diagram .label{color:#a78bfa}
+.tradeoff-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin:.8rem 0}
+.tradeoff-pro{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:7px;padding:.9rem}
+.tradeoff-con{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:7px;padding:.9rem}
+.tradeoff-pro h5{color:var(--accent3);margin:0 0 .5rem}
+.tradeoff-con h5{color:var(--danger);margin:0 0 .5rem}
+/* Stats bar */
+.statrow{display:flex;align-items:center;gap:.8rem;margin:.4rem 0;font-size:.8rem}
+.statbar-wrap{flex:1;background:#1a2535;border-radius:10px;height:5px;overflow:hidden}
+.statbar{height:100%;border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:.79rem;margin:.75rem 0}
+th{background:var(--surface);color:#a78bfa;font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.55rem .75rem;text-align:left;border:1px solid var(--border)}
+td{padding:.5rem .75rem;border:1px solid var(--border);color:#94a3b8;vertical-align:top}
+tr:hover td{background:rgba(255,255,255,.02)}
+.badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.6rem;padding:.15rem .45rem;border-radius:3px;margin-left:.4rem}
+.b-yes{background:rgba(16,185,129,.15);color:var(--accent3)}
+.b-no{background:rgba(239,68,68,.12);color:var(--danger)}
+.section-nav{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.snav-btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.68rem;padding:.3rem .75rem;border-radius:4px;cursor:pointer;transition:all .15s}
+.snav-btn:hover,.snav-btn.active{border-color:var(--accent2);color:#a78bfa;background:rgba(124,58,237,.07)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hbadge">⬡ SYSTEM DESIGN &amp; PATTERNS</div>
+  <h1>Software Design <em>Mastery</em><small>SOLID · Design Patterns · System Design · Interview Prep</small></h1>
+  <div class="hpills">
+    <span class="pill">☕ Java</span>
+    <span class="pill">🏗️ Architecture</span>
+    <span class="pill">🔷 SOLID</span>
+    <span class="pill">🧩 23 GoF Patterns</span>
+    <span class="pill">⚙️ System Design</span>
+    <span class="pill">🎯 Industry Examples</span>
+  </div>
+</header>
+
+<nav>
+  <button class="nb active" onclick="show('solid')">🔷 SOLID Principles</button>
+  <button class="nb" onclick="show('creational')">🏗️ Creational</button>
+  <button class="nb" onclick="show('structural')">🔗 Structural</button>
+  <button class="nb" onclick="show('behavioral')">🎭 Behavioral</button>
+  <button class="nb" onclick="show('sysdesign')">⚙️ System Design</button>
+  <button class="nb" onclick="show('concepts')">📐 Core Concepts</button>
+  <button class="nb" onclick="show('casestudies')">🏢 Case Studies</button>
+</nav>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION: SOLID -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="solid" class="sec active">
+  <div class="stitle">🔷 <em>SOLID</em> Principles</div>
+  <div class="ssub">5 object-oriented design principles that lead to maintainable, scalable, testable software</div>
+
+  <div class="principle-grid">
+    <div class="pcrd pcrd-s">
+      <div class="pletter">S</div>
+      <div class="pname">Single Responsibility</div>
+      <div class="pdesc">A class should have only <strong>one reason to change</strong>. Each class does exactly one thing.</div>
+      <span class="tag t-solid">SRP</span>
+    </div>
+    <div class="pcrd pcrd-o">
+      <div class="pletter">O</div>
+      <div class="pname">Open / Closed</div>
+      <div class="pdesc"><strong>Open for extension</strong>, closed for modification. Add behavior without changing existing code.</div>
+      <span class="tag t-solid">OCP</span>
+    </div>
+    <div class="pcrd pcrd-l">
+      <div class="pletter">L</div>
+      <div class="pname">Liskov Substitution</div>
+      <div class="pdesc">Subtypes must be <strong>substitutable</strong> for their base types without breaking the program.</div>
+      <span class="tag t-solid">LSP</span>
+    </div>
+    <div class="pcrd pcrd-i">
+      <div class="pletter">I</div>
+      <div class="pname">Interface Segregation</div>
+      <div class="pdesc">Clients should <strong>not be forced to depend</strong> on interfaces they don't use. Prefer small, focused interfaces.</div>
+      <span class="tag t-solid">ISP</span>
+    </div>
+    <div class="pcrd pcrd-d">
+      <div class="pletter">D</div>
+      <div class="pname">Dependency Inversion</div>
+      <div class="pdesc">Depend on <strong>abstractions, not concretions</strong>. High-level modules should not depend on low-level modules.</div>
+      <span class="tag t-solid">DIP</span>
+    </div>
+  </div>
+
+  <!-- S - SRP -->
+  <div class="qa" id="srp">
+    <div class="qq" onclick="toggle('srp')">
+      <h3><span class="tag t-solid" style="margin-right:.6rem">S</span> Single Responsibility Principle</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <p><strong>Definition:</strong> "A class should have only one reason to change." — Robert C. Martin</p>
+      <p>In practice: every class, function, or module should focus on a single concern. This makes code easier to understand, test, and modify.</p>
+
+      <div class="warn-box">❌ <strong>Violation:</strong> A <code>User</code> class that handles authentication, profile management, email sending, and database persistence — it has many reasons to change.</div>
+
+      <h5>❌ BAD — violates SRP</h5>
+<pre><span class="cmt">// This class does TOO many things</span>
+<span class="kw">public class</span> <span class="type">User</span> {
+    <span class="kw">private</span> <span class="type">String</span> name;
+    <span class="kw">private</span> <span class="type">String</span> email;
+
+    <span class="cmt">// Reason 1: User data validation</span>
+    <span class="kw">public boolean</span> <span class="fn">validateEmail</span>() {
+        <span class="kw">return</span> email.contains(<span class="str">"@"</span>);
+    }
+
+    <span class="cmt">// Reason 2: Database persistence</span>
+    <span class="kw">public void</span> <span class="fn">saveToDatabase</span>() {
+        <span class="cmt">// SQL logic here</span>
+        <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"INSERT INTO users..."</span>);
+    }
+
+    <span class="cmt">// Reason 3: Email notification</span>
+    <span class="kw">public void</span> <span class="fn">sendWelcomeEmail</span>() {
+        <span class="cmt">// SMTP logic here</span>
+        <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"Sending email to: "</span> + email);
+    }
+
+    <span class="cmt">// Reason 4: Report generation</span>
+    <span class="kw">public</span> <span class="type">String</span> <span class="fn">generateReport</span>() {
+        <span class="kw">return</span> <span class="str">"User Report: "</span> + name;
+    }
+}</pre>
+
+      <h5>✅ GOOD — follows SRP</h5>
+<pre><span class="cmt">// Each class has one clear responsibility</span>
+
+<span class="kw">public class</span> <span class="type">User</span> {                          <span class="cmt">// Holds user data only</span>
+    <span class="kw">private</span> <span class="type">String</span> name;
+    <span class="kw">private</span> <span class="type">String</span> email;
+    <span class="kw">public</span> <span class="type">String</span> <span class="fn">getName</span>()  { <span class="kw">return</span> name;  }
+    <span class="kw">public</span> <span class="type">String</span> <span class="fn">getEmail</span>() { <span class="kw">return</span> email; }
+}
+
+<span class="kw">public class</span> <span class="type">UserValidator</span> {               <span class="cmt">// Validation logic</span>
+    <span class="kw">public boolean</span> <span class="fn">isValidEmail</span>(<span class="type">User</span> user) {
+        <span class="kw">return</span> user.<span class="fn">getEmail</span>().contains(<span class="str">"@"</span>);
+    }
+}
+
+<span class="kw">public class</span> <span class="type">UserRepository</span> {             <span class="cmt">// DB persistence</span>
+    <span class="kw">public void</span> <span class="fn">save</span>(<span class="type">User</span> user) {
+        <span class="cmt">// SQL INSERT logic</span>
+    }
+    <span class="kw">public</span> <span class="type">User</span> <span class="fn">findById</span>(<span class="kw">int</span> id) { <span class="kw">return null</span>; }
+}
+
+<span class="kw">public class</span> <span class="type">EmailService</span> {               <span class="cmt">// Email sending</span>
+    <span class="kw">public void</span> <span class="fn">sendWelcome</span>(<span class="type">User</span> user) {
+        <span class="cmt">// SMTP logic</span>
+    }
+}
+
+<span class="kw">public class</span> <span class="type">UserReportGenerator</span> {         <span class="cmt">// Report generation</span>
+    <span class="kw">public</span> <span class="type">String</span> <span class="fn">generate</span>(<span class="type">User</span> user) {
+        <span class="kw">return</span> <span class="str">"User Report: "</span> + user.<span class="fn">getName</span>();
+    }
+}</pre>
+
+      <div class="good">✅ <strong>Industry Context:</strong> In microservices, SRP maps directly to service boundaries. Each service (UserService, NotificationService, ReportingService) has a single business capability. Spring Boot services naturally enforce SRP through @Service, @Repository, @Component separation.</div>
+    </div>
+  </div>
+
+  <!-- O - OCP -->
+  <div class="qa" id="ocp">
+    <div class="qq" onclick="toggle('ocp')">
+      <h3><span class="tag t-solid" style="margin-right:.6rem">O</span> Open/Closed Principle</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <p><strong>Definition:</strong> Software entities should be <strong>open for extension but closed for modification.</strong></p>
+      <p>Achieve this using <strong>abstractions (interfaces/abstract classes)</strong> so new behavior can be added by creating new classes rather than modifying existing ones.</p>
+
+      <div class="warn-box">❌ <strong>Violation:</strong> Every time you add a new payment method to a <code>PaymentProcessor</code>, you modify the existing switch/if chain — breaking OCP.</div>
+
+<pre><span class="cmt">// ❌ BAD: Must modify this class every time new payment type is added</span>
+<span class="kw">public class</span> <span class="type">PaymentProcessor</span> {
+    <span class="kw">public void</span> <span class="fn">processPayment</span>(<span class="type">String</span> type, <span class="kw">double</span> amount) {
+        <span class="kw">if</span> (type.equals(<span class="str">"CREDIT_CARD"</span>)) {
+            <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"Processing credit card: $"</span> + amount);
+        } <span class="kw">else if</span> (type.equals(<span class="str">"PAYPAL"</span>)) {
+            <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"Processing PayPal: $"</span> + amount);
+        } <span class="kw">else if</span> (type.equals(<span class="str">"CRYPTO"</span>)) {   <span class="cmt">// Added later — forces modification!</span>
+            <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"Processing Crypto: $"</span> + amount);
+        }
+    }
+}</pre>
+
+<pre><span class="cmt">// ✅ GOOD: Open for extension (new class), closed for modification</span>
+
+<span class="kw">public interface</span> <span class="iface">PaymentMethod</span> {
+    <span class="kw">void</span> <span class="fn">process</span>(<span class="kw">double</span> amount);
+}
+
+<span class="kw">public class</span> <span class="type">CreditCardPayment</span> <span class="kw">implements</span> <span class="iface">PaymentMethod</span> {
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">process</span>(<span class="kw">double</span> amount) {
+        <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"Charging credit card: $"</span> + amount);
+        <span class="cmt">// Stripe/Braintree integration</span>
+    }
+}
+
+<span class="kw">public class</span> <span class="type">PayPalPayment</span> <span class="kw">implements</span> <span class="iface">PaymentMethod</span> {
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">process</span>(<span class="kw">double</span> amount) {
+        <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"PayPal transfer: $"</span> + amount);
+    }
+}
+
+<span class="cmt">// Adding Crypto? Just create a new class — no existing code changes!</span>
+<span class="kw">public class</span> <span class="type">CryptoPayment</span> <span class="kw">implements</span> <span class="iface">PaymentMethod</span> {
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">process</span>(<span class="kw">double</span> amount) {
+        <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"Bitcoin transfer: $"</span> + amount);
+    }
+}
+
+<span class="kw">public class</span> <span class="type">PaymentProcessor</span> {
+    <span class="kw">public void</span> <span class="fn">processPayment</span>(<span class="iface">PaymentMethod</span> method, <span class="kw">double</span> amount) {
+        method.<span class="fn">process</span>(amount);   <span class="cmt">// Never needs to change</span>
+    }
+}</pre>
+
+      <div class="good">✅ <strong>Real World:</strong> Java's <code>Comparator</code> interface, Spring's <code>HandlerInterceptor</code>, and JPA's <code>Specification</code> pattern all follow OCP — you extend behavior without touching framework code.</div>
+    </div>
+  </div>
+
+  <!-- L - LSP -->
+  <div class="qa" id="lsp">
+    <div class="qq" onclick="toggle('lsp')">
+      <h3><span class="tag t-solid" style="margin-right:.6rem">L</span> Liskov Substitution Principle</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <p><strong>Definition:</strong> If <code>S</code> is a subtype of <code>T</code>, then objects of type <code>T</code> may be replaced with objects of type <code>S</code> without altering the correctness of the program.</p>
+      <p>In simple terms: <strong>derived classes must be fully substitutable for base classes.</strong> A subclass should honor the contract of the parent class.</p>
+
+      <div class="warn-box">❌ <strong>Classic Violation:</strong> Square extends Rectangle. Setting width on a Square secretly changes height too — breaks the Rectangle contract.</div>
+
+<pre><span class="cmt">// ❌ The classic Rectangle–Square violation</span>
+<span class="kw">public class</span> <span class="type">Rectangle</span> {
+    <span class="kw">protected int</span> width, height;
+    <span class="kw">public void</span> <span class="fn">setWidth</span>(<span class="kw">int</span> w)  { <span class="kw">this</span>.width  = w; }
+    <span class="kw">public void</span> <span class="fn">setHeight</span>(<span class="kw">int</span> h) { <span class="kw">this</span>.height = h; }
+    <span class="kw">public int</span>  <span class="fn">area</span>()            { <span class="kw">return</span> width * height; }
+}
+
+<span class="kw">public class</span> <span class="type">Square</span> <span class="kw">extends</span> <span class="type">Rectangle</span> {
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">setWidth</span>(<span class="kw">int</span> w)  { <span class="kw">this</span>.width = <span class="kw">this</span>.height = w; } <span class="cmt">// 💥 Surprise!</span>
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">setHeight</span>(<span class="kw">int</span> h) { <span class="kw">this</span>.width = <span class="kw">this</span>.height = h; } <span class="cmt">// 💥 Surprise!</span>
+}
+
+<span class="cmt">// Code that works for Rectangle breaks for Square!</span>
+<span class="kw">void</span> <span class="fn">resize</span>(<span class="type">Rectangle</span> r) {
+    r.<span class="fn">setWidth</span>(<span class="num">5</span>);
+    r.<span class="fn">setHeight</span>(<span class="num">10</span>);
+    <span class="cmt">// Expected area = 50, but Square gives 100 — LSP violated!</span>
+    assert r.<span class="fn">area</span>() == <span class="num">50</span>;
+}</pre>
+
+<pre><span class="cmt">// ✅ GOOD: Model shapes independently using abstraction</span>
+<span class="kw">public interface</span> <span class="iface">Shape</span> {
+    <span class="kw">int</span> <span class="fn">area</span>();
+}
+
+<span class="kw">public class</span> <span class="type">Rectangle</span> <span class="kw">implements</span> <span class="iface">Shape</span> {
+    <span class="kw">private int</span> width, height;
+    <span class="kw">public</span> <span class="type">Rectangle</span>(<span class="kw">int</span> w, <span class="kw">int</span> h) { width = w; height = h; }
+    <span class="ann">@Override</span> <span class="kw">public int</span> <span class="fn">area</span>() { <span class="kw">return</span> width * height; }
+}
+
+<span class="kw">public class</span> <span class="type">Square</span> <span class="kw">implements</span> <span class="iface">Shape</span> {
+    <span class="kw">private int</span> side;
+    <span class="kw">public</span> <span class="type">Square</span>(<span class="kw">int</span> s) { side = s; }
+    <span class="ann">@Override</span> <span class="kw">public int</span> <span class="fn">area</span>() { <span class="kw">return</span> side * side; }
+}
+<span class="cmt">// Now both are interchangeable via Shape — no surprises!</span></pre>
+
+      <div class="good">✅ <strong>Rule of thumb:</strong> If you find yourself using <code>instanceof</code> checks in methods that accept a base type, you're likely violating LSP. Fix by refactoring the hierarchy or using polymorphism properly.</div>
+    </div>
+  </div>
+
+  <!-- I - ISP -->
+  <div class="qa" id="isp">
+    <div class="qq" onclick="toggle('isp')">
+      <h3><span class="tag t-solid" style="margin-right:.6rem">I</span> Interface Segregation Principle</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <p><strong>Definition:</strong> Clients should not be forced to depend on interfaces they do not use. Prefer multiple specific interfaces over one general-purpose "fat" interface.</p>
+
+      <div class="warn-box">❌ <strong>Violation:</strong> A single <code>Worker</code> interface with methods <code>work()</code>, <code>eat()</code>, <code>sleep()</code> forces Robot classes to implement <code>eat()</code> and <code>sleep()</code> with empty/error bodies.</div>
+
+<pre><span class="cmt">// ❌ BAD: Fat interface forces irrelevant methods</span>
+<span class="kw">public interface</span> <span class="iface">Worker</span> {
+    <span class="kw">void</span> <span class="fn">work</span>();
+    <span class="kw">void</span> <span class="fn">eat</span>();    <span class="cmt">// Robots don't eat!</span>
+    <span class="kw">void</span> <span class="fn">sleep</span>();  <span class="cmt">// Robots don't sleep!</span>
+}
+
+<span class="kw">public class</span> <span class="type">Robot</span> <span class="kw">implements</span> <span class="iface">Worker</span> {
+    <span class="ann">@Override</span> <span class="kw">public void</span> <span class="fn">work</span>()  { <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"Working 24/7"</span>); }
+    <span class="ann">@Override</span> <span class="kw">public void</span> <span class="fn">eat</span>()   { <span class="kw">throw new</span> <span class="type">UnsupportedOperationException</span>(); } <span class="cmt">// 💥</span>
+    <span class="ann">@Override</span> <span class="kw">public void</span> <span class="fn">sleep</span>() { <span class="kw">throw new</span> <span class="type">UnsupportedOperationException</span>(); } <span class="cmt">// 💥</span>
+}</pre>
+
+<pre><span class="cmt">// ✅ GOOD: Segregated interfaces</span>
+<span class="kw">public interface</span> <span class="iface">Workable</span>  { <span class="kw">void</span> <span class="fn">work</span>();  }
+<span class="kw">public interface</span> <span class="iface">Eatable</span>   { <span class="kw">void</span> <span class="fn">eat</span>();   }
+<span class="kw">public interface</span> <span class="iface">Sleepable</span> { <span class="kw">void</span> <span class="fn">sleep</span>(); }
+
+<span class="kw">public class</span> <span class="type">HumanWorker</span> <span class="kw">implements</span> <span class="iface">Workable</span>, <span class="iface">Eatable</span>, <span class="iface">Sleepable</span> {
+    <span class="ann">@Override</span> <span class="kw">public void</span> <span class="fn">work</span>()  { <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"Human working"</span>);  }
+    <span class="ann">@Override</span> <span class="kw">public void</span> <span class="fn">eat</span>()   { <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"Human eating"</span>);   }
+    <span class="ann">@Override</span> <span class="kw">public void</span> <span class="fn">sleep</span>() { <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"Human sleeping"</span>); }
+}
+
+<span class="kw">public class</span> <span class="type">Robot</span> <span class="kw">implements</span> <span class="iface">Workable</span> {  <span class="cmt">// Only what it needs!</span>
+    <span class="ann">@Override</span> <span class="kw">public void</span> <span class="fn">work</span>() { <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"Robot working 24/7"</span>); }
+}
+
+<span class="cmt">// Industry example: Java's Serializable, Comparable, Cloneable are all segregated</span>
+<span class="cmt">// Spring's ApplicationListener&lt;E&gt;, InitializingBean, DisposableBean are ISP-compliant</span></pre>
+
+      <div class="tip">💡 <strong>Test:</strong> If implementing an interface forces you to write <code>throw new UnsupportedOperationException()</code> — ISP is being violated. Break the interface up.</div>
+    </div>
+  </div>
+
+  <!-- D - DIP -->
+  <div class="qa" id="dip">
+    <div class="qq" onclick="toggle('dip')">
+      <h3><span class="tag t-solid" style="margin-right:.6rem">D</span> Dependency Inversion Principle</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <p><strong>Definition:</strong> High-level modules should not depend on low-level modules. Both should depend on abstractions. Abstractions should not depend on details; details should depend on abstractions.</p>
+
+<pre><span class="cmt">// ❌ BAD: OrderService directly depends on concrete MySQLDatabase</span>
+<span class="kw">public class</span> <span class="type">MySQLDatabase</span> {
+    <span class="kw">public void</span> <span class="fn">save</span>(<span class="type">String</span> data) { <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"MySQL: "</span> + data); }
+}
+
+<span class="kw">public class</span> <span class="type">OrderService</span> {
+    <span class="kw">private</span> <span class="type">MySQLDatabase</span> db = <span class="kw">new</span> <span class="type">MySQLDatabase</span>();  <span class="cmt">// Tightly coupled! 💥</span>
+    <span class="kw">public void</span> <span class="fn">placeOrder</span>(<span class="type">String</span> order) {
+        db.<span class="fn">save</span>(order);
+    }
+}</pre>
+
+<pre><span class="cmt">// ✅ GOOD: Both depend on the Database abstraction</span>
+<span class="kw">public interface</span> <span class="iface">Database</span> {
+    <span class="kw">void</span> <span class="fn">save</span>(<span class="type">String</span> data);
+}
+
+<span class="kw">public class</span> <span class="type">MySQLDatabase</span> <span class="kw">implements</span> <span class="iface">Database</span> {
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">save</span>(<span class="type">String</span> data) { <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"MySQL: "</span> + data); }
+}
+
+<span class="kw">public class</span> <span class="type">MongoDatabase</span> <span class="kw">implements</span> <span class="iface">Database</span> {
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">save</span>(<span class="type">String</span> data) { <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"MongoDB: "</span> + data); }
+}
+
+<span class="kw">public class</span> <span class="type">OrderService</span> {
+    <span class="kw">private final</span> <span class="iface">Database</span> db;    <span class="cmt">// Depends on abstraction!</span>
+
+    <span class="kw">public</span> <span class="type">OrderService</span>(<span class="iface">Database</span> db) {  <span class="cmt">// Injected via constructor (Spring @Autowired)</span>
+        <span class="kw">this</span>.db = db;
+    }
+
+    <span class="kw">public void</span> <span class="fn">placeOrder</span>(<span class="type">String</span> order) {
+        db.<span class="fn">save</span>(order);   <span class="cmt">// Switch from MySQL to Mongo without touching this class!</span>
+    }
+}
+
+<span class="cmt">// Usage — Spring Boot does this automatically with @Autowired</span>
+<span class="type">Database</span> db = <span class="kw">new</span> <span class="type">MySQLDatabase</span>();
+<span class="type">OrderService</span> service = <span class="kw">new</span> <span class="type">OrderService</span>(db);</pre>
+
+      <div class="good">✅ <strong>Spring Context:</strong> Spring's IoC container IS dependency inversion at scale. <code>@Service</code>, <code>@Repository</code>, <code>@Component</code> — you wire abstractions, Spring provides implementations at runtime. This is DIP applied to an entire framework.</div>
+
+      <table>
+        <tr><th>Concept</th><th>Meaning</th><th>Example</th></tr>
+        <tr><td>High-level module</td><td>Business logic</td><td>OrderService, PaymentService</td></tr>
+        <tr><td>Low-level module</td><td>Infrastructure detail</td><td>MySQLDatabase, SMTP client</td></tr>
+        <tr><td>Abstraction</td><td>Interface/abstract class</td><td>Database, EmailSender</td></tr>
+        <tr><td>Dependency Injection</td><td>Mechanism to achieve DIP</td><td>Constructor injection, Spring @Autowired</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- SOLID Cheat Sheet -->
+  <div class="card-purple" style="margin-top:1.5rem">
+    <h4 style="color:#a78bfa;margin-top:0">📋 SOLID Quick Reference — Interview Cheat Sheet</h4>
+    <table>
+      <tr><th>Principle</th><th>One-liner</th><th>Fix with</th><th>Violation Signal</th></tr>
+      <tr><td><strong style="color:#a78bfa">SRP</strong></td><td>One class, one job</td><td>Extract classes/services</td><td>Class has many unrelated methods</td></tr>
+      <tr><td><strong style="color:var(--accent)">OCP</strong></td><td>Extend, don't modify</td><td>Interfaces + polymorphism</td><td>if/switch on type fields</td></tr>
+      <tr><td><strong style="color:var(--accent3)">LSP</strong></td><td>Subtypes must behave like parent</td><td>Correct inheritance hierarchy</td><td>instanceof checks, throws in overrides</td></tr>
+      <tr><td><strong style="color:var(--pink)">ISP</strong></td><td>No fat interfaces</td><td>Split into role interfaces</td><td>UnsupportedOperationException</td></tr>
+      <tr><td><strong style="color:var(--warn)">DIP</strong></td><td>Depend on abstractions</td><td>Constructor injection / IoC</td><td>new ConcreteClass() in business logic</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION: CREATIONAL PATTERNS -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="creational" class="sec">
+  <div class="stitle">🏗️ <em>Creational</em> Design Patterns</div>
+  <div class="ssub">Patterns that deal with object creation mechanisms — making creation more flexible and reusable</div>
+
+  <div class="note">📖 <strong>5 Creational Patterns:</strong> Singleton · Factory Method · Abstract Factory · Builder · Prototype</div>
+
+  <!-- Singleton -->
+  <div class="qa" id="singleton">
+    <div class="qq" onclick="toggle('singleton')">
+      <h3><span class="tag t-creational" style="margin-right:.6rem">Singleton</span> Ensure only one instance exists globally</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <p><strong>Intent:</strong> Ensure a class has only one instance, and provide a global access point to it.</p>
+      <p><strong>Use when:</strong> Configuration managers, Logger, Thread pool, Database connection pool, Cache manager.</p>
+
+      <h5>Thread-Safe Singleton (Double-Checked Locking)</h5>
+<pre><span class="kw">public class</span> <span class="type">ConfigurationManager</span> {
+
+    <span class="cmt">// volatile ensures visibility across threads (Java Memory Model)</span>
+    <span class="kw">private static volatile</span> <span class="type">ConfigurationManager</span> instance;
+    <span class="kw">private</span> <span class="type">Properties</span> config;
+
+    <span class="kw">private</span> <span class="type">ConfigurationManager</span>() {    <span class="cmt">// Private constructor — no external new</span>
+        config = <span class="kw">new</span> <span class="type">Properties</span>();
+        config.<span class="fn">setProperty</span>(<span class="str">"db.host"</span>, <span class="str">"localhost"</span>);
+        config.<span class="fn">setProperty</span>(<span class="str">"db.port"</span>, <span class="str">"5432"</span>);
+    }
+
+    <span class="cmt">// Double-checked locking for thread safety with performance</span>
+    <span class="kw">public static</span> <span class="type">ConfigurationManager</span> <span class="fn">getInstance</span>() {
+        <span class="kw">if</span> (instance == <span class="kw">null</span>) {                    <span class="cmt">// First check (no sync)</span>
+            <span class="kw">synchronized</span> (<span class="type">ConfigurationManager</span>.<span class="kw">class</span>) {
+                <span class="kw">if</span> (instance == <span class="kw">null</span>) {             <span class="cmt">// Second check (with sync)</span>
+                    instance = <span class="kw">new</span> <span class="type">ConfigurationManager</span>();
+                }
+            }
+        }
+        <span class="kw">return</span> instance;
+    }
+
+    <span class="kw">public</span> <span class="type">String</span> <span class="fn">get</span>(<span class="type">String</span> key) { <span class="kw">return</span> config.<span class="fn">getProperty</span>(key); }
+}
+
+<span class="cmt">// Alternatively — the Enum Singleton (Bill Pugh / most preferred)</span>
+<span class="kw">public enum</span> <span class="type">AppConfig</span> {
+    <span class="num">INSTANCE</span>;
+    <span class="kw">private</span> <span class="type">String</span> dbHost = <span class="str">"localhost"</span>;
+    <span class="kw">public</span> <span class="type">String</span> <span class="fn">getDbHost</span>() { <span class="kw">return</span> dbHost; }
+}
+<span class="cmt">// Usage: AppConfig.INSTANCE.getDbHost()</span>
+<span class="cmt">// Enum singletons are: serialization-safe + reflection-safe + thread-safe</span></pre>
+
+      <div class="warn-box">⚠️ <strong>Pitfalls:</strong> Singletons make unit testing hard (global state). In Spring, use <code>@Scope("singleton")</code> beans instead — Spring manages the lifecycle and allows mocking in tests.</div>
+      <div class="good">✅ <strong>Spring equiv:</strong> All Spring beans are singletons by default. <code>@Component</code>, <code>@Service</code>, <code>@Repository</code> — one instance per Spring context.</div>
+    </div>
+  </div>
+
+  <!-- Factory Method -->
+  <div class="qa" id="factory">
+    <div class="qq" onclick="toggle('factory')">
+      <h3><span class="tag t-creational" style="margin-right:.6rem">Factory Method</span> Delegate object creation to subclasses</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <p><strong>Intent:</strong> Define an interface for creating an object, but let subclasses decide which class to instantiate. Factory Method lets a class defer instantiation to subclasses.</p>
+
+<pre><span class="cmt">// Real-world: Payment gateway factory for a fintech app</span>
+
+<span class="kw">public interface</span> <span class="iface">PaymentGateway</span> {
+    <span class="kw">void</span> <span class="fn">processPayment</span>(<span class="kw">double</span> amount);
+    <span class="kw">boolean</span> <span class="fn">refund</span>(<span class="type">String</span> transactionId);
+}
+
+<span class="kw">public class</span> <span class="type">StripeGateway</span> <span class="kw">implements</span> <span class="iface">PaymentGateway</span> {
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">processPayment</span>(<span class="kw">double</span> amount) {
+        <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"Stripe charging: $"</span> + amount);
+    }
+    <span class="ann">@Override</span>
+    <span class="kw">public boolean</span> <span class="fn">refund</span>(<span class="type">String</span> txId) { <span class="kw">return true</span>; }
+}
+
+<span class="kw">public class</span> <span class="type">RazorpayGateway</span> <span class="kw">implements</span> <span class="iface">PaymentGateway</span> {
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">processPayment</span>(<span class="kw">double</span> amount) {
+        <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"Razorpay charging: ₹"</span> + amount);
+    }
+    <span class="ann">@Override</span>
+    <span class="kw">public boolean</span> <span class="fn">refund</span>(<span class="type">String</span> txId) { <span class="kw">return true</span>; }
+}
+
+<span class="cmt">// Factory — centralizes creation logic</span>
+<span class="kw">public class</span> <span class="type">PaymentGatewayFactory</span> {
+    <span class="kw">public static</span> <span class="iface">PaymentGateway</span> <span class="fn">create</span>(<span class="type">String</span> region) {
+        <span class="kw">return switch</span> (region.<span class="fn">toUpperCase</span>()) {
+            <span class="kw">case</span> <span class="str">"US"</span>, <span class="str">"EU"</span> -&gt; <span class="kw">new</span> <span class="type">StripeGateway</span>();
+            <span class="kw">case</span> <span class="str">"IN"</span>        -&gt; <span class="kw">new</span> <span class="type">RazorpayGateway</span>();
+            <span class="kw">default</span> -&gt; <span class="kw">throw new</span> <span class="type">IllegalArgumentException</span>(<span class="str">"Unknown region: "</span> + region);
+        };
+    }
+}
+
+<span class="cmt">// Usage — client code is decoupled from concrete classes</span>
+<span class="iface">PaymentGateway</span> gateway = <span class="type">PaymentGatewayFactory</span>.<span class="fn">create</span>(<span class="str">"IN"</span>);
+gateway.<span class="fn">processPayment</span>(<span class="num">1500.0</span>);</pre>
+
+      <div class="tip">💡 <strong>Real usage:</strong> <code>java.util.Calendar.getInstance()</code>, <code>Connection = DriverManager.getConnection()</code>, Spring's <code>BeanFactory</code>, <code>LoggerFactory.getLogger()</code> in SLF4J.</div>
+    </div>
+  </div>
+
+  <!-- Builder -->
+  <div class="qa" id="builder">
+    <div class="qq" onclick="toggle('builder')">
+      <h3><span class="tag t-creational" style="margin-right:.6rem">Builder</span> Construct complex objects step by step</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <p><strong>Intent:</strong> Separate the construction of a complex object from its representation. Use when an object has many optional parameters (avoids telescoping constructors).</p>
+
+<pre><span class="cmt">// Real-world: HTTP Request builder for a telecom API client</span>
+
+<span class="kw">public class</span> <span class="type">HttpRequest</span> {
+    <span class="kw">private final</span> <span class="type">String</span>              url;
+    <span class="kw">private final</span> <span class="type">String</span>              method;
+    <span class="kw">private final</span> <span class="type">Map</span>&lt;<span class="type">String</span>,<span class="type">String</span>&gt;   headers;
+    <span class="kw">private final</span> <span class="type">String</span>              body;
+    <span class="kw">private final</span> <span class="kw">int</span>                 timeoutMs;
+    <span class="kw">private final</span> <span class="kw">boolean</span>             followRedirects;
+
+    <span class="kw">private</span> <span class="type">HttpRequest</span>(<span class="type">Builder</span> b) {  <span class="cmt">// Private — only Builder can create</span>
+        <span class="kw">this</span>.url             = b.url;
+        <span class="kw">this</span>.method          = b.method;
+        <span class="kw">this</span>.headers         = <span class="type">Collections</span>.<span class="fn">unmodifiableMap</span>(b.headers);
+        <span class="kw">this</span>.body            = b.body;
+        <span class="kw">this</span>.timeoutMs       = b.timeoutMs;
+        <span class="kw">this</span>.followRedirects = b.followRedirects;
+    }
+
+    <span class="kw">public static class</span> <span class="type">Builder</span> {
+        <span class="kw">private final</span> <span class="type">String</span>             url;      <span class="cmt">// Required</span>
+        <span class="kw">private</span>       <span class="type">String</span>             method          = <span class="str">"GET"</span>;
+        <span class="kw">private</span>       <span class="type">Map</span>&lt;<span class="type">String</span>,<span class="type">String</span>&gt; headers         = <span class="kw">new</span> <span class="type">HashMap</span>&lt;&gt;();
+        <span class="kw">private</span>       <span class="type">String</span>             body            = <span class="kw">null</span>;
+        <span class="kw">private</span>       <span class="kw">int</span>               timeoutMs       = <span class="num">5000</span>;
+        <span class="kw">private</span>       <span class="kw">boolean</span>           followRedirects = <span class="kw">true</span>;
+
+        <span class="kw">public</span> <span class="type">Builder</span>(<span class="type">String</span> url) { <span class="kw">this</span>.url = url; }
+
+        <span class="kw">public</span> <span class="type">Builder</span> <span class="fn">method</span>(<span class="type">String</span> m)           { method = m; <span class="kw">return this</span>; }
+        <span class="kw">public</span> <span class="type">Builder</span> <span class="fn">header</span>(<span class="type">String</span> k, <span class="type">String</span> v) { headers.put(k,v); <span class="kw">return this</span>; }
+        <span class="kw">public</span> <span class="type">Builder</span> <span class="fn">body</span>(<span class="type">String</span> b)             { body = b; <span class="kw">return this</span>; }
+        <span class="kw">public</span> <span class="type">Builder</span> <span class="fn">timeout</span>(<span class="kw">int</span> ms)            { timeoutMs = ms; <span class="kw">return this</span>; }
+        <span class="kw">public</span> <span class="type">Builder</span> <span class="fn">noRedirects</span>()              { followRedirects = <span class="kw">false</span>; <span class="kw">return this</span>; }
+
+        <span class="kw">public</span> <span class="type">HttpRequest</span> <span class="fn">build</span>() {
+            <span class="kw">if</span> (url == <span class="kw">null</span> || url.<span class="fn">isBlank</span>()) <span class="kw">throw new</span> <span class="type">IllegalStateException</span>(<span class="str">"URL required"</span>);
+            <span class="kw">return new</span> <span class="type">HttpRequest</span>(<span class="kw">this</span>);
+        }
+    }
+}
+
+<span class="cmt">// Beautiful fluent API — clear, readable, no constructor telescope</span>
+<span class="type">HttpRequest</span> req = <span class="kw">new</span> <span class="type">HttpRequest</span>.<span class="type">Builder</span>(<span class="str">"https://api.mobileum.com/cdr"</span>)
+    .<span class="fn">method</span>(<span class="str">"POST"</span>)
+    .<span class="fn">header</span>(<span class="str">"Authorization"</span>, <span class="str">"Bearer token123"</span>)
+    .<span class="fn">header</span>(<span class="str">"Content-Type"</span>, <span class="str">"application/json"</span>)
+    .<span class="fn">body</span>(<span class="str">"{\"msisdn\":\"9876543210\"}"</span>)
+    .<span class="fn">timeout</span>(<span class="num">3000</span>)
+    .<span class="fn">build</span>();</pre>
+
+      <div class="good">✅ <strong>Used everywhere:</strong> <code>StringBuilder</code>, <code>Stream.Builder</code>, Lombok's <code>@Builder</code>, Spring's <code>UriComponentsBuilder</code>, <code>MockMvcRequestBuilders</code>, Hibernate Criteria Builder.</div>
+    </div>
+  </div>
+
+  <!-- Prototype -->
+  <div class="qa" id="prototype">
+    <div class="qq" onclick="toggle('prototype')">
+      <h3><span class="tag t-creational" style="margin-right:.6rem">Prototype</span> Clone existing objects instead of new creation</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <p><strong>Intent:</strong> Create new objects by copying (cloning) an existing object. Useful when object creation is expensive (DB fetch, complex init).</p>
+
+<pre><span class="kw">public class</span> <span class="type">TelecomSubscriber</span> <span class="kw">implements</span> <span class="iface">Cloneable</span> {
+    <span class="kw">private</span> <span class="type">String</span>       msisdn;
+    <span class="kw">private</span> <span class="type">String</span>       plan;
+    <span class="kw">private</span> <span class="type">List</span>&lt;<span class="type">String</span>&gt; services;  <span class="cmt">// e.g. ["VoLTE","VoWifi","RCS"]</span>
+
+    <span class="kw">public</span> <span class="type">TelecomSubscriber</span>(<span class="type">String</span> msisdn, <span class="type">String</span> plan, <span class="type">List</span>&lt;<span class="type">String</span>&gt; services) {
+        <span class="kw">this</span>.msisdn   = msisdn;
+        <span class="kw">this</span>.plan     = plan;
+        <span class="kw">this</span>.services = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;(services);  <span class="cmt">// defensive copy</span>
+    }
+
+    <span class="cmt">// Deep clone — own copy of mutable fields</span>
+    <span class="ann">@Override</span>
+    <span class="kw">public</span> <span class="type">TelecomSubscriber</span> <span class="fn">clone</span>() {
+        <span class="kw">try</span> {
+            <span class="type">TelecomSubscriber</span> copy = (<span class="type">TelecomSubscriber</span>) <span class="kw">super</span>.<span class="fn">clone</span>();
+            copy.services = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;(<span class="kw">this</span>.services);  <span class="cmt">// deep copy list</span>
+            <span class="kw">return</span> copy;
+        } <span class="kw">catch</span> (<span class="type">CloneNotSupportedException</span> e) {
+            <span class="kw">throw new</span> <span class="type">RuntimeException</span>(e);
+        }
+    }
+}
+
+<span class="cmt">// Clone a template subscriber for batch provisioning — avoids DB hit each time</span>
+<span class="type">TelecomSubscriber</span> template = <span class="kw">new</span> <span class="type">TelecomSubscriber</span>(<span class="str">"BASE"</span>, <span class="str">"5G-PREMIUM"</span>,
+                                  <span class="type">List</span>.<span class="fn">of</span>(<span class="str">"VoLTE"</span>, <span class="str">"VoWifi"</span>));
+
+<span class="type">TelecomSubscriber</span> sub1 = template.<span class="fn">clone</span>(); sub1.msisdn = <span class="str">"9876543210"</span>;
+<span class="type">TelecomSubscriber</span> sub2 = template.<span class="fn">clone</span>(); sub2.msisdn = <span class="str">"9876543211"</span>;</pre>
+
+      <div class="tip">💡 <strong>Real usage:</strong> Spring's <code>BeanDefinition</code> prototype scope, Object.clone(), copy constructors, record copy-with patterns in Java 16+.</div>
+    </div>
+  </div>
+
+  <!-- Abstract Factory -->
+  <div class="qa" id="abstractfactory">
+    <div class="qq" onclick="toggle('abstractfactory')">
+      <h3><span class="tag t-creational" style="margin-right:.6rem">Abstract Factory</span> Create families of related objects</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <p><strong>Intent:</strong> Provide an interface for creating families of related or dependent objects without specifying their concrete classes. Think of it as a "factory of factories."</p>
+
+<pre><span class="cmt">// Real-world: Multi-cloud infrastructure provisioning</span>
+
+<span class="kw">public interface</span> <span class="iface">VirtualMachine</span> { <span class="kw">void</span> <span class="fn">start</span>(); }
+<span class="kw">public interface</span> <span class="iface">Database</span>       { <span class="kw">void</span> <span class="fn">connect</span>(); }
+<span class="kw">public interface</span> <span class="iface">Storage</span>        { <span class="kw">void</span> <span class="fn">upload</span>(<span class="type">String</span> file); }
+
+<span class="cmt">// Abstract Factory — creates a "family" of cloud resources</span>
+<span class="kw">public interface</span> <span class="iface">CloudProvider</span> {
+    <span class="iface">VirtualMachine</span> <span class="fn">createVM</span>();
+    <span class="iface">Database</span>       <span class="fn">createDatabase</span>();
+    <span class="iface">Storage</span>        <span class="fn">createStorage</span>();
+}
+
+<span class="cmt">// AWS family</span>
+<span class="kw">public class</span> <span class="type">AWSEC2</span>      <span class="kw">implements</span> <span class="iface">VirtualMachine</span> { <span class="ann">@Override</span> <span class="kw">public void</span> <span class="fn">start</span>()           { <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"EC2 starting"</span>);   }}
+<span class="kw">public class</span> <span class="type">AWSRDS</span>      <span class="kw">implements</span> <span class="iface">Database</span>       { <span class="ann">@Override</span> <span class="kw">public void</span> <span class="fn">connect</span>()         { <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"RDS connected"</span>);   }}
+<span class="kw">public class</span> <span class="type">AWSS3</span>       <span class="kw">implements</span> <span class="iface">Storage</span>        { <span class="ann">@Override</span> <span class="kw">public void</span> <span class="fn">upload</span>(<span class="type">String</span> f) { <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"S3 upload: "</span>+f); }}
+
+<span class="kw">public class</span> <span class="type">AWSProvider</span> <span class="kw">implements</span> <span class="iface">CloudProvider</span> {
+    <span class="ann">@Override</span> <span class="kw">public</span> <span class="iface">VirtualMachine</span> <span class="fn">createVM</span>()            { <span class="kw">return new</span> <span class="type">AWSEC2</span>();  }
+    <span class="ann">@Override</span> <span class="kw">public</span> <span class="iface">Database</span>       <span class="fn">createDatabase</span>()       { <span class="kw">return new</span> <span class="type">AWSRDS</span>();  }
+    <span class="ann">@Override</span> <span class="kw">public</span> <span class="iface">Storage</span>        <span class="fn">createStorage</span>()        { <span class="kw">return new</span> <span class="type">AWSS3</span>();   }
+}
+
+<span class="cmt">// GCP family (similarly defined)</span>
+<span class="kw">public class</span> <span class="type">GCPProvider</span> <span class="kw">implements</span> <span class="iface">CloudProvider</span> { <span class="cmt">/* GCE, CloudSQL, GCS */</span> }
+
+<span class="cmt">// Application code — zero knowledge of AWS vs GCP</span>
+<span class="kw">public class</span> <span class="type">InfraProvisioner</span> {
+    <span class="kw">private final</span> <span class="iface">CloudProvider</span> cloud;
+    <span class="kw">public</span> <span class="type">InfraProvisioner</span>(<span class="iface">CloudProvider</span> cloud) { <span class="kw">this</span>.cloud = cloud; }
+
+    <span class="kw">public void</span> <span class="fn">provision</span>() {
+        cloud.<span class="fn">createVM</span>().<span class="fn">start</span>();
+        cloud.<span class="fn">createDatabase</span>().<span class="fn">connect</span>();
+        cloud.<span class="fn">createStorage</span>().<span class="fn">upload</span>(<span class="str">"config.yaml"</span>);
+    }
+}
+<span class="cmt">// Switch clouds with one line change:</span>
+<span class="kw">new</span> <span class="type">InfraProvisioner</span>(<span class="kw">new</span> <span class="type">AWSProvider</span>()).<span class="fn">provision</span>();
+<span class="kw">new</span> <span class="type">InfraProvisioner</span>(<span class="kw">new</span> <span class="type">GCPProvider</span>()).<span class="fn">provision</span>();</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION: STRUCTURAL PATTERNS -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="structural" class="sec">
+  <div class="stitle">🔗 <em>Structural</em> Design Patterns</div>
+  <div class="ssub">Patterns that deal with object composition — how classes and objects can be combined to form larger structures</div>
+  <div class="note">📖 <strong>7 Structural Patterns:</strong> Adapter · Bridge · Composite · Decorator · Facade · Flyweight · Proxy</div>
+
+  <!-- Adapter -->
+  <div class="qa" id="adapter">
+    <div class="qq" onclick="toggle('adapter')">
+      <h3><span class="tag t-structural" style="margin-right:.6rem">Adapter</span> Make incompatible interfaces work together</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <p><strong>Intent:</strong> Convert the interface of a class into another interface clients expect. Lets classes with incompatible interfaces collaborate.</p>
+      <p><strong>Real-world analogy:</strong> A power adapter that lets you plug a US device into a European socket.</p>
+
+<pre><span class="cmt">// Real-world: Integrating a legacy SOAP-based telecom BSS with a modern REST service</span>
+
+<span class="cmt">// New interface our app expects</span>
+<span class="kw">public interface</span> <span class="iface">SubscriberService</span> {
+    <span class="type">String</span> <span class="fn">getSubscriberInfo</span>(<span class="type">String</span> msisdn);
+}
+
+<span class="cmt">// Legacy SOAP client — can't change this (external library)</span>
+<span class="kw">public class</span> <span class="type">LegacyBSSClient</span> {
+    <span class="kw">public</span> <span class="type">String</span> <span class="fn">fetchSubscriberBySoap</span>(<span class="type">String</span> imsi, <span class="type">String</span> authToken) {
+        <span class="kw">return</span> <span class="str">"&lt;subscriber&gt;&lt;imsi&gt;"</span> + imsi + <span class="str">"&lt;/imsi&gt;&lt;/subscriber&gt;"</span>;
+    }
+}
+
+<span class="cmt">// Adapter — wraps legacy, implements modern interface</span>
+<span class="kw">public class</span> <span class="type">LegacyBSSAdapter</span> <span class="kw">implements</span> <span class="iface">SubscriberService</span> {
+    <span class="kw">private final</span> <span class="type">LegacyBSSClient</span> legacyClient;
+    <span class="kw">private final</span> <span class="type">String</span>          authToken;
+
+    <span class="kw">public</span> <span class="type">LegacyBSSAdapter</span>(<span class="type">LegacyBSSClient</span> client, <span class="type">String</span> token) {
+        <span class="kw">this</span>.legacyClient = client;
+        <span class="kw">this</span>.authToken    = token;
+    }
+
+    <span class="ann">@Override</span>
+    <span class="kw">public</span> <span class="type">String</span> <span class="fn">getSubscriberInfo</span>(<span class="type">String</span> msisdn) {
+        <span class="type">String</span> imsi = <span class="fn">convertMsisdnToImsi</span>(msisdn);      <span class="cmt">// Format translation</span>
+        <span class="type">String</span> xml  = legacyClient.<span class="fn">fetchSubscriberBySoap</span>(imsi, authToken);
+        <span class="kw">return</span> <span class="fn">parseXmlToJson</span>(xml);                   <span class="cmt">// Protocol translation</span>
+    }
+
+    <span class="kw">private</span> <span class="type">String</span> <span class="fn">convertMsisdnToImsi</span>(<span class="type">String</span> msisdn) { <span class="kw">return</span> <span class="str">"404-"</span> + msisdn; }
+    <span class="kw">private</span> <span class="type">String</span> <span class="fn">parseXmlToJson</span>(<span class="type">String</span> xml) { <span class="kw">return</span> <span class="str">"{\"msisdn\":\"mapped\"}"</span>; }
+}
+
+<span class="cmt">// Client works with modern interface — agnostic of legacy SOAP</span>
+<span class="iface">SubscriberService</span> service = <span class="kw">new</span> <span class="type">LegacyBSSAdapter</span>(<span class="kw">new</span> <span class="type">LegacyBSSClient</span>(), <span class="str">"token"</span>);
+<span class="type">String</span> info = service.<span class="fn">getSubscriberInfo</span>(<span class="str">"9876543210"</span>);</pre>
+
+      <div class="good">✅ <strong>Real usage:</strong> <code>Arrays.asList()</code> adapts array to List, <code>InputStreamReader</code> adapts InputStream to Reader, Spring's <code>HandlerAdapter</code>, JDBC adapters for different databases.</div>
+    </div>
+  </div>
+
+  <!-- Decorator -->
+  <div class="qa" id="decorator">
+    <div class="qq" onclick="toggle('decorator')">
+      <h3><span class="tag t-structural" style="margin-right:.6rem">Decorator</span> Add behavior to objects dynamically</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <p><strong>Intent:</strong> Attach additional responsibilities to an object dynamically. Decorators provide a flexible alternative to subclassing for extending functionality.</p>
+
+<pre><span class="cmt">// Real-world: Telecom notification system with logging, retry, encryption</span>
+
+<span class="kw">public interface</span> <span class="iface">NotificationSender</span> {
+    <span class="kw">void</span> <span class="fn">send</span>(<span class="type">String</span> recipient, <span class="type">String</span> message);
+}
+
+<span class="cmt">// Base component</span>
+<span class="kw">public class</span> <span class="type">SMSSender</span> <span class="kw">implements</span> <span class="iface">NotificationSender</span> {
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">send</span>(<span class="type">String</span> to, <span class="type">String</span> msg) {
+        <span class="type">System</span>.out.<span class="fn">printf</span>(<span class="str">"SMS → %s: %s%n"</span>, to, msg);
+    }
+}
+
+<span class="cmt">// Base decorator</span>
+<span class="kw">public abstract class</span> <span class="type">NotificationDecorator</span> <span class="kw">implements</span> <span class="iface">NotificationSender</span> {
+    <span class="kw">protected final</span> <span class="iface">NotificationSender</span> wrapped;
+    <span class="kw">protected</span> <span class="type">NotificationDecorator</span>(<span class="iface">NotificationSender</span> n) { wrapped = n; }
+}
+
+<span class="cmt">// Logging decorator</span>
+<span class="kw">public class</span> <span class="type">LoggingDecorator</span> <span class="kw">extends</span> <span class="type">NotificationDecorator</span> {
+    <span class="kw">public</span> <span class="type">LoggingDecorator</span>(<span class="iface">NotificationSender</span> n) { <span class="kw">super</span>(n); }
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">send</span>(<span class="type">String</span> to, <span class="type">String</span> msg) {
+        <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"[LOG] Sending to: "</span> + to);
+        wrapped.<span class="fn">send</span>(to, msg);
+        <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"[LOG] Sent successfully"</span>);
+    }
+}
+
+<span class="cmt">// Retry decorator</span>
+<span class="kw">public class</span> <span class="type">RetryDecorator</span> <span class="kw">extends</span> <span class="type">NotificationDecorator</span> {
+    <span class="kw">private final int</span> maxRetries;
+    <span class="kw">public</span> <span class="type">RetryDecorator</span>(<span class="iface">NotificationSender</span> n, <span class="kw">int</span> retries) {
+        <span class="kw">super</span>(n); maxRetries = retries;
+    }
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">send</span>(<span class="type">String</span> to, <span class="type">String</span> msg) {
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; maxRetries; i++) {
+            <span class="kw">try</span> { wrapped.<span class="fn">send</span>(to, msg); <span class="kw">return</span>; }
+            <span class="kw">catch</span> (<span class="type">Exception</span> e) { <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"Retry "</span>+(i+<span class="num">1</span>)); }
+        }
+    }
+}
+
+<span class="cmt">// Compose decorators — order matters!</span>
+<span class="iface">NotificationSender</span> sender =
+    <span class="kw">new</span> <span class="type">LoggingDecorator</span>(
+        <span class="kw">new</span> <span class="type">RetryDecorator</span>(
+            <span class="kw">new</span> <span class="type">SMSSender</span>(), <span class="num">3</span>   <span class="cmt">// Base wrapped with Retry wrapped with Logging</span>
+        )
+    );
+sender.<span class="fn">send</span>(<span class="str">"9876543210"</span>, <span class="str">"Your OTP is 456789"</span>);</pre>
+
+      <div class="good">✅ <strong>Used in Java I/O:</strong> <code>new BufferedReader(new InputStreamReader(new FileInputStream("file")))</code> — that IS the Decorator pattern. Spring Security filter chain is Decorator-based.</div>
+    </div>
+  </div>
+
+  <!-- Facade -->
+  <div class="qa" id="facade">
+    <div class="qq" onclick="toggle('facade')">
+      <h3><span class="tag t-structural" style="margin-right:.6rem">Facade</span> Simplified interface to a complex subsystem</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <p><strong>Intent:</strong> Provide a unified, simplified interface to a set of interfaces in a subsystem. Makes the subsystem easier to use.</p>
+
+<pre><span class="cmt">// Real-world: Telecom subscriber onboarding — orchestrates multiple subsystems</span>
+
+<span class="kw">public class</span> <span class="type">BSSService</span>      { <span class="kw">public void</span> <span class="fn">createAccount</span>(<span class="type">String</span> msisdn)  { <span class="cmt">/* BSS */</span>  }}
+<span class="kw">public class</span> <span class="type">HSSService</span>      { <span class="kw">public void</span> <span class="fn">provisionSIM</span>(<span class="type">String</span> msisdn)   { <span class="cmt">/* HSS */</span>  }}
+<span class="kw">public class</span> <span class="type">PCRFService</span>     { <span class="kw">public void</span> <span class="fn">applyPolicy</span>(<span class="type">String</span> msisdn)    { <span class="cmt">/* PCRF */</span> }}
+<span class="kw">public class</span> <span class="type">BillingService</span>  { <span class="kw">public void</span> <span class="fn">createWallet</span>(<span class="type">String</span> msisdn)  { <span class="cmt">/* OCS */</span>  }}
+<span class="kw">public class</span> <span class="type">SMSService</span>      { <span class="kw">public void</span> <span class="fn">sendWelcome</span>(<span class="type">String</span> msisdn)    { <span class="cmt">/* SMS */</span>  }}
+
+<span class="cmt">// FACADE — single entry point for the entire onboarding workflow</span>
+<span class="kw">public class</span> <span class="type">SubscriberOnboardingFacade</span> {
+    <span class="kw">private final</span> <span class="type">BSSService</span>     bss;
+    <span class="kw">private final</span> <span class="type">HSSService</span>     hss;
+    <span class="kw">private final</span> <span class="type">PCRFService</span>    pcrf;
+    <span class="kw">private final</span> <span class="type">BillingService</span> billing;
+    <span class="kw">private final</span> <span class="type">SMSService</span>     sms;
+
+    <span class="kw">public</span> <span class="type">SubscriberOnboardingFacade</span>() {
+        bss     = <span class="kw">new</span> <span class="type">BSSService</span>();
+        hss     = <span class="kw">new</span> <span class="type">HSSService</span>();
+        pcrf    = <span class="kw">new</span> <span class="type">PCRFService</span>();
+        billing = <span class="kw">new</span> <span class="type">BillingService</span>();
+        sms     = <span class="kw">new</span> <span class="type">SMSService</span>();
+    }
+
+    <span class="cmt">// One method — client doesn't know about 5 subsystems</span>
+    <span class="kw">public void</span> <span class="fn">onboardSubscriber</span>(<span class="type">String</span> msisdn) {
+        <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"Onboarding: "</span> + msisdn);
+        bss.<span class="fn">createAccount</span>(msisdn);
+        hss.<span class="fn">provisionSIM</span>(msisdn);
+        pcrf.<span class="fn">applyPolicy</span>(msisdn);
+        billing.<span class="fn">createWallet</span>(msisdn);
+        sms.<span class="fn">sendWelcome</span>(msisdn);
+        <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"Onboarding complete!"</span>);
+    }
+}
+
+<span class="cmt">// Client: one simple call orchestrates everything</span>
+<span class="kw">new</span> <span class="type">SubscriberOnboardingFacade</span>().<span class="fn">onboardSubscriber</span>(<span class="str">"9876543210"</span>);</pre>
+
+      <div class="tip">💡 <strong>Real usage:</strong> Spring's <code>JdbcTemplate</code> is a Facade over JDBC complexity. <code>SLF4J</code> is a Facade over logging frameworks. Spring Boot's <code>@SpringBootApplication</code> is a Facade over component scan + auto-configuration + property loading.</div>
+    </div>
+  </div>
+
+  <!-- Proxy -->
+  <div class="qa" id="proxy">
+    <div class="qq" onclick="toggle('proxy')">
+      <h3><span class="tag t-structural" style="margin-right:.6rem">Proxy</span> Surrogate / placeholder to control access</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <p><strong>Intent:</strong> Provide a surrogate or placeholder for another object to control access to it. Types: Virtual (lazy loading), Protection (access control), Remote (network proxy), Caching.</p>
+
+<pre><span class="cmt">// Caching Proxy — avoid repeated expensive DB calls</span>
+<span class="kw">public interface</span> <span class="iface">CDRRepository</span> {
+    <span class="type">List</span>&lt;<span class="type">String</span>&gt; <span class="fn">getCDRs</span>(<span class="type">String</span> msisdn);
+}
+
+<span class="kw">public class</span> <span class="type">DatabaseCDRRepository</span> <span class="kw">implements</span> <span class="iface">CDRRepository</span> {
+    <span class="ann">@Override</span>
+    <span class="kw">public</span> <span class="type">List</span>&lt;<span class="type">String</span>&gt; <span class="fn">getCDRs</span>(<span class="type">String</span> msisdn) {
+        <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"[DB] Heavy query for: "</span> + msisdn);
+        <span class="kw">return</span> <span class="type">List</span>.<span class="fn">of</span>(<span class="str">"CDR_001"</span>, <span class="str">"CDR_002"</span>, <span class="str">"CDR_003"</span>);  <span class="cmt">// Expensive!</span>
+    }
+}
+
+<span class="cmt">// Caching Proxy — transparent to the caller</span>
+<span class="kw">public class</span> <span class="type">CachingCDRProxy</span> <span class="kw">implements</span> <span class="iface">CDRRepository</span> {
+    <span class="kw">private final</span> <span class="iface">CDRRepository</span>              real;
+    <span class="kw">private final</span> <span class="type">Map</span>&lt;<span class="type">String</span>, <span class="type">List</span>&lt;<span class="type">String</span>&gt;&gt;  cache = <span class="kw">new</span> <span class="type">HashMap</span>&lt;&gt;();
+
+    <span class="kw">public</span> <span class="type">CachingCDRProxy</span>(<span class="iface">CDRRepository</span> real) { <span class="kw">this</span>.real = real; }
+
+    <span class="ann">@Override</span>
+    <span class="kw">public</span> <span class="type">List</span>&lt;<span class="type">String</span>&gt; <span class="fn">getCDRs</span>(<span class="type">String</span> msisdn) {
+        <span class="kw">if</span> (!cache.<span class="fn">containsKey</span>(msisdn)) {
+            <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"[CACHE MISS] Fetching from DB"</span>);
+            cache.<span class="fn">put</span>(msisdn, real.<span class="fn">getCDRs</span>(msisdn));
+        } <span class="kw">else</span> {
+            <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"[CACHE HIT]  Returning cached"</span>);
+        }
+        <span class="kw">return</span> cache.<span class="fn">get</span>(msisdn);
+    }
+}
+
+<span class="cmt">// Spring AOP creates dynamic proxies for @Transactional, @Cacheable, @Secured</span>
+<span class="iface">CDRRepository</span> repo = <span class="kw">new</span> <span class="type">CachingCDRProxy</span>(<span class="kw">new</span> <span class="type">DatabaseCDRRepository</span>());</pre>
+
+      <div class="good">✅ <strong>Spring is Proxy-heavy:</strong> <code>@Transactional</code> wraps beans in a JDK dynamic proxy/CGLIB proxy. <code>@Cacheable</code>, <code>@Async</code>, <code>@Secured</code> — all implemented via proxies. Hibernate's lazy loading uses proxies for entities.</div>
+    </div>
+  </div>
+
+  <!-- Composite -->
+  <div class="qa" id="composite">
+    <div class="qq" onclick="toggle('composite')">
+      <h3><span class="tag t-structural" style="margin-right:.6rem">Composite</span> Tree structures — treat individual and group uniformly</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <p><strong>Intent:</strong> Compose objects into tree structures to represent part-whole hierarchies. Lets clients treat individual objects and compositions of objects uniformly.</p>
+
+<pre><span class="cmt">// Real-world: Telecom network hierarchy — Node (BTS/BSC/MSC) tree</span>
+<span class="kw">public interface</span> <span class="iface">NetworkNode</span> {
+    <span class="kw">void</span>   <span class="fn">display</span>(<span class="type">String</span> indent);
+    <span class="kw">int</span>    <span class="fn">getCapacity</span>();
+}
+
+<span class="cmt">// Leaf — BTS (Base Transceiver Station)</span>
+<span class="kw">public class</span> <span class="type">BTS</span> <span class="kw">implements</span> <span class="iface">NetworkNode</span> {
+    <span class="kw">private</span> <span class="type">String</span> id;
+    <span class="kw">private</span> <span class="kw">int</span>    capacity;
+    <span class="kw">public</span> <span class="type">BTS</span>(<span class="type">String</span> id, <span class="kw">int</span> cap) { <span class="kw">this</span>.id = id; <span class="kw">this</span>.capacity = cap; }
+    <span class="ann">@Override</span> <span class="kw">public void</span> <span class="fn">display</span>(<span class="type">String</span> indent) { <span class="type">System</span>.out.<span class="fn">println</span>(indent + <span class="str">"BTS["</span> + id + <span class="str">"] cap="</span> + capacity); }
+    <span class="ann">@Override</span> <span class="kw">public int</span>  <span class="fn">getCapacity</span>() { <span class="kw">return</span> capacity; }
+}
+
+<span class="cmt">// Composite — BSC manages multiple BTSes</span>
+<span class="kw">public class</span> <span class="type">BSC</span> <span class="kw">implements</span> <span class="iface">NetworkNode</span> {
+    <span class="kw">private</span> <span class="type">String</span>              id;
+    <span class="kw">private</span> <span class="type">List</span>&lt;<span class="iface">NetworkNode</span>&gt;  children = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+
+    <span class="kw">public</span> <span class="type">BSC</span>(<span class="type">String</span> id) { <span class="kw">this</span>.id = id; }
+    <span class="kw">public void</span> <span class="fn">add</span>(<span class="iface">NetworkNode</span> node) { children.<span class="fn">add</span>(node); }
+
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">display</span>(<span class="type">String</span> indent) {
+        <span class="type">System</span>.out.<span class="fn">println</span>(indent + <span class="str">"BSC["</span> + id + <span class="str">"] total="</span> + <span class="fn">getCapacity</span>());
+        children.<span class="fn">forEach</span>(c -&gt; c.<span class="fn">display</span>(indent + <span class="str">"  "</span>));
+    }
+
+    <span class="ann">@Override</span>
+    <span class="kw">public int</span> <span class="fn">getCapacity</span>() { <span class="kw">return</span> children.<span class="fn">stream</span>().<span class="fn">mapToInt</span>(<span class="iface">NetworkNode</span>::<span class="fn">getCapacity</span>).<span class="fn">sum</span>(); }
+}
+
+<span class="cmt">// Build the hierarchy</span>
+<span class="type">BSC</span> bsc1 = <span class="kw">new</span> <span class="type">BSC</span>(<span class="str">"BSC-MUM-1"</span>);
+bsc1.<span class="fn">add</span>(<span class="kw">new</span> <span class="type">BTS</span>(<span class="str">"BTS-001"</span>, <span class="num">100</span>));
+bsc1.<span class="fn">add</span>(<span class="kw">new</span> <span class="type">BTS</span>(<span class="str">"BTS-002"</span>, <span class="num">150</span>));
+bsc1.<span class="fn">display</span>(<span class="str">""</span>);
+<span class="cmt">// Output: BSC[BSC-MUM-1] total=250</span>
+<span class="cmt">//           BTS[BTS-001] cap=100</span>
+<span class="cmt">//           BTS[BTS-002] cap=150</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION: BEHAVIORAL PATTERNS -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="behavioral" class="sec">
+  <div class="stitle">🎭 <em>Behavioral</em> Design Patterns</div>
+  <div class="ssub">Patterns that deal with communication and responsibility between objects</div>
+  <div class="note">📖 <strong>11 Behavioral Patterns:</strong> Chain of Responsibility · Command · Iterator · Mediator · Memento · Observer · State · Strategy · Template Method · Visitor · Interpreter</div>
+
+  <!-- Strategy -->
+  <div class="qa" id="strategy">
+    <div class="qq" onclick="toggle('strategy')">
+      <h3><span class="tag t-behavioral" style="margin-right:.6rem">Strategy</span> Define a family of algorithms, make them interchangeable</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <p><strong>Intent:</strong> Define a family of algorithms, encapsulate each one, and make them interchangeable. Strategy lets the algorithm vary independently from clients that use it.</p>
+
+<pre><span class="cmt">// Real-world: Telecom fraud detection — different detection strategies</span>
+
+<span class="kw">public interface</span> <span class="iface">FraudDetectionStrategy</span> {
+    <span class="kw">boolean</span> <span class="fn">isFraudulent</span>(<span class="type">CallRecord</span> cdr);
+}
+
+<span class="kw">public class</span> <span class="type">HighVolumeStrategy</span> <span class="kw">implements</span> <span class="iface">FraudDetectionStrategy</span> {
+    <span class="kw">private final int</span> threshold;
+    <span class="kw">public</span> <span class="type">HighVolumeStrategy</span>(<span class="kw">int</span> t) { threshold = t; }
+    <span class="ann">@Override</span>
+    <span class="kw">public boolean</span> <span class="fn">isFraudulent</span>(<span class="type">CallRecord</span> cdr) {
+        <span class="kw">return</span> cdr.<span class="fn">getCallCount</span>() > threshold;   <span class="cmt">// >500 calls/hour = fraud</span>
+    }
+}
+
+<span class="kw">public class</span> <span class="type">GeoAnomalyStrategy</span> <span class="kw">implements</span> <span class="iface">FraudDetectionStrategy</span> {
+    <span class="ann">@Override</span>
+    <span class="kw">public boolean</span> <span class="fn">isFraudulent</span>(<span class="type">CallRecord</span> cdr) {
+        <span class="kw">return</span> cdr.<span class="fn">getOriginCountry</span>().<span class="fn">equals</span>(<span class="str">"HIGH_RISK"</span>);
+    }
+}
+
+<span class="kw">public class</span> <span class="type">MLModelStrategy</span> <span class="kw">implements</span> <span class="iface">FraudDetectionStrategy</span> {
+    <span class="ann">@Override</span>
+    <span class="kw">public boolean</span> <span class="fn">isFraudulent</span>(<span class="type">CallRecord</span> cdr) {
+        <span class="kw">return</span> <span class="fn">callMLModel</span>(cdr) > <span class="num">0.85</span>;    <span class="cmt">// >85% fraud probability</span>
+    }
+    <span class="kw">private double</span> <span class="fn">callMLModel</span>(<span class="type">CallRecord</span> cdr) { <span class="kw">return</span> <span class="num">0.91</span>; }
+}
+
+<span class="cmt">// Context — uses the strategy</span>
+<span class="kw">public class</span> <span class="type">FraudDetector</span> {
+    <span class="kw">private</span> <span class="iface">FraudDetectionStrategy</span> strategy;
+
+    <span class="kw">public void</span> <span class="fn">setStrategy</span>(<span class="iface">FraudDetectionStrategy</span> s) { strategy = s; }
+
+    <span class="kw">public void</span> <span class="fn">analyze</span>(<span class="type">CallRecord</span> cdr) {
+        <span class="kw">if</span> (strategy.<span class="fn">isFraudulent</span>(cdr)) {
+            <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"🚨 FRAUD DETECTED: "</span> + cdr.<span class="fn">getMsisdn</span>());
+        }
+    }
+}
+
+<span class="cmt">// Switch strategies at runtime!</span>
+<span class="type">FraudDetector</span> detector = <span class="kw">new</span> <span class="type">FraudDetector</span>();
+detector.<span class="fn">setStrategy</span>(<span class="kw">new</span> <span class="type">HighVolumeStrategy</span>(<span class="num">500</span>));   <span class="cmt">// Daytime: volume check</span>
+detector.<span class="fn">setStrategy</span>(<span class="kw">new</span> <span class="type">MLModelStrategy</span>());           <span class="cmt">// Night: ML model</span></pre>
+
+      <div class="good">✅ <strong>Java stdlib:</strong> <code>Comparator</code> is Strategy. <code>Collections.sort(list, comparator)</code> — the comparator is the strategy. Spring Security's <code>AuthenticationStrategy</code>, JPA's query strategies.</div>
+    </div>
+  </div>
+
+  <!-- Observer -->
+  <div class="qa" id="observer">
+    <div class="qq" onclick="toggle('observer')">
+      <h3><span class="tag t-behavioral" style="margin-right:.6rem">Observer</span> Event-driven notification to multiple subscribers</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <p><strong>Intent:</strong> Define a one-to-many dependency between objects. When one object changes state, all dependents are notified and updated automatically.</p>
+
+<pre><span class="cmt">// Real-world: Telecom network alarm system</span>
+
+<span class="kw">public interface</span> <span class="iface">NetworkAlarmListener</span> {
+    <span class="kw">void</span> <span class="fn">onAlarm</span>(<span class="type">String</span> alarmType, <span class="type">String</span> nodeId, <span class="type">String</span> severity);
+}
+
+<span class="cmt">// Concrete observers</span>
+<span class="kw">public class</span> <span class="type">NOCDashboard</span> <span class="kw">implements</span> <span class="iface">NetworkAlarmListener</span> {
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">onAlarm</span>(<span class="type">String</span> type, <span class="type">String</span> node, <span class="type">String</span> severity) {
+        <span class="type">System</span>.out.<span class="fn">printf</span>(<span class="str">"[NOC] 🔴 %s alarm on %s [%s]%n"</span>, type, node, severity);
+    }
+}
+
+<span class="kw">public class</span> <span class="type">SMSAlertService</span> <span class="kw">implements</span> <span class="iface">NetworkAlarmListener</span> {
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">onAlarm</span>(<span class="type">String</span> type, <span class="type">String</span> node, <span class="type">String</span> severity) {
+        <span class="kw">if</span> (severity.<span class="fn">equals</span>(<span class="str">"CRITICAL"</span>))
+            <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"[SMS] Alerting on-call engineer: "</span> + type);
+    }
+}
+
+<span class="kw">public class</span> <span class="type">AutoHealingService</span> <span class="kw">implements</span> <span class="iface">NetworkAlarmListener</span> {
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">onAlarm</span>(<span class="type">String</span> type, <span class="type">String</span> node, <span class="type">String</span> severity) {
+        <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"[AUTO-HEAL] Attempting recovery on: "</span> + node);
+    }
+}
+
+<span class="cmt">// Subject (Observable)</span>
+<span class="kw">public class</span> <span class="type">NetworkMonitor</span> {
+    <span class="kw">private final</span> <span class="type">List</span>&lt;<span class="iface">NetworkAlarmListener</span>&gt; listeners = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+
+    <span class="kw">public void</span> <span class="fn">subscribe</span>(<span class="iface">NetworkAlarmListener</span> l)   { listeners.<span class="fn">add</span>(l); }
+    <span class="kw">public void</span> <span class="fn">unsubscribe</span>(<span class="iface">NetworkAlarmListener</span> l) { listeners.<span class="fn">remove</span>(l); }
+
+    <span class="kw">public void</span> <span class="fn">raiseAlarm</span>(<span class="type">String</span> type, <span class="type">String</span> nodeId, <span class="type">String</span> severity) {
+        <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"[MONITOR] Alarm raised: "</span> + type);
+        listeners.<span class="fn">forEach</span>(l -&gt; l.<span class="fn">onAlarm</span>(type, nodeId, severity));
+    }
+}
+
+<span class="cmt">// Wiring it all together</span>
+<span class="type">NetworkMonitor</span> monitor = <span class="kw">new</span> <span class="type">NetworkMonitor</span>();
+monitor.<span class="fn">subscribe</span>(<span class="kw">new</span> <span class="type">NOCDashboard</span>());
+monitor.<span class="fn">subscribe</span>(<span class="kw">new</span> <span class="type">SMSAlertService</span>());
+monitor.<span class="fn">subscribe</span>(<span class="kw">new</span> <span class="type">AutoHealingService</span>());
+
+monitor.<span class="fn">raiseAlarm</span>(<span class="str">"LINK_DOWN"</span>, <span class="str">"BTS-MUM-042"</span>, <span class="str">"CRITICAL"</span>);</pre>
+
+      <div class="good">✅ <strong>Java/Spring:</strong> <code>java.util.Observer</code> (deprecated), <code>EventListener</code>, Spring's <code>ApplicationEventPublisher</code> + <code>@EventListener</code>, Kafka/RabbitMQ consumers, ReactiveX / Project Reactor.</div>
+    </div>
+  </div>
+
+  <!-- Chain of Responsibility -->
+  <div class="qa" id="cor">
+    <div class="qq" onclick="toggle('cor')">
+      <h3><span class="tag t-behavioral" style="margin-right:.6rem">Chain of Responsibility</span> Pass requests along a chain of handlers</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <p><strong>Intent:</strong> Avoid coupling the sender of a request to its receiver by giving more than one object a chance to handle it. Chain the receiving objects and pass the request along until one handles it.</p>
+
+<pre><span class="cmt">// Real-world: HTTP middleware pipeline (like Spring Security filter chain)</span>
+
+<span class="kw">public abstract class</span> <span class="type">RequestHandler</span> {
+    <span class="kw">protected</span> <span class="type">RequestHandler</span> next;
+
+    <span class="kw">public</span> <span class="type">RequestHandler</span> <span class="fn">setNext</span>(<span class="type">RequestHandler</span> handler) {
+        <span class="kw">this</span>.next = handler;
+        <span class="kw">return</span> handler;    <span class="cmt">// enables chaining: a.setNext(b).setNext(c)</span>
+    }
+
+    <span class="kw">public abstract void</span> <span class="fn">handle</span>(<span class="type">HttpRequest</span> request);
+}
+
+<span class="kw">public class</span> <span class="type">AuthenticationHandler</span> <span class="kw">extends</span> <span class="type">RequestHandler</span> {
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">handle</span>(<span class="type">HttpRequest</span> request) {
+        <span class="kw">if</span> (request.<span class="fn">getHeader</span>(<span class="str">"Authorization"</span>) == <span class="kw">null</span>) {
+            <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"[AUTH] REJECTED: No token"</span>); <span class="kw">return</span>;
+        }
+        <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"[AUTH] Passed"</span>);
+        <span class="kw">if</span> (next != <span class="kw">null</span>) next.<span class="fn">handle</span>(request);
+    }
+}
+
+<span class="kw">public class</span> <span class="type">RateLimitHandler</span> <span class="kw">extends</span> <span class="type">RequestHandler</span> {
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">handle</span>(<span class="type">HttpRequest</span> request) {
+        <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"[RATE] Checking rate limit..."</span>);
+        <span class="cmt">// Check Redis for rate limit bucket</span>
+        <span class="kw">if</span> (next != <span class="kw">null</span>) next.<span class="fn">handle</span>(request);
+    }
+}
+
+<span class="kw">public class</span> <span class="type">LoggingHandler</span> <span class="kw">extends</span> <span class="type">RequestHandler</span> {
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">handle</span>(<span class="type">HttpRequest</span> request) {
+        <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"[LOG] Request: "</span> + request.<span class="fn">getUrl</span>());
+        <span class="kw">if</span> (next != <span class="kw">null</span>) next.<span class="fn">handle</span>(request);
+    }
+}
+
+<span class="cmt">// Build the chain</span>
+<span class="type">RequestHandler</span> auth = <span class="kw">new</span> <span class="type">AuthenticationHandler</span>();
+auth.<span class="fn">setNext</span>(<span class="kw">new</span> <span class="type">RateLimitHandler</span>())
+    .<span class="fn">setNext</span>(<span class="kw">new</span> <span class="type">LoggingHandler</span>());
+
+auth.<span class="fn">handle</span>(request);  <span class="cmt">// Auth → RateLimit → Logging → Business Logic</span></pre>
+
+      <div class="tip">💡 <strong>This IS Spring Security:</strong> <code>SecurityFilterChain</code> is Chain of Responsibility. Each filter (JwtFilter, CorsFilter, CsrfFilter) processes the request and passes it to the next.</div>
+    </div>
+  </div>
+
+  <!-- Template Method -->
+  <div class="qa" id="template">
+    <div class="qq" onclick="toggle('template')">
+      <h3><span class="tag t-behavioral" style="margin-right:.6rem">Template Method</span> Define algorithm skeleton, defer steps to subclasses</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <p><strong>Intent:</strong> Define the skeleton of an algorithm in the base class, letting subclasses redefine specific steps without changing the algorithm's structure.</p>
+
+<pre><span class="cmt">// Real-world: CDR (Call Detail Record) processing pipeline</span>
+
+<span class="kw">public abstract class</span> <span class="type">CDRProcessor</span> {
+
+    <span class="cmt">// Template method — defines the invariant workflow</span>
+    <span class="kw">public final void</span> <span class="fn">process</span>(<span class="type">String</span> rawCDR) {
+        <span class="type">String</span> parsed    = <span class="fn">parseCDR</span>(rawCDR);        <span class="cmt">// Step 1: Parse</span>
+        <span class="type">String</span> validated = <span class="fn">validate</span>(parsed);        <span class="cmt">// Step 2: Validate</span>
+        <span class="type">String</span> enriched  = <span class="fn">enrich</span>(validated);       <span class="cmt">// Step 3: Enrich (hook)</span>
+        <span class="fn">store</span>(enriched);                            <span class="cmt">// Step 4: Store</span>
+    }
+
+    <span class="kw">protected abstract</span> <span class="type">String</span> <span class="fn">parseCDR</span>(<span class="type">String</span> raw);
+    <span class="kw">protected abstract</span> <span class="type">String</span> <span class="fn">validate</span>(<span class="type">String</span> cdr);
+
+    <span class="cmt">// Hook — optional override (has default impl)</span>
+    <span class="kw">protected</span> <span class="type">String</span> <span class="fn">enrich</span>(<span class="type">String</span> cdr) { <span class="kw">return</span> cdr; }
+    <span class="kw">protected abstract void</span> <span class="fn">store</span>(<span class="type">String</span> cdr);
+}
+
+<span class="kw">public class</span> <span class="type">VoiceCDRProcessor</span> <span class="kw">extends</span> <span class="type">CDRProcessor</span> {
+    <span class="ann">@Override</span> <span class="kw">protected</span> <span class="type">String</span> <span class="fn">parseCDR</span>(<span class="type">String</span> raw)    { <span class="kw">return</span> <span class="str">"VOICE:"</span> + raw;  }
+    <span class="ann">@Override</span> <span class="kw">protected</span> <span class="type">String</span> <span class="fn">validate</span>(<span class="type">String</span> cdr)   { <span class="kw">return</span> cdr;             }
+    <span class="ann">@Override</span> <span class="kw">protected</span> <span class="type">String</span> <span class="fn">enrich</span>(<span class="type">String</span> cdr)     { <span class="kw">return</span> cdr + <span class="str">"+GEO"</span>;   }   <span class="cmt">// adds geo data</span>
+    <span class="ann">@Override</span> <span class="kw">protected void</span>   <span class="fn">store</span>(<span class="type">String</span> cdr)      { <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"Voice DB: "</span> + cdr); }
+}
+
+<span class="kw">public class</span> <span class="type">DataCDRProcessor</span> <span class="kw">extends</span> <span class="type">CDRProcessor</span> {
+    <span class="ann">@Override</span> <span class="kw">protected</span> <span class="type">String</span> <span class="fn">parseCDR</span>(<span class="type">String</span> raw)    { <span class="kw">return</span> <span class="str">"DATA:"</span> + raw;   }
+    <span class="ann">@Override</span> <span class="kw">protected</span> <span class="type">String</span> <span class="fn">validate</span>(<span class="type">String</span> cdr)   { <span class="kw">return</span> cdr;             }
+    <span class="ann">@Override</span> <span class="kw">protected void</span>   <span class="fn">store</span>(<span class="type">String</span> cdr)      { <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"Data Lake: "</span> + cdr); }
+}
+
+<span class="kw">new</span> <span class="type">VoiceCDRProcessor</span>().<span class="fn">process</span>(<span class="str">"raw_voice_record"</span>);
+<span class="kw">new</span> <span class="type">DataCDRProcessor</span>().<span class="fn">process</span>(<span class="str">"raw_data_record"</span>);</pre>
+
+      <div class="good">✅ <strong>Spring:</strong> <code>JdbcTemplate</code>'s query methods, <code>AbstractController</code>, Spring Batch's <code>ItemProcessor</code> pipeline, JUnit's test lifecycle (beforeEach → test → afterEach) — all Template Method.</div>
+    </div>
+  </div>
+
+  <!-- Command -->
+  <div class="qa" id="command">
+    <div class="qq" onclick="toggle('command')">
+      <h3><span class="tag t-behavioral" style="margin-right:.6rem">Command</span> Encapsulate requests as objects (undo/queue/log)</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <p><strong>Intent:</strong> Encapsulate a request as an object, letting you parameterize clients with different requests, queue or log requests, and support undoable operations.</p>
+
+<pre><span class="kw">public interface</span> <span class="iface">Command</span> {
+    <span class="kw">void</span> <span class="fn">execute</span>();
+    <span class="kw">void</span> <span class="fn">undo</span>();
+}
+
+<span class="kw">public class</span> <span class="type">ActivateServiceCommand</span> <span class="kw">implements</span> <span class="iface">Command</span> {
+    <span class="kw">private final</span> <span class="type">String</span> msisdn;
+    <span class="kw">private final</span> <span class="type">String</span> service;
+
+    <span class="kw">public</span> <span class="type">ActivateServiceCommand</span>(<span class="type">String</span> msisdn, <span class="type">String</span> service) {
+        <span class="kw">this</span>.msisdn  = msisdn;
+        <span class="kw">this</span>.service = service;
+    }
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">execute</span>() { <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"✅ Activating "</span> + service + <span class="str">" for "</span> + msisdn); }
+    <span class="ann">@Override</span>
+    <span class="kw">public void</span> <span class="fn">undo</span>()    { <span class="type">System</span>.out.<span class="fn">println</span>(<span class="str">"↩️  Deactivating "</span> + service + <span class="str">" for "</span> + msisdn); }
+}
+
+<span class="cmt">// Invoker — with undo history</span>
+<span class="kw">public class</span> <span class="type">ServiceManager</span> {
+    <span class="kw">private final</span> <span class="type">Deque</span>&lt;<span class="iface">Command</span>&gt; history = <span class="kw">new</span> <span class="type">ArrayDeque</span>&lt;&gt;();
+
+    <span class="kw">public void</span> <span class="fn">execute</span>(<span class="iface">Command</span> cmd) {
+        cmd.<span class="fn">execute</span>();
+        history.<span class="fn">push</span>(cmd);
+    }
+
+    <span class="kw">public void</span> <span class="fn">undoLast</span>() {
+        <span class="kw">if</span> (!history.<span class="fn">isEmpty</span>()) history.<span class="fn">pop</span>().<span class="fn">undo</span>();
+    }
+}
+
+<span class="type">ServiceManager</span> mgr = <span class="kw">new</span> <span class="type">ServiceManager</span>();
+mgr.<span class="fn">execute</span>(<span class="kw">new</span> <span class="type">ActivateServiceCommand</span>(<span class="str">"9876543210"</span>, <span class="str">"VoLTE"</span>));
+mgr.<span class="fn">execute</span>(<span class="kw">new</span> <span class="type">ActivateServiceCommand</span>(<span class="str">"9876543210"</span>, <span class="str">"VoWiFi"</span>));
+mgr.<span class="fn">undoLast</span>(); <span class="cmt">// Deactivates VoWiFi</span></pre>
+
+      <div class="tip">💡 <strong>Real usage:</strong> Spring's <code>@Transactional</code> (commit/rollback = execute/undo), Kafka producer commands, CQRS command handlers, GUI action history.</div>
+    </div>
+  </div>
+
+  <!-- Patterns Quick Reference Table -->
+  <div class="card-purple" style="margin-top:1.5rem">
+    <h4 style="color:#a78bfa;margin-top:0">📋 All 23 GoF Patterns — Quick Reference</h4>
+    <table>
+      <tr><th>Category</th><th>Pattern</th><th>One-liner</th><th>Java/Spring Example</th></tr>
+      <tr><td rowspan="5"><strong style="color:var(--accent)">Creational</strong></td><td>Singleton</td><td>One instance globally</td><td>Spring beans, enum singleton</td></tr>
+      <tr><td>Factory Method</td><td>Subclass decides what to create</td><td>LoggerFactory, Calendar.getInstance()</td></tr>
+      <tr><td>Abstract Factory</td><td>Family of related objects</td><td>Spring's FactoryBean, JDBC drivers</td></tr>
+      <tr><td>Builder</td><td>Step-by-step construction</td><td>StringBuilder, @Builder, UriComponentsBuilder</td></tr>
+      <tr><td>Prototype</td><td>Clone existing objects</td><td>Object.clone(), Spring prototype scope</td></tr>
+      <tr><td rowspan="7"><strong style="color:var(--accent3)">Structural</strong></td><td>Adapter</td><td>Convert incompatible interfaces</td><td>Arrays.asList(), InputStreamReader</td></tr>
+      <tr><td>Bridge</td><td>Decouple abstraction from implementation</td><td>JDBC Driver abstraction</td></tr>
+      <tr><td>Composite</td><td>Tree of objects, uniform treatment</td><td>JPA entity graphs, file system trees</td></tr>
+      <tr><td>Decorator</td><td>Wrap to add behavior dynamically</td><td>Java I/O streams, Spring filter chain</td></tr>
+      <tr><td>Facade</td><td>Simplified interface to subsystem</td><td>JdbcTemplate, SLF4J, Spring Boot auto-config</td></tr>
+      <tr><td>Flyweight</td><td>Share common state to save memory</td><td>String pool, Integer.valueOf() cache</td></tr>
+      <tr><td>Proxy</td><td>Surrogate to control access</td><td>Spring AOP, @Transactional, @Cacheable</td></tr>
+      <tr><td rowspan="11"><strong style="color:var(--warn)">Behavioral</strong></td><td>Chain of Responsibility</td><td>Pass request along handler chain</td><td>Spring Security FilterChain</td></tr>
+      <tr><td>Command</td><td>Encapsulate request as object</td><td>Runnable/Callable, CQRS commands</td></tr>
+      <tr><td>Iterator</td><td>Sequential access to collection</td><td>java.util.Iterator, Stream API</td></tr>
+      <tr><td>Mediator</td><td>Centralize object communication</td><td>Spring's ApplicationEventPublisher</td></tr>
+      <tr><td>Memento</td><td>Save/restore object state</td><td>Serialization, undo/redo</td></tr>
+      <tr><td>Observer</td><td>Notify multiple dependents on change</td><td>@EventListener, Kafka consumers</td></tr>
+      <tr><td>State</td><td>Behavior changes with state</td><td>TCP connection states, Order lifecycle</td></tr>
+      <tr><td>Strategy</td><td>Family of interchangeable algorithms</td><td>Comparator, AuthenticationStrategy</td></tr>
+      <tr><td>Template Method</td><td>Algorithm skeleton in base class</td><td>JdbcTemplate, Spring Batch ItemProcessor</td></tr>
+      <tr><td>Visitor</td><td>New ops on elements without changing them</td><td>AST visitors, Jackson serializers</td></tr>
+      <tr><td>Interpreter</td><td>Grammar for a language</td><td>SpEL (Spring Expression Language), RegEx</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION: SYSTEM DESIGN -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="sysdesign" class="sec">
+  <div class="stitle">⚙️ <em>System Design</em> Fundamentals</div>
+  <div class="ssub">Core concepts for designing scalable, reliable, distributed systems</div>
+
+  <!-- Scalability -->
+  <div class="qa" id="scalability">
+    <div class="qq" onclick="toggle('scalability')">
+      <h3><span class="tag t-sysdesign" style="margin-right:.6rem">Scalability</span> Horizontal vs Vertical Scaling</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <div class="tradeoff-grid">
+        <div class="tradeoff-pro">
+          <h5>⬆️ Vertical Scaling (Scale Up)</h5>
+          <ul>
+            <li>Add more CPU/RAM to existing server</li>
+            <li>Simple — no application changes</li>
+            <li>Has hard limits (max machine size)</li>
+            <li>Single point of failure</li>
+            <li>Expensive at high end</li>
+          </ul>
+        </div>
+        <div class="tradeoff-con" style="background:rgba(0,229,255,.05);border-color:rgba(0,229,255,.2)">
+          <h5 style="color:var(--accent)">↔️ Horizontal Scaling (Scale Out)</h5>
+          <ul>
+            <li>Add more machines to the pool</li>
+            <li>Theoretically unlimited scale</li>
+            <li>Requires load balancer</li>
+            <li>No single point of failure</li>
+            <li>Preferred in cloud (AWS Auto Scaling)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="arch-diagram">
+<span class="label">HORIZONTAL SCALING (Preferred):</span>
+
+<span class="box">Client</span> <span class="arrow">──▶</span> <span class="box">Load Balancer</span> <span class="arrow">──▶</span> <span class="box">[App Server 1]</span>
+                              <span class="arrow">├──▶</span> <span class="box">[App Server 2]</span>  <span class="arrow">──▶</span> <span class="box">[Shared DB / Cache]</span>
+                              <span class="arrow">└──▶</span> <span class="box">[App Server N]</span>
+
+<span class="label">Key concerns with horizontal scaling:</span>
+  • <span class="box">Statelessness</span>: No session on server (use Redis for sessions)
+  • <span class="box">Shared State</span>: DB/Cache must be centralized
+  • <span class="box">Consistency</span>: Data sync across nodes (eventual vs strong)
+      </div>
+
+      <table>
+        <tr><th>Aspect</th><th>Vertical</th><th>Horizontal</th></tr>
+        <tr><td>Cost</td><td>High at limits</td><td>Commodity hardware</td></tr>
+        <tr><td>Complexity</td><td>Low</td><td>High (distributed systems)</td></tr>
+        <tr><td>Availability</td><td>SPOF risk</td><td>High (redundancy)</td></tr>
+        <tr><td>Limit</td><td>Physical machine cap</td><td>Virtually unlimited</td></tr>
+        <tr><td>Best for</td><td>DB primary, legacy apps</td><td>Web/API tiers, microservices</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Load Balancing -->
+  <div class="qa" id="lb">
+    <div class="qq" onclick="toggle('lb')">
+      <h3><span class="tag t-sysdesign" style="margin-right:.6rem">Load Balancing</span> Distribute traffic intelligently</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <h5>Load Balancing Algorithms</h5>
+      <table>
+        <tr><th>Algorithm</th><th>How it works</th><th>Best for</th></tr>
+        <tr><td><strong>Round Robin</strong></td><td>Requests distributed in order: 1→2→3→1→2→3</td><td>Homogeneous servers, equal request cost</td></tr>
+        <tr><td><strong>Weighted Round Robin</strong></td><td>Servers get requests proportional to weight</td><td>Heterogeneous servers (different capacities)</td></tr>
+        <tr><td><strong>Least Connections</strong></td><td>Route to server with fewest active connections</td><td>Long-lived connections (WebSocket, LDAP)</td></tr>
+        <tr><td><strong>IP Hash</strong></td><td>Client IP → consistent server mapping</td><td>Sticky sessions without session store</td></tr>
+        <tr><td><strong>Least Response Time</strong></td><td>Route to fastest responding server</td><td>Latency-sensitive APIs</td></tr>
+      </table>
+
+      <h5>Layer 4 vs Layer 7</h5>
+      <table>
+        <tr><th></th><th>Layer 4 (Transport)</th><th>Layer 7 (Application)</th></tr>
+        <tr><td>Works on</td><td>TCP/UDP packets</td><td>HTTP, gRPC, WebSocket content</td></tr>
+        <tr><td>Speed</td><td>Very fast (low overhead)</td><td>Slower (content inspection)</td></tr>
+        <tr><td>Routing by</td><td>IP + Port</td><td>URL path, headers, cookies</td></tr>
+        <tr><td>Examples</td><td>AWS NLB, HAProxy TCP mode</td><td>AWS ALB, Nginx, Envoy</td></tr>
+        <tr><td>Use case</td><td>DB proxies, raw TCP</td><td>Microservices routing, A/B testing</td></tr>
+      </table>
+
+      <div class="arch-diagram">
+<span class="label">Layer 7 Load Balancer — Content-Based Routing:</span>
+
+<span class="box">/api/users/*</span>    <span class="arrow">──▶</span> <span class="box">User Service Cluster</span>
+<span class="box">/api/orders/*</span>   <span class="arrow">──▶</span> <span class="box">Order Service Cluster</span>
+<span class="box">/api/reports/*</span>  <span class="arrow">──▶</span> <span class="box">Report Service Cluster</span>
+<span class="box">/static/*</span>        <span class="arrow">──▶</span> <span class="box">CDN / S3</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Caching -->
+  <div class="qa" id="caching">
+    <div class="qq" onclick="toggle('caching')">
+      <h3><span class="tag t-sysdesign" style="margin-right:.6rem">Caching</span> Strategies, patterns, and invalidation</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <h5>Caching Strategies</h5>
+      <table>
+        <tr><th>Strategy</th><th>Flow</th><th>Pro</th><th>Con</th></tr>
+        <tr><td><strong>Cache-Aside</strong> (Lazy)</td><td>App checks cache → miss → read DB → populate cache</td><td>Only caches what's needed</td><td>Cold start misses</td></tr>
+        <tr><td><strong>Write-Through</strong></td><td>Write to cache + DB simultaneously</td><td>Cache always fresh</td><td>Write latency overhead</td></tr>
+        <tr><td><strong>Write-Behind</strong> (Async)</td><td>Write to cache immediately, async to DB</td><td>Fast writes</td><td>Data loss risk on crash</td></tr>
+        <tr><td><strong>Read-Through</strong></td><td>Cache fetches from DB on miss automatically</td><td>Transparent to app</td><td>First request slow</td></tr>
+        <tr><td><strong>Refresh-Ahead</strong></td><td>Pre-fetch before TTL expires</td><td>No miss latency</td><td>Might cache stale data</td></tr>
+      </table>
+
+      <h5>Cache Invalidation — The Hard Problem</h5>
+      <ul>
+        <li><strong>TTL (Time-To-Live):</strong> Simplest — expire after N seconds. Risk: stale data during TTL window.</li>
+        <li><strong>Event-driven:</strong> Invalidate on write events via Kafka/pub-sub. Complex but consistent.</li>
+        <li><strong>Cache Stampede:</strong> Many requests hit DB simultaneously on cache miss. Fix: probabilistic early expiry or mutex/lock.</li>
+        <li><strong>Cache Penetration:</strong> Requests for non-existent keys bypass cache → DB. Fix: cache null results, Bloom filter.</li>
+        <li><strong>Cache Avalanche:</strong> Many keys expire simultaneously → DB overload. Fix: staggered TTLs, circuit breaker.</li>
+      </ul>
+
+      <div class="arch-diagram">
+<span class="label">Cache-Aside Pattern (most common):</span>
+
+<span class="box">App</span> <span class="arrow">──1. GET key──▶</span>   <span class="box">Redis Cache</span>
+    <span class="arrow">◀──2a. HIT───</span>   <span class="arrow">(cache miss path only)</span>
+    <span class="arrow">──2b. MISS──▶</span>  <span class="box">Database</span>
+    <span class="arrow">◀──3. Data───</span>  
+    <span class="arrow">──4. SET────▶</span>  <span class="box">Redis Cache</span> <span class="label">(populate for next request)</span>
+      </div>
+
+      <div class="tip">💡 <strong>In telecom (Mobileum):</strong> Subscriber profile data is cached in Redis. CDR aggregations are cached with short TTL. Roaming partner SLA configs are cached with refresh-ahead strategy.</div>
+    </div>
+  </div>
+
+  <!-- Database -->
+  <div class="qa" id="databases">
+    <div class="qq" onclick="toggle('databases')">
+      <h3><span class="tag t-sysdesign" style="margin-right:.6rem">Databases</span> SQL vs NoSQL, Sharding, Replication, CAP</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <h5>SQL vs NoSQL</h5>
+      <table>
+        <tr><th>Aspect</th><th>SQL (Relational)</th><th>NoSQL</th></tr>
+        <tr><td>Structure</td><td>Fixed schema, tables</td><td>Flexible (document, key-value, graph, column)</td></tr>
+        <tr><td>ACID</td><td>Full ACID <span class="badge b-yes">✓</span></td><td>Often eventual consistency</td></tr>
+        <tr><td>Scaling</td><td>Vertical primary, complex horizontal</td><td>Horizontal by design</td></tr>
+        <tr><td>Joins</td><td>Complex joins supported</td><td>Denormalized, no joins</td></tr>
+        <tr><td>Use case</td><td>Financial, ERP, billing</td><td>High-volume, flexible schema, real-time</td></tr>
+        <tr><td>Examples</td><td>PostgreSQL, MySQL, Oracle</td><td>MongoDB, Cassandra, Redis, DynamoDB</td></tr>
+      </table>
+
+      <h5>CAP Theorem</h5>
+      <p>A distributed system can only guarantee <strong>2 of 3</strong>: Consistency, Availability, Partition Tolerance. Since network partitions are unavoidable, the real choice is <strong>CP vs AP</strong>.</p>
+      <table>
+        <tr><th>Choice</th><th>Behavior on partition</th><th>Examples</th></tr>
+        <tr><td><strong>CP</strong> (Consistent + Partition Tolerant)</td><td>Returns error rather than stale data</td><td>HBase, MongoDB (default), Zookeeper</td></tr>
+        <tr><td><strong>AP</strong> (Available + Partition Tolerant)</td><td>Returns possibly stale data</td><td>Cassandra, DynamoDB, CouchDB</td></tr>
+      </table>
+
+      <h5>Database Sharding</h5>
+      <p>Split data horizontally across multiple DB instances (shards). Each shard holds a subset of the data.</p>
+      <table>
+        <tr><th>Strategy</th><th>How</th><th>Pro</th><th>Con</th></tr>
+        <tr><td>Range-based</td><td>shard by value range (A-M, N-Z)</td><td>Simple range queries</td><td>Hotspots if data skewed</td></tr>
+        <tr><td>Hash-based</td><td>hash(key) % num_shards</td><td>Even distribution</td><td>Range queries need scatter-gather</td></tr>
+        <tr><td>Directory-based</td><td>Lookup table maps key → shard</td><td>Flexible</td><td>Lookup table bottleneck</td></tr>
+      </table>
+
+      <h5>Replication</h5>
+      <div class="arch-diagram">
+<span class="label">Primary-Replica Replication:</span>
+
+<span class="box">Primary DB</span> <span class="arrow">──async replication──▶</span> <span class="box">Replica 1</span>
+           <span class="arrow">──async replication──▶</span> <span class="box">Replica 2</span>
+
+<span class="label">Write: Primary only | Read: Any replica (read scaling)</span>
+<span class="label">Failover: Promote replica to primary on failure</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Message Queues -->
+  <div class="qa" id="mq">
+    <div class="qq" onclick="toggle('mq')">
+      <h3><span class="tag t-sysdesign" style="margin-right:.6rem">Message Queues</span> Async communication, decoupling, Kafka patterns</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <h5>Why Message Queues?</h5>
+      <ul>
+        <li><strong>Decoupling:</strong> Producer doesn't need to know consumer exists</li>
+        <li><strong>Load Leveling:</strong> Queue absorbs traffic spikes; consumers process at their pace</li>
+        <li><strong>Async Processing:</strong> Return response immediately, process in background</li>
+        <li><strong>Fault Tolerance:</strong> Messages persist if consumer goes down</li>
+        <li><strong>Fan-out:</strong> One event → multiple consumers (Kafka topic partitions)</li>
+      </ul>
+
+      <h5>Kafka Key Concepts</h5>
+      <table>
+        <tr><th>Concept</th><th>Description</th></tr>
+        <tr><td><strong>Topic</strong></td><td>Named stream of messages (like a table in a DB)</td></tr>
+        <tr><td><strong>Partition</strong></td><td>Topic split for parallelism; ordered within partition</td></tr>
+        <tr><td><strong>Consumer Group</strong></td><td>Multiple consumers share partitions; each partition read by one consumer per group</td></tr>
+        <tr><td><strong>Offset</strong></td><td>Position of a message in partition; consumers track their offset</td></tr>
+        <tr><td><strong>Retention</strong></td><td>Messages kept for N days (not deleted after consumption)</td></tr>
+        <tr><td><strong>Replication Factor</strong></td><td>How many brokers hold copies of each partition</td></tr>
+      </table>
+
+      <div class="arch-diagram">
+<span class="label">Kafka Architecture:</span>
+
+<span class="box">CDR Producer</span> <span class="arrow">──▶</span> <span class="box">Topic: cdr-events</span>
+                    <span class="label">├── Partition 0</span> <span class="arrow">──▶</span> <span class="box">Fraud Detector (Consumer Group A)</span>
+                    <span class="label">├── Partition 1</span> <span class="arrow">──▶</span> <span class="box">Billing Engine (Consumer Group B)</span>
+                    <span class="label">└── Partition 2</span> <span class="arrow">──▶</span> <span class="box">Analytics (Consumer Group C)</span>
+      </div>
+
+      <h5>Delivery Semantics</h5>
+      <table>
+        <tr><th>Guarantee</th><th>Meaning</th><th>Risk</th></tr>
+        <tr><td><strong>At-most-once</strong></td><td>Message may be lost, never duplicated</td><td>Data loss on crash</td></tr>
+        <tr><td><strong>At-least-once</strong></td><td>Message delivered, may be duplicated</td><td>Duplicate processing</td></tr>
+        <tr><td><strong>Exactly-once</strong></td><td>Delivered exactly one time</td><td>Complex, expensive (Kafka transactions)</td></tr>
+      </table>
+
+      <div class="tip">💡 <strong>Idempotency:</strong> Design consumers to be idempotent (safe to process same message twice) — then at-least-once becomes effectively exactly-once in practice. Use a deduplication key (message ID + offset).</div>
+    </div>
+  </div>
+
+  <!-- API Design -->
+  <div class="qa" id="api">
+    <div class="qq" onclick="toggle('api')">
+      <h3><span class="tag t-sysdesign" style="margin-right:.6rem">API Design</span> REST, gRPC, GraphQL comparison + best practices</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <table>
+        <tr><th>Aspect</th><th>REST</th><th>gRPC</th><th>GraphQL</th></tr>
+        <tr><td>Protocol</td><td>HTTP/1.1</td><td>HTTP/2</td><td>HTTP/1.1 or 2</td></tr>
+        <tr><td>Format</td><td>JSON/XML</td><td>Protobuf (binary)</td><td>JSON</td></tr>
+        <tr><td>Schema</td><td>OpenAPI (optional)</td><td>Strict .proto</td><td>Strict GraphQL schema</td></tr>
+        <tr><td>Streaming</td><td>Limited (SSE)</td><td>Native bi-directional</td><td>Subscriptions</td></tr>
+        <tr><td>Performance</td><td>Good</td><td>Excellent (~10x)</td><td>Good</td></tr>
+        <tr><td>Best for</td><td>Public APIs, CRUD</td><td>Internal microservices</td><td>Mobile, flexible queries</td></tr>
+        <tr><td>Over/Under fetch</td><td>Both issues</td><td>Defined contracts</td><td>Exactly what client needs</td></tr>
+      </table>
+
+      <h5>REST API Best Practices</h5>
+<pre><span class="cmt">// ✅ Good REST API design</span>
+
+<span class="cmt">// Use nouns, not verbs</span>
+<span class="type">GET</span>    /api/v1/subscribers            <span class="cmt">// List subscribers</span>
+<span class="type">GET</span>    /api/v1/subscribers/{msisdn}   <span class="cmt">// Get one</span>
+<span class="type">POST</span>   /api/v1/subscribers            <span class="cmt">// Create</span>
+<span class="type">PUT</span>    /api/v1/subscribers/{msisdn}   <span class="cmt">// Full update</span>
+<span class="type">PATCH</span>  /api/v1/subscribers/{msisdn}   <span class="cmt">// Partial update</span>
+<span class="type">DELETE</span> /api/v1/subscribers/{msisdn}   <span class="cmt">// Delete</span>
+
+<span class="cmt">// Version the API</span>
+/api/v1/...   <span class="cmt">// Current version</span>
+/api/v2/...   <span class="cmt">// Next version (old clients unaffected)</span>
+
+<span class="cmt">// Use proper HTTP status codes</span>
+<span class="num">200</span> OK, <span class="num">201</span> Created, <span class="num">204</span> No Content
+<span class="num">400</span> Bad Request, <span class="num">401</span> Unauthorized, <span class="num">403</span> Forbidden, <span class="num">404</span> Not Found, <span class="num">409</span> Conflict
+<span class="num">429</span> Too Many Requests (rate limiting), <span class="num">500</span> Internal Server Error
+
+<span class="cmt">// Pagination — cursor-based (preferred over offset for large datasets)</span>
+<span class="type">GET</span> /api/v1/cdrs?cursor=abc123&amp;limit=50
+<span class="cmt">// Response: { "data": [...], "nextCursor": "xyz789", "hasMore": true }</span></pre>
+
+      <div class="good">✅ <strong>Rate Limiting:</strong> Use Token Bucket algorithm. Return <code>Retry-After</code> header with 429. Track by API key + endpoint + window. Use Redis for distributed rate limiting across multiple API servers.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION: CORE CONCEPTS -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="concepts" class="sec">
+  <div class="stitle">📐 <em>Core</em> Concepts</div>
+  <div class="ssub">Foundational distributed systems concepts every senior engineer must know</div>
+
+  <div class="qa" id="consistency">
+    <div class="qq" onclick="toggle('consistency')">
+      <h3><span class="tag t-sysdesign" style="margin-right:.6rem">Consistency</span> Strong vs Eventual vs Causal Consistency</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <table>
+        <tr><th>Model</th><th>Guarantee</th><th>Performance</th><th>Use case</th></tr>
+        <tr><td><strong>Strong (Linearizable)</strong></td><td>All reads reflect latest write</td><td>Slowest</td><td>Banking, payments, inventory</td></tr>
+        <tr><td><strong>Sequential</strong></td><td>Operations appear in same order to all nodes</td><td>Moderate</td><td>Distributed locks</td></tr>
+        <tr><td><strong>Causal</strong></td><td>Causally related ops seen in order; concurrent ops may differ</td><td>Good</td><td>Social feeds, comments</td></tr>
+        <tr><td><strong>Eventual</strong></td><td>System will converge to consistent state eventually</td><td>Fastest</td><td>DNS, shopping carts, CDN</td></tr>
+        <tr><td><strong>Read-your-writes</strong></td><td>User always sees their own writes</td><td>Good</td><td>Profile updates, settings</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="qa" id="availability">
+    <div class="qq" onclick="toggle('availability')">
+      <h3><span class="tag t-sysdesign" style="margin-right:.6rem">Availability</span> SLA, SLO, SLI, Nines, Circuit Breaker</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <table>
+        <tr><th>Availability</th><th>Downtime/Year</th><th>Downtime/Month</th></tr>
+        <tr><td>99% (2 nines)</td><td>3.65 days</td><td>7.2 hours</td></tr>
+        <tr><td>99.9% (3 nines)</td><td>8.7 hours</td><td>43.8 minutes</td></tr>
+        <tr><td>99.99% (4 nines)</td><td>52.6 minutes</td><td>4.4 minutes</td></tr>
+        <tr><td>99.999% (5 nines)</td><td>5.26 minutes</td><td>26 seconds</td></tr>
+      </table>
+
+      <h5>Circuit Breaker Pattern</h5>
+      <p>Prevents cascade failures when a downstream service is failing. Like an electrical circuit breaker — trips open to protect the system.</p>
+      <div class="arch-diagram">
+<span class="label">States:</span>
+<span class="box">CLOSED</span> <span class="arrow">──(failures exceed threshold)──▶</span> <span class="box">OPEN</span>
+<span class="box">OPEN</span>   <span class="arrow">──(timeout elapsed)────────────▶</span> <span class="box">HALF-OPEN</span>
+<span class="box">HALF-OPEN</span> <span class="arrow">──(test request succeeds)──▶</span> <span class="box">CLOSED</span>
+<span class="box">HALF-OPEN</span> <span class="arrow">──(test request fails)─────▶</span> <span class="box">OPEN</span>
+
+<span class="label">CLOSED: </span> Requests flow normally, failures counted
+<span class="label">OPEN:   </span> Requests fail immediately (fallback), no downstream calls
+<span class="label">HALF:   </span> Test request allowed to check if service recovered
+      </div>
+      <div class="tip">💡 <strong>Resilience4j</strong> in Spring Boot: <code>@CircuitBreaker(name="subscriberService", fallbackMethod="getDefault")</code>. Also provides Rate Limiter, Retry, Bulkhead, Time Limiter annotations.</div>
+    </div>
+  </div>
+
+  <div class="qa" id="acid">
+    <div class="qq" onclick="toggle('acid')">
+      <h3><span class="tag t-sysdesign" style="margin-right:.6rem">ACID vs BASE</span> Transaction models</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <table>
+        <tr><th>ACID</th><th>Meaning</th></tr>
+        <tr><td><strong>Atomicity</strong></td><td>All-or-nothing. Either full transaction commits or fully rolls back.</td></tr>
+        <tr><td><strong>Consistency</strong></td><td>DB goes from one valid state to another. Constraints maintained.</td></tr>
+        <tr><td><strong>Isolation</strong></td><td>Concurrent transactions don't interfere. Levels: Read Uncommitted, Read Committed, Repeatable Read, Serializable.</td></tr>
+        <tr><td><strong>Durability</strong></td><td>Committed data persists even after crash (written to disk/WAL).</td></tr>
+      </table>
+
+      <table style="margin-top:1rem">
+        <tr><th>BASE (NoSQL alternative)</th><th>Meaning</th></tr>
+        <tr><td><strong>Basically Available</strong></td><td>System responds even if some data unavailable</td></tr>
+        <tr><td><strong>Soft State</strong></td><td>State may change over time without input (convergence)</td></tr>
+        <tr><td><strong>Eventually Consistent</strong></td><td>System will become consistent given enough time</td></tr>
+      </table>
+
+      <h5>Isolation Levels & Anomalies</h5>
+      <table>
+        <tr><th>Level</th><th>Dirty Read</th><th>Non-Repeatable Read</th><th>Phantom Read</th></tr>
+        <tr><td>Read Uncommitted</td><td><span class="badge b-no">✗ possible</span></td><td><span class="badge b-no">✗ possible</span></td><td><span class="badge b-no">✗ possible</span></td></tr>
+        <tr><td>Read Committed</td><td><span class="badge b-yes">✓ prevented</span></td><td><span class="badge b-no">✗ possible</span></td><td><span class="badge b-no">✗ possible</span></td></tr>
+        <tr><td>Repeatable Read</td><td><span class="badge b-yes">✓ prevented</span></td><td><span class="badge b-yes">✓ prevented</span></td><td><span class="badge b-no">✗ possible</span></td></tr>
+        <tr><td>Serializable</td><td><span class="badge b-yes">✓ prevented</span></td><td><span class="badge b-yes">✓ prevented</span></td><td><span class="badge b-yes">✓ prevented</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="qa" id="microservices">
+    <div class="qq" onclick="toggle('microservices')">
+      <h3><span class="tag t-sysdesign" style="margin-right:.6rem">Microservices</span> Patterns, pitfalls, and inter-service communication</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <h5>Key Microservices Patterns</h5>
+      <table>
+        <tr><th>Pattern</th><th>Problem Solved</th><th>How</th></tr>
+        <tr><td><strong>API Gateway</strong></td><td>Single entry point, cross-cutting concerns</td><td>Auth, rate-limit, routing in one place (Kong, AWS API GW)</td></tr>
+        <tr><td><strong>Saga</strong></td><td>Distributed transactions (no 2PC)</td><td>Choreography (events) or Orchestration (saga orchestrator)</td></tr>
+        <tr><td><strong>CQRS</strong></td><td>Read/write workloads differ</td><td>Separate read model (optimized view) from write model</td></tr>
+        <tr><td><strong>Event Sourcing</strong></td><td>Audit trail, temporal queries</td><td>Store events not state; rebuild state by replaying</td></tr>
+        <tr><td><strong>Sidecar</strong></td><td>Add capabilities without code changes</td><td>Deploy helper container alongside (Envoy, Istio)</td></tr>
+        <tr><td><strong>Strangler Fig</strong></td><td>Migrate monolith to microservices gradually</td><td>New functionality in microservice, slowly strangle monolith</td></tr>
+        <tr><td><strong>Bulkhead</strong></td><td>Isolate failures to prevent cascade</td><td>Thread pools/connections per service; one failure ≠ system failure</td></tr>
+      </table>
+
+      <h5>Sync vs Async Communication</h5>
+      <div class="tradeoff-grid">
+        <div class="tradeoff-pro">
+          <h5>🔗 Synchronous (REST/gRPC)</h5>
+          <ul>
+            <li>Simple request-response</li>
+            <li>Immediate feedback (success/error)</li>
+            <li>Tight coupling (caller waits)</li>
+            <li>Cascading failures if downstream slow</li>
+            <li>Best for: Query data, user-facing APIs</li>
+          </ul>
+        </div>
+        <div class="tradeoff-con" style="background:rgba(0,229,255,.05);border-color:rgba(0,229,255,.2)">
+          <h5 style="color:var(--accent)">📨 Asynchronous (Kafka/RabbitMQ)</h5>
+          <ul>
+            <li>Producer doesn't wait for consumer</li>
+            <li>Better resilience and scalability</li>
+            <li>Loose coupling</li>
+            <li>Harder to debug and trace</li>
+            <li>Best for: Side effects, notifications, analytics</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION: CASE STUDIES -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="casestudies" class="sec">
+  <div class="stitle">🏢 <em>System Design</em> Case Studies</div>
+  <div class="ssub">End-to-end design walkthroughs for common interview questions</div>
+
+  <!-- URL Shortener -->
+  <div class="qa" id="urlshort">
+    <div class="qq" onclick="toggle('urlshort')">
+      <h3><span class="tag t-sysdesign" style="margin-right:.6rem">Design</span> URL Shortener (bit.ly)</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <h5>Requirements</h5>
+      <ul>
+        <li><strong>Functional:</strong> Create short URL, redirect to original, custom alias, expiry</li>
+        <li><strong>Non-functional:</strong> 100M URLs/day writes, 10B reads/day, 99.99% availability, &lt;50ms redirect</li>
+      </ul>
+      <h5>Back-of-envelope Estimation</h5>
+      <ul>
+        <li>100M writes/day = ~1200 writes/sec</li>
+        <li>10B reads/day = ~115K reads/sec (read-heavy, 10:1 ratio)</li>
+        <li>Storage: 100M × 365 × 10 years × 500 bytes ≈ 180 TB</li>
+      </ul>
+
+      <div class="arch-diagram">
+<span class="label">URL Shortener Architecture:</span>
+
+<span class="box">Client</span> <span class="arrow">──▶</span> <span class="box">CDN</span> <span class="arrow">──▶</span> <span class="box">API Gateway</span> <span class="arrow">──▶</span> <span class="box">URL Service</span>
+                                               <span class="arrow">├──▶</span> <span class="box">Redis Cache</span> <span class="label">(short→long mapping)</span>
+                                               <span class="arrow">└──▶</span> <span class="box">PostgreSQL</span>  <span class="label">(source of truth)</span>
+
+<span class="label">Write path:</span> API → Generate ID → Store in DB → Cache
+<span class="label">Read path: </span> Check Cache → miss → DB → populate Cache → 301 Redirect
+      </div>
+
+      <h5>Short Code Generation</h5>
+      <table>
+        <tr><th>Approach</th><th>Pro</th><th>Con</th></tr>
+        <tr><td>MD5/SHA256 hash (take 6 chars)</td><td>Simple</td><td>Collisions possible</td></tr>
+        <tr><td>Auto-increment ID → Base62</td><td>No collisions, predictable</td><td>Sequential, guessable</td></tr>
+        <tr><td>Snowflake ID → Base62</td><td>Distributed, unique, sortable</td><td>More complex</td></tr>
+        <tr><td>Pre-generated key table</td><td>Fast, no race conditions</td><td>Extra infrastructure</td></tr>
+      </table>
+
+<pre><span class="cmt">// Base62 encoding for short codes</span>
+<span class="kw">public class</span> <span class="type">Base62Encoder</span> {
+    <span class="kw">private static final</span> <span class="type">String</span> CHARS =
+        <span class="str">"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"</span>;
+
+    <span class="kw">public static</span> <span class="type">String</span> <span class="fn">encode</span>(<span class="kw">long</span> id) {
+        <span class="type">StringBuilder</span> sb = <span class="kw">new</span> <span class="type">StringBuilder</span>();
+        <span class="kw">while</span> (id > <span class="num">0</span>) {
+            sb.<span class="fn">append</span>(CHARS.<span class="fn">charAt</span>((<span class="kw">int</span>)(id % <span class="num">62</span>)));
+            id /= <span class="num">62</span>;
+        }
+        <span class="kw">return</span> sb.<span class="fn">reverse</span>().<span class="fn">toString</span>();
+    }
+    <span class="cmt">// 62^6 = 56 billion unique codes — plenty!</span>
+}</pre>
+    </div>
+  </div>
+
+  <!-- Rate Limiter -->
+  <div class="qa" id="ratelimiter">
+    <div class="qq" onclick="toggle('ratelimiter')">
+      <h3><span class="tag t-sysdesign" style="margin-right:.6rem">Design</span> Rate Limiter</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <h5>Algorithms</h5>
+      <table>
+        <tr><th>Algorithm</th><th>How</th><th>Pro</th><th>Con</th></tr>
+        <tr><td><strong>Token Bucket</strong></td><td>Tokens added at rate R, consumed per request</td><td>Allows bursts, smooth</td><td>Complex distributed state</td></tr>
+        <tr><td><strong>Leaky Bucket</strong></td><td>Requests queue, processed at fixed rate</td><td>Stable output rate</td><td>No burst allowance</td></tr>
+        <tr><td><strong>Fixed Window</strong></td><td>Count requests in fixed 1-min windows</td><td>Simple</td><td>Burst at window edges</td></tr>
+        <tr><td><strong>Sliding Window Log</strong></td><td>Log timestamps, count in last N ms</td><td>Precise</td><td>Memory heavy</td></tr>
+        <tr><td><strong>Sliding Window Counter</strong></td><td>Hybrid: current + weighted previous window</td><td>Efficient, accurate</td><td>Approximate</td></tr>
+      </table>
+
+<pre><span class="cmt">// Token Bucket Rate Limiter using Redis (distributed)</span>
+<span class="kw">public class</span> <span class="type">RedisTokenBucketLimiter</span> {
+    <span class="kw">private final</span> <span class="type">RedisTemplate</span>&lt;<span class="type">String</span>, <span class="type">String</span>&gt; redis;
+    <span class="kw">private final int</span> capacity;     <span class="cmt">// Max tokens (burst size)</span>
+    <span class="kw">private final int</span> refillRate;   <span class="cmt">// Tokens per second</span>
+
+    <span class="kw">public boolean</span> <span class="fn">isAllowed</span>(<span class="type">String</span> clientId) {
+        <span class="type">String</span> key     = <span class="str">"rate:"</span> + clientId;
+        <span class="type">Long</span>   tokens  = redis.<span class="fn">opsForValue</span>().<span class="fn">decrement</span>(key);
+        <span class="kw">if</span> (tokens == <span class="kw">null</span> || tokens < <span class="num">0</span>) {
+            <span class="cmt">// Refill bucket with Lua script (atomic)</span>
+            <span class="kw">return false</span>;
+        }
+        <span class="kw">return true</span>;
+    }
+}
+
+<span class="cmt">// Spring filter for rate limiting:</span>
+<span class="ann">@Component</span>
+<span class="kw">public class</span> <span class="type">RateLimitFilter</span> <span class="kw">extends</span> <span class="type">OncePerRequestFilter</span> {
+    <span class="ann">@Override</span>
+    <span class="kw">protected void</span> <span class="fn">doFilterInternal</span>(<span class="type">HttpServletRequest</span> req,
+                                     <span class="type">HttpServletResponse</span> res,
+                                     <span class="type">FilterChain</span> chain) {
+        <span class="type">String</span> apiKey = req.<span class="fn">getHeader</span>(<span class="str">"X-API-KEY"</span>);
+        <span class="kw">if</span> (!limiter.<span class="fn">isAllowed</span>(apiKey)) {
+            res.<span class="fn">setStatus</span>(<span class="num">429</span>);
+            res.<span class="fn">setHeader</span>(<span class="str">"Retry-After"</span>, <span class="str">"60"</span>);
+            <span class="kw">return</span>;
+        }
+        chain.<span class="fn">doFilter</span>(req, res);
+    }
+}</pre>
+    </div>
+  </div>
+
+  <!-- CDR Processing System (Telecom specific) -->
+  <div class="qa" id="cdrdesign">
+    <div class="qq" onclick="toggle('cdrdesign')">
+      <h3><span class="tag t-sysdesign" style="margin-right:.6rem">Design</span> Telecom CDR Processing System (Mobileum-level)</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <p>Design a system to process <strong>Call Detail Records (CDRs)</strong> from a mobile network — ingest, validate, enrich, detect fraud, and generate billing records in real-time.</p>
+      <h5>Requirements</h5>
+      <ul>
+        <li>Ingest 10M+ CDRs/hour from network elements (SGSN, GGSN, MSC)</li>
+        <li>Real-time fraud detection (&lt;5 sec latency)</li>
+        <li>Enrich with subscriber profile (plan, roaming status)</li>
+        <li>Generate billing records for OCS (Online Charging System)</li>
+        <li>Store raw + processed CDRs for 90 days (regulatory)</li>
+      </ul>
+
+      <div class="arch-diagram">
+<span class="label">CDR Processing Architecture:</span>
+
+<span class="box">MSC/SGSN/MME</span> <span class="arrow">──SIGTRAN/Diameter──▶</span> <span class="box">CDR Collector</span>
+                                                <span class="arrow">──▶</span> <span class="box">Kafka: raw-cdr topic</span>
+                                                         <span class="arrow">├──▶</span> <span class="box">Validation Service</span>
+                                                         <span class="arrow">│        └──▶</span> <span class="box">Kafka: valid-cdr</span>
+                                                         <span class="arrow">│                 ├──▶</span> <span class="box">Enrichment Service</span>
+                                                         <span class="arrow">│                 │     (Redis: subscriber cache)</span>
+                                                         <span class="arrow">│                 ├──▶</span> <span class="box">Fraud Engine</span>
+                                                         <span class="arrow">│                 │     (ML Model + Rules)</span>
+                                                         <span class="arrow">│                 └──▶</span> <span class="box">Billing Mediation</span>
+                                                         <span class="arrow">│                          └──▶</span> <span class="box">OCS</span>
+                                                         <span class="arrow">└──▶</span> <span class="box">Cold Storage (S3/HDFS)</span>
+
+<span class="label">Subscriber Cache:</span> Redis cluster, 10M entries, 30min TTL, Write-through on BSS update
+<span class="label">Fraud Engine:   </span> Sliding window counters in Redis, ML scoring via REST, &lt;50ms
+<span class="label">Storage:        </span> Cassandra (time-series CDRs), Parquet on S3 (analytics)
+      </div>
+
+      <h5>Key Design Decisions</h5>
+      <table>
+        <tr><th>Decision</th><th>Choice</th><th>Reasoning</th></tr>
+        <tr><td>Message broker</td><td>Apache Kafka</td><td>High throughput, replay, consumer groups for different workloads</td></tr>
+        <tr><td>CDR store</td><td>Apache Cassandra</td><td>Time-series data, wide row design (MSISDN + timestamp), linear scale</td></tr>
+        <tr><td>Subscriber cache</td><td>Redis Cluster</td><td>Sub-millisecond lookups, horizontal scale, pub-sub for invalidation</td></tr>
+        <tr><td>Analytics</td><td>Apache Spark + S3</td><td>Batch aggregations on raw CDRs, cost-effective cold storage</td></tr>
+        <tr><td>Fraud detection</td><td>Flink (stream processing)</td><td>Stateful stream processing, event time windows, exactly-once semantics</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Difficulty Divider: Easy -->
+  <div style="display:flex;align-items:center;gap:1rem;margin:1.5rem 0 .75rem">
+    <span style="background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);color:var(--accent3);font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;padding:.25rem .75rem;border-radius:3px;letter-spacing:.1em">🟢 EASY</span>
+    <div style="flex:1;height:1px;background:var(--border)"></div>
+  </div>
+
+  <!-- Pastebin -->
+  <div class="qa" id="pastebin">
+    <div class="qq" onclick="toggle('pastebin')">
+      <h3><span class="tag t-sysdesign" style="margin-right:.6rem">Design</span> Pastebin / Code Snippet Sharing Service</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <h5>Requirements</h5>
+      <ul>
+        <li><strong>Functional:</strong> Upload text/code, get shareable link, optional expiry, optional password, syntax highlight</li>
+        <li><strong>Non-functional:</strong> 1M pastes/day (write), 10M reads/day, 99.9% availability, pastes up to 10 MB</li>
+      </ul>
+      <h5>Estimation</h5>
+      <ul>
+        <li>Writes: ~12/sec · Reads: ~120/sec (10:1 read-heavy)</li>
+        <li>Storage: 1M × 10KB avg × 365 × 5 years ≈ <strong>18 TB</strong></li>
+        <li>Most pastes accessed within first 24h → cache cold content on object store</li>
+      </ul>
+
+      <div class="arch-diagram">
+<span class="label">Architecture:</span>
+
+<span class="box">Client</span> <span class="arrow">──▶</span> <span class="box">CDN (CloudFront)</span> <span class="arrow">──▶</span> <span class="box">API Gateway</span> <span class="arrow">──▶</span> <span class="box">Paste Service</span>
+                                                              <span class="arrow">├── Write ──▶</span> <span class="box">PostgreSQL</span>  <span class="label">(metadata: id, expiry, hash)</span>
+                                                              <span class="arrow">│           ──▶</span> <span class="box">S3/Object Store</span> <span class="label">(content blob)</span>
+                                                              <span class="arrow">└── Read  ──▶</span> <span class="box">Redis Cache</span> <span class="label">(hot pastes, TTL=1h)</span>
+                                                                          <span class="arrow">── miss ──▶</span> <span class="box">S3</span>
+      </div>
+
+      <h5>Key Design Points</h5>
+      <table>
+        <tr><th>Concern</th><th>Decision</th><th>Reason</th></tr>
+        <tr><td>Paste ID generation</td><td>Base62(MD5(content + timestamp)) → 8 chars</td><td>62^8 = 218 trillion unique IDs</td></tr>
+        <tr><td>Content storage</td><td>S3 (not DB column)</td><td>DB not suited for large BLOBs; S3 is cheap, durable, CDN-friendly</td></tr>
+        <tr><td>Expiry</td><td>TTL stored in metadata; background cleanup job</td><td>Lazy delete + scheduled purge every hour</td></tr>
+        <tr><td>Hot content</td><td>Cache in Redis with LRU eviction</td><td>Viral pastes hit 80/20 rule — top 20% get 80% traffic</td></tr>
+        <tr><td>Deduplication</td><td>Hash content — same hash = same S3 key</td><td>Saves storage for repeated uploads</td></tr>
+      </table>
+
+      <h5>DB Schema</h5>
+<pre><span class="cmt">-- Pastes metadata table</span>
+<span class="kw">CREATE TABLE</span> pastes (
+    id          <span class="type">VARCHAR(8)</span>   <span class="kw">PRIMARY KEY</span>,       <span class="cmt">-- Base62 short ID</span>
+    content_key <span class="type">VARCHAR(256</span>) <span class="kw">NOT NULL</span>,          <span class="cmt">-- S3 object key</span>
+    content_hash <span class="type">CHAR(32)</span>    <span class="kw">NOT NULL</span>,          <span class="cmt">-- MD5 for dedup</span>
+    language    <span class="type">VARCHAR(32)</span>,                    <span class="cmt">-- Syntax highlight hint</span>
+    expires_at  <span class="type">TIMESTAMP</span>,                     <span class="cmt">-- NULL = never</span>
+    password_hash <span class="type">VARCHAR(64)</span>,                  <span class="cmt">-- BCrypt, NULL = public</span>
+    created_at  <span class="type">TIMESTAMP</span>    <span class="kw">DEFAULT NOW()</span>,
+    view_count  <span class="type">BIGINT</span>       <span class="kw">DEFAULT</span> <span class="num">0</span>
+);</pre>
+
+      <div class="tip">💡 <strong>Follow-up:</strong> For real-time "view count" without DB write per view — use Redis INCR on paste_id, flush to DB every 5 min via batch job.</div>
+    </div>
+  </div>
+
+  <!-- Key-Value Store -->
+  <div class="qa" id="kvstore">
+    <div class="qq" onclick="toggle('kvstore')">
+      <h3><span class="tag t-sysdesign" style="margin-right:.6rem">Design</span> Distributed Key-Value Store (like Redis)</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <h5>Requirements</h5>
+      <ul>
+        <li><strong>Functional:</strong> put(key, value), get(key), delete(key), TTL support, 10 KB max value</li>
+        <li><strong>Non-functional:</strong> 100K reads/sec, 10K writes/sec, &lt;10ms p99, 99.99% availability, data persistence</li>
+      </ul>
+
+      <div class="arch-diagram">
+<span class="label">Consistent Hashing Ring for Sharding:</span>
+
+           <span class="box">Node A</span>  (0–90°)
+          /           \
+<span class="box">Node D</span>               <span class="box">Node B</span>   (91–180°)
+          \           /
+           <span class="box">Node C</span>  (181–360°)
+
+<span class="label">key → hash(key) % 360 → find nearest node clockwise</span>
+<span class="label">Virtual nodes: each physical node owns N virtual nodes (handles hotspot)</span>
+
+<span class="label">Replication (N=3, W=2, R=2 — Quorum):</span>
+<span class="box">Client Write</span> <span class="arrow">──▶</span> <span class="box">Coordinator Node</span> <span class="arrow">──▶</span> <span class="box">Replica 1 ✓</span>
+                                      <span class="arrow">──▶</span> <span class="box">Replica 2 ✓</span>  <span class="label">← W=2 acks → success</span>
+                                      <span class="arrow">──▶</span> <span class="box">Replica 3</span>   <span class="label">(async)</span>
+      </div>
+
+      <h5>Core Components</h5>
+      <table>
+        <tr><th>Component</th><th>Purpose</th><th>Tech choice</th></tr>
+        <tr><td>Data partitioning</td><td>Spread keys across nodes</td><td>Consistent hashing (avoid rehashing on scale)</td></tr>
+        <tr><td>Replication</td><td>Fault tolerance (N=3)</td><td>Quorum: W+R &gt; N for strong consistency</td></tr>
+        <tr><td>Conflict resolution</td><td>Concurrent writes to same key</td><td>Vector clocks or Last-Write-Wins (timestamp)</td></tr>
+        <tr><td>Failure detection</td><td>Know which nodes are down</td><td>Gossip protocol (heartbeat every 1s)</td></tr>
+        <tr><td>Persistence</td><td>Survive restarts</td><td>WAL (Write-Ahead Log) + periodic snapshots</td></tr>
+        <tr><td>Eviction</td><td>Memory management</td><td>LRU, LFU, or TTL-based eviction</td></tr>
+      </table>
+
+      <h5>Consistency vs Availability Tuning (N=3)</h5>
+      <table>
+        <tr><th>Mode</th><th>W</th><th>R</th><th>Guarantee</th><th>Latency</th></tr>
+        <tr><td>Strong consistency</td><td>3</td><td>3</td><td>Always latest</td><td>Highest</td></tr>
+        <tr><td>Quorum (balanced)</td><td>2</td><td>2</td><td>Strong (W+R&gt;N)</td><td>Medium</td></tr>
+        <tr><td>High availability</td><td>1</td><td>1</td><td>Eventual</td><td>Lowest</td></tr>
+      </table>
+
+      <div class="good">✅ <strong>Real systems:</strong> Dynamo (Amazon), Cassandra, Riak all use consistent hashing + quorum. Redis uses master-replica with sentinel/cluster mode.</div>
+    </div>
+  </div>
+
+  <!-- Leaderboard -->
+  <div class="qa" id="leaderboard">
+    <div class="qq" onclick="toggle('leaderboard')">
+      <h3><span class="tag t-sysdesign" style="margin-right:.6rem">Design</span> Real-Time Gaming Leaderboard</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <h5>Requirements</h5>
+      <ul>
+        <li><strong>Functional:</strong> Update score, get top-N players, get player rank, get players around rank X, support daily/weekly/all-time boards</li>
+        <li><strong>Non-functional:</strong> 10M active players, 100K score updates/sec, rank query &lt;10ms, real-time leaderboard refresh</li>
+      </ul>
+
+      <h5>Why Redis Sorted Sets are Perfect Here</h5>
+<pre><span class="cmt">// Redis Sorted Set operations — O(log N) for all key operations</span>
+
+<span class="cmt">// Update score (add/update player)</span>
+ZADD leaderboard:global 9850 <span class="str">"player:userId123"</span>
+
+<span class="cmt">// Get top 10 players (highest scores first)</span>
+ZREVRANGE leaderboard:global <span class="num">0</span> <span class="num">9</span> WITHSCORES
+
+<span class="cmt">// Get player rank (0-indexed from top)</span>
+ZREVRANK leaderboard:global <span class="str">"player:userId123"</span>
+
+<span class="cmt">// Get players around rank 500 (±5 positions)</span>
+ZREVRANGE leaderboard:global <span class="num">495</span> <span class="num">505</span> WITHSCORES
+
+<span class="cmt">// Daily leaderboard with TTL</span>
+ZADD leaderboard:2024-12-15 <span class="num">1200</span> <span class="str">"player:userId123"</span>
+EXPIRE leaderboard:2024-12-15 <span class="num">86400</span>  <span class="cmt">// expire after 24h</span>
+
+<span class="cmt">// Atomic score increment (prevents race conditions)</span>
+ZINCRBY leaderboard:global <span class="num">150</span> <span class="str">"player:userId123"</span></pre>
+
+      <div class="arch-diagram">
+<span class="label">Architecture:</span>
+
+<span class="box">Game Server</span> <span class="arrow">──score event──▶</span> <span class="box">Kafka: score-events</span>
+                                      <span class="arrow">──▶</span> <span class="box">Score Processor</span>
+                                               <span class="arrow">├──▶</span> <span class="box">Redis Cluster</span>  <span class="label">(sorted sets, real-time)</span>
+                                               └──▶ <span class="box">PostgreSQL</span>     <span class="label">(source of truth, history)</span>
+
+<span class="box">Client query</span> <span class="arrow">──▶</span> <span class="box">Leaderboard API</span> <span class="arrow">──▶</span> <span class="box">Redis</span>  <span class="label">(always reads from Redis)</span>
+
+<span class="label">Sharding for global scale:</span>
+<span class="label">  Shard by score range: [0-1M] → Shard1, [1M-5M] → Shard2</span>
+<span class="label">  Merge-sort shards for global top-N (fan-out query)</span>
+      </div>
+
+      <table>
+        <tr><th>Operation</th><th>Redis Command</th><th>Time Complexity</th></tr>
+        <tr><td>Update score</td><td>ZADD / ZINCRBY</td><td>O(log N)</td></tr>
+        <tr><td>Get rank</td><td>ZREVRANK</td><td>O(log N)</td></tr>
+        <tr><td>Get top-K</td><td>ZREVRANGE 0 K-1</td><td>O(log N + K)</td></tr>
+        <tr><td>Range around player</td><td>ZREVRANGE rank-5 rank+5</td><td>O(log N + K)</td></tr>
+        <tr><td>Count in score range</td><td>ZCOUNT min max</td><td>O(log N)</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Difficulty Divider: Medium -->
+  <div style="display:flex;align-items:center;gap:1rem;margin:1.5rem 0 .75rem">
+    <span style="background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:var(--warn);font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;padding:.25rem .75rem;border-radius:3px;letter-spacing:.1em">🟡 MEDIUM</span>
+    <div style="flex:1;height:1px;background:var(--border)"></div>
+  </div>
+
+  <!-- Notification System -->
+  <div class="qa" id="notifdesign">
+    <div class="qq" onclick="toggle('notifdesign')">
+      <h3><span class="tag t-sysdesign" style="margin-right:.6rem">Design</span> Notification System (Push / Email / SMS)</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <h5>Requirements</h5>
+      <ul>
+        <li><strong>Functional:</strong> Send push, email, SMS; user notification preferences; retry on failure; delivery receipts; rate limiting per user</li>
+        <li><strong>Non-functional:</strong> 10M notifications/day, &lt;1s push delivery, &lt;5min email, at-least-once delivery, deduplication</li>
+      </ul>
+
+      <div class="arch-diagram">
+<span class="label">Notification Service Architecture:</span>
+
+<span class="box">Trigger Source</span>           <span class="box">API / Event</span>
+(Order placed,          <span class="arrow">──▶</span> <span class="box">Notification Service</span>
+ Alert fired, etc.)              <span class="arrow">├── fetch prefs ──▶</span> <span class="box">User Preferences DB</span>
+                                 <span class="arrow">├── dedup check ──▶</span> <span class="box">Redis</span> <span class="label">(idempotency key)</span>
+                                 <span class="arrow">└── enqueue ──▶</span> <span class="box">Kafka Topics</span>
+                                                    <span class="arrow">├──▶</span> <span class="box">push-notifications</span>
+                                                    <span class="arrow">├──▶</span> <span class="box">email-notifications</span>
+                                                    <span class="arrow">└──▶</span> <span class="box">sms-notifications</span>
+
+<span class="box">Push Worker</span>    <span class="arrow">──▶</span> <span class="box">FCM (Android) / APNs (iOS)</span>
+<span class="box">Email Worker</span>   <span class="arrow">──▶</span> <span class="box">SendGrid / SES</span>
+<span class="box">SMS Worker</span>     <span class="arrow">──▶</span> <span class="box">Twilio / SNS</span>
+
+<span class="label">All workers write delivery status back to:</span>
+<span class="box">Notification Status DB</span> <span class="label">(Cassandra — time-series delivery logs)</span>
+      </div>
+
+      <h5>Key Design Challenges</h5>
+      <table>
+        <tr><th>Challenge</th><th>Solution</th></tr>
+        <tr><td>Duplicate notifications</td><td>Idempotency key = hash(userId + eventId + channel). Check Redis before enqueue, TTL=24h.</td></tr>
+        <tr><td>Retry on failure</td><td>Exponential backoff: 1s → 5s → 30s → 5min → give up after 5 attempts. Dead-letter queue for analysis.</td></tr>
+        <tr><td>User preferences</td><td>Per-channel opt-out, quiet hours (no push 11PM–7AM), frequency caps (max 3 push/day).</td></tr>
+        <tr><td>Priority handling</td><td>Separate Kafka topics: critical (alerts), normal (updates), batch (marketing). Critical workers get more partitions.</td></tr>
+        <tr><td>Rate limiting</td><td>Token bucket per user per channel in Redis. Hard limit: 100 emails/day, 50 SMS/day.</td></tr>
+        <tr><td>Template management</td><td>Templates stored in DB, rendered server-side with user data. A/B test variants stored as separate template IDs.</td></tr>
+      </table>
+
+      <div class="warn-box">⚠️ <strong>Thundering herd:</strong> When a major event triggers notifications to 10M users simultaneously — batch them with staggered dispatch using a scheduled job that drains the queue at a controlled rate.</div>
+    </div>
+  </div>
+
+  <!-- Twitter/X Feed -->
+  <div class="qa" id="twitterfeed">
+    <div class="qq" onclick="toggle('twitterfeed')">
+      <h3><span class="tag t-sysdesign" style="margin-right:.6rem">Design</span> Twitter/X News Feed (Timeline)</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <h5>Requirements</h5>
+      <ul>
+        <li><strong>Functional:</strong> Post tweet, follow/unfollow users, view home timeline (tweets from followed users), search tweets</li>
+        <li><strong>Non-functional:</strong> 300M DAU, 500M tweets/day, timeline load &lt;200ms, eventual consistency OK for feeds</li>
+      </ul>
+
+      <h5>The Core Problem: Fan-out on Write vs Fan-out on Read</h5>
+      <div class="tradeoff-grid">
+        <div class="tradeoff-pro">
+          <h5>✍️ Fan-out on Write (Push)</h5>
+          <ul>
+            <li>On post: push tweet to all followers' feeds immediately</li>
+            <li>Read is O(1) — pre-computed feed in Redis</li>
+            <li>❌ Expensive for celebrities (100M followers)</li>
+            <li>❌ Wasted work for inactive followers</li>
+            <li>Good for: average users (&lt;1K followers)</li>
+          </ul>
+        </div>
+        <div class="tradeoff-con" style="background:rgba(0,229,255,.05);border-color:rgba(0,229,255,.2)">
+          <h5 style="color:var(--accent)">📖 Fan-out on Read (Pull)</h5>
+          <ul>
+            <li>On read: fetch tweets from all followed users, merge + sort</li>
+            <li>Write is O(1) — just store the tweet</li>
+            <li>❌ Read is expensive (N DB queries for N followings)</li>
+            <li>❌ Slow for users following 5000 accounts</li>
+            <li>Good for: celebrity accounts</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="arch-diagram">
+<span class="label">Twitter's Hybrid Approach:</span>
+
+<span class="box">Post Tweet</span> <span class="arrow">──▶</span> <span class="box">Tweet Service</span> <span class="arrow">──▶</span> <span class="box">Tweet DB (Sharded MySQL)</span>
+                           <span class="arrow">──▶</span> <span class="box">Fanout Service</span>
+                                    <span class="arrow">├── regular users  ──▶</span> <span class="box">Redis Timeline Cache</span>
+                                    <span class="arrow">│                       </span><span class="label">(pre-built feed lists, max 800 tweets)</span>
+                                    <span class="arrow">└── celebrities (>1M) ──▶</span> <span class="label">skip fanout</span>
+
+<span class="box">Read Timeline</span> <span class="arrow">──▶</span> <span class="box">Timeline Service</span>
+                           <span class="arrow">├── fetch from Redis cache</span>
+                           <span class="arrow">└── merge-inject celebrity tweets on-the-fly</span>
+                                <span class="label">(pull from tweet DB only for celebrity accounts)</span>
+      </div>
+
+      <h5>Data Model</h5>
+<pre><span class="cmt">-- Tweets table (sharded by tweet_id / Snowflake ID)</span>
+<span class="kw">CREATE TABLE</span> tweets (
+    tweet_id    <span class="type">BIGINT</span>      <span class="kw">PRIMARY KEY</span>,   <span class="cmt">-- Snowflake ID (time-sortable)</span>
+    user_id     <span class="type">BIGINT</span>      <span class="kw">NOT NULL</span>,
+    content     <span class="type">TEXT</span>,                       <span class="cmt">-- max 280 chars</span>
+    media_ids   <span class="type">JSONB</span>,                      <span class="cmt">-- S3 keys for images/video</span>
+    reply_to_id <span class="type">BIGINT</span>,                     <span class="cmt">-- NULL if original tweet</span>
+    created_at  <span class="type">TIMESTAMP</span>   <span class="kw">DEFAULT NOW()</span>
+);
+
+<span class="cmt">-- User follows graph (Graph DB or adjacency table)</span>
+<span class="kw">CREATE TABLE</span> follows (
+    follower_id <span class="type">BIGINT</span>,
+    followee_id <span class="type">BIGINT</span>,
+    <span class="kw">PRIMARY KEY</span> (follower_id, followee_id)
+);</pre>
+
+      <div class="tip">💡 <strong>Snowflake ID:</strong> Twitter's ID format = 41-bit timestamp + 10-bit machine ID + 12-bit sequence. Time-sortable, distributed, no coordination needed. Generates 4096 IDs/ms per machine.</div>
+    </div>
+  </div>
+
+  <!-- Search Autocomplete -->
+  <div class="qa" id="autocomplete">
+    <div class="qq" onclick="toggle('autocomplete')">
+      <h3><span class="tag t-sysdesign" style="margin-right:.6rem">Design</span> Search Autocomplete / Typeahead System</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <h5>Requirements</h5>
+      <ul>
+        <li><strong>Functional:</strong> Return top-5 suggestions as user types each character, suggestions ranked by popularity/frequency</li>
+        <li><strong>Non-functional:</strong> 10M DAU, 100M searches/day, response &lt;100ms, suggestions updated daily (near real-time optional)</li>
+      </ul>
+
+      <h5>Data Structure: Trie (Prefix Tree)</h5>
+<pre><span class="cmt">// Trie node for storing word prefixes</span>
+<span class="kw">public class</span> <span class="type">TrieNode</span> {
+    <span class="kw">private final</span> <span class="type">Map</span>&lt;<span class="type">Character</span>, <span class="type">TrieNode</span>&gt; children = <span class="kw">new</span> <span class="type">HashMap</span>&lt;&gt;();
+    <span class="kw">private boolean</span> isWord = <span class="kw">false</span>;
+    <span class="kw">private int</span>     frequency = <span class="num">0</span>;
+
+    <span class="cmt">// Get top-K suggestions for a prefix — O(p + n) where p=prefix len</span>
+    <span class="kw">public</span> <span class="type">List</span>&lt;<span class="type">String</span>&gt; <span class="fn">topK</span>(<span class="type">String</span> prefix, <span class="kw">int</span> k) {
+        <span class="type">TrieNode</span> node = <span class="fn">findPrefix</span>(prefix);
+        <span class="kw">if</span> (node == <span class="kw">null</span>) <span class="kw">return</span> <span class="type">Collections</span>.<span class="fn">emptyList</span>();
+        <span class="cmt">// DFS from prefix node, use PriorityQueue to keep top-K by frequency</span>
+        <span class="type">PriorityQueue</span>&lt;<span class="type">String</span>&gt; pq = <span class="kw">new</span> <span class="type">PriorityQueue</span>&lt;&gt;(
+            (a, b) -&gt; <span class="fn">getFreq</span>(a) - <span class="fn">getFreq</span>(b));
+        <span class="fn">dfs</span>(node, <span class="kw">new</span> <span class="type">StringBuilder</span>(prefix), k, pq);
+        <span class="kw">return new</span> <span class="type">ArrayList</span>&lt;&gt;(pq);
+    }
+}
+
+<span class="cmt">// At scale: Trie stored in Redis (serialize nodes) or use pre-computed prefix tables</span>
+<span class="cmt">// Key: "prefix:sea" → Value: ["search","season","seat","sea","seal"] (sorted by freq)</span></pre>
+
+      <div class="arch-diagram">
+<span class="label">Architecture:</span>
+
+<span class="label">DATA COLLECTION PIPELINE (offline / near-realtime):</span>
+<span class="box">Search Logs</span> <span class="arrow">──▶</span> <span class="box">Kafka</span> <span class="arrow">──▶</span> <span class="box">Spark/Flink</span>
+<span class="label">(aggregate hourly)</span>              <span class="arrow">──▶</span> <span class="box">Trie Builder Service</span>
+                                            <span class="arrow">──▶</span> <span class="box">Trie Snapshot (S3)</span>
+                                            <span class="arrow">──▶</span> <span class="box">Trie Servers (in-memory)</span>
+
+<span class="label">QUERY PATH (real-time):</span>
+<span class="box">User types "sea"</span> <span class="arrow">──▶</span> <span class="box">LB</span> <span class="arrow">──▶</span> <span class="box">Trie Server</span>
+                                  <span class="label">(route by prefix hash for cache locality)</span>
+                                  <span class="arrow">──▶</span> <span class="box">Return top-5 [{word, score}]</span>
+      </div>
+
+      <table>
+        <tr><th>Optimization</th><th>Technique</th></tr>
+        <tr><td>Reduce trie size</td><td>Store only top-K suggestions at each node (not full DFS at query time)</td></tr>
+        <tr><td>Prefix routing</td><td>LB routes "a*" → Server1, "b*" → Server2 (cache locality)</td></tr>
+        <tr><td>Update frequency</td><td>Rebuild trie weekly (batch), apply real-time deltas via diff</td></tr>
+        <tr><td>Filter bad content</td><td>Blocklist layer before returning results</td></tr>
+        <tr><td>Personalization</td><td>Blend global trie results with user's personal search history</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Difficulty Divider: Hard -->
+  <div style="display:flex;align-items:center;gap:1rem;margin:1.5rem 0 .75rem">
+    <span style="background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:var(--danger);font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;padding:.25rem .75rem;border-radius:3px;letter-spacing:.1em">🔴 HARD</span>
+    <div style="flex:1;height:1px;background:var(--border)"></div>
+  </div>
+
+  <!-- Google Drive / File Storage -->
+  <div class="qa" id="filestorage">
+    <div class="qq" onclick="toggle('filestorage')">
+      <h3><span class="tag t-sysdesign" style="margin-right:.6rem">Design</span> Google Drive / Dropbox (Distributed File Storage)</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <h5>Requirements</h5>
+      <ul>
+        <li><strong>Functional:</strong> Upload/download files, folder hierarchy, file sync across devices, share files/folders, versioning</li>
+        <li><strong>Non-functional:</strong> 1B users, 10M concurrent connections, 10PB storage, &lt;500ms upload feedback, files up to 5GB</li>
+      </ul>
+
+      <h5>Chunking Strategy — Key to Efficient Sync</h5>
+<pre><span class="cmt">// Files are split into 4MB chunks before upload</span>
+<span class="cmt">// Each chunk identified by SHA-256 hash (content-addressable storage)</span>
+
+<span class="kw">public class</span> <span class="type">FileChunker</span> {
+    <span class="kw">private static final int</span> CHUNK_SIZE = <span class="num">4</span> * <span class="num">1024</span> * <span class="num">1024</span>; <span class="cmt">// 4 MB</span>
+
+    <span class="kw">public</span> <span class="type">List</span>&lt;<span class="type">Chunk</span>&gt; <span class="fn">chunk</span>(<span class="type">File</span> file) <span class="kw">throws</span> <span class="type">Exception</span> {
+        <span class="type">List</span>&lt;<span class="type">Chunk</span>&gt; chunks = <span class="kw">new</span> <span class="type">ArrayList</span>&lt;&gt;();
+        <span class="kw">try</span> (<span class="type">FileInputStream</span> fis = <span class="kw">new</span> <span class="type">FileInputStream</span>(file)) {
+            <span class="kw">byte</span>[] buffer = <span class="kw">new byte</span>[CHUNK_SIZE];
+            <span class="kw">int</span> bytesRead;
+            <span class="kw">int</span> index = <span class="num">0</span>;
+            <span class="kw">while</span> ((bytesRead = fis.<span class="fn">read</span>(buffer)) != -<span class="num">1</span>) {
+                <span class="kw">byte</span>[] data = <span class="type">Arrays</span>.<span class="fn">copyOf</span>(buffer, bytesRead);
+                <span class="type">String</span> hash = <span class="fn">sha256</span>(data);
+                chunks.<span class="fn">add</span>(<span class="kw">new</span> <span class="type">Chunk</span>(index++, hash, data));
+            }
+        }
+        <span class="kw">return</span> chunks;
+    }
+}
+<span class="cmt">// Upload: check which chunks already exist (dedup) → only upload new chunks</span>
+<span class="cmt">// Delta sync: compare chunk hashes → only re-upload changed chunks</span></pre>
+
+      <div class="arch-diagram">
+<span class="label">Architecture:</span>
+
+<span class="box">Client</span> <span class="arrow">──chunk file──▶</span> <span class="box">Upload Service</span>
+                            <span class="arrow">├── 1. check existing chunks ──▶</span> <span class="box">Metadata DB</span>  <span class="label">(PostgreSQL)</span>
+                            <span class="arrow">├── 2. presigned URLs ────────▶</span> <span class="box">Block Storage</span> <span class="label">(S3 / GCS)</span>
+                            <span class="arrow">│   3. client uploads directly to S3 (bypasses our servers)</span>
+                            <span class="arrow">└── 4. confirm complete ──────▶</span> <span class="box">Metadata DB</span>
+
+<span class="box">Sync Service</span> <span class="arrow">──▶</span> <span class="box">WebSocket / Long-Poll</span>
+                   <span class="label">Push change notifications to all connected clients of same user</span>
+                   <span class="label">Client compares chunk manifest → downloads only changed chunks</span>
+
+<span class="label">Metadata DB Schema:</span>
+<span class="label">  files(file_id, owner_id, name, parent_folder_id, size, version, chunk_ids[])</span>
+<span class="label">  chunks(chunk_hash, s3_key, size, ref_count)</span>  <span class="cmt">← dedup: same chunk shared across files</span>
+      </div>
+
+      <h5>Key Design Decisions</h5>
+      <table>
+        <tr><th>Problem</th><th>Solution</th><th>Benefit</th></tr>
+        <tr><td>Large file uploads</td><td>Chunked + presigned S3 URLs (client uploads direct to S3)</td><td>No bandwidth bottleneck on API servers</td></tr>
+        <tr><td>Storage efficiency</td><td>Content-addressable dedup (same chunk hash = same S3 object)</td><td>Dropbox reported 70% storage savings</td></tr>
+        <tr><td>Cross-device sync</td><td>WebSocket push + vector clock for conflict detection</td><td>Real-time, offline-first</td></tr>
+        <tr><td>Conflict resolution</td><td>Create "file (conflicted copy)" — both versions preserved</td><td>No data loss, user resolves</td></tr>
+        <tr><td>Versioning</td><td>Metadata chain of versions; chunks shared across versions</td><td>30-day history at minimal storage cost</td></tr>
+        <tr><td>Bandwidth optimization</td><td>Delta sync (only changed chunks), compression (zstd)</td><td>90% less bandwidth on small edits</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Distributed Message Queue -->
+  <div class="qa" id="msgqueue">
+    <div class="qq" onclick="toggle('msgqueue')">
+      <h3><span class="tag t-sysdesign" style="margin-right:.6rem">Design</span> Distributed Message Queue (like Kafka from scratch)</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <h5>Requirements</h5>
+      <ul>
+        <li><strong>Functional:</strong> Publish messages, subscribe by consumer group, replay messages, topics with partitions, at-least-once delivery</li>
+        <li><strong>Non-functional:</strong> 1M messages/sec throughput, &lt;10ms publish latency, messages retained 7 days, horizontal scale</li>
+      </ul>
+
+      <div class="arch-diagram">
+<span class="label">Core Architecture:</span>
+
+<span class="box">Producers</span> <span class="arrow">──▶</span> <span class="box">Broker Cluster</span>
+                  <span class="label">Topic: orders  →  Partition-0 (Leader: Broker-1, Replicas: Broker-2,3)</span>
+                  <span class="label">               →  Partition-1 (Leader: Broker-2, Replicas: Broker-1,3)</span>
+                  <span class="label">               →  Partition-2 (Leader: Broker-3, Replicas: Broker-1,2)</span>
+                  <span class="arrow">──▶</span> <span class="box">Consumer Groups</span>
+                        <span class="label">Group A (billing):  Consumer-1 → P0, Consumer-2 → P1, Consumer-3 → P2</span>
+                        <span class="label">Group B (analytics): Consumer-1 → P0+P1+P2 (can read all)</span>
+
+<span class="box">ZooKeeper / KRaft</span> <span class="label">← Leader election, broker registration, offset tracking</span>
+      </div>
+
+      <h5>Storage — The Secret to Kafka's Performance</h5>
+<pre><span class="cmt">// Kafka's log segment files — append-only sequential writes</span>
+<span class="cmt">// Sequential disk I/O is nearly as fast as memory (500MB/s vs 600MB/s)</span>
+
+<span class="cmt">// Each partition is a directory of segment files:</span>
+<span class="cmt">// /data/orders-0/</span>
+<span class="cmt">//   00000000000000000000.log  ← actual message bytes</span>
+<span class="cmt">//   00000000000000000000.index ← offset → file position mapping</span>
+<span class="cmt">//   00000000000000001234.log  ← next segment (rolled when size limit hit)</span>
+
+<span class="cmt">// Message format (simplified):</span>
+<span class="kw">struct</span> Message {
+    offset:     <span class="type">int64</span>   <span class="cmt">// monotonically increasing</span>
+    timestamp:  <span class="type">int64</span>
+    key_size:   <span class="type">int32</span>
+    key:        <span class="type">bytes</span>   <span class="cmt">// used for partition assignment: hash(key) % numPartitions</span>
+    value_size: <span class="type">int32</span>
+    value:      <span class="type">bytes</span>
+    headers:    <span class="type">map</span>
+}
+<span class="cmt">// Consumers track their own offset — broker is stateless per consumer</span>
+<span class="cmt">// Consumer offset stored in special __consumer_offsets topic</span></pre>
+
+      <h5>Performance Techniques</h5>
+      <table>
+        <tr><th>Technique</th><th>What</th><th>Impact</th></tr>
+        <tr><td>Sequential I/O</td><td>Append-only log files, no random writes</td><td>500MB/s vs 50MB/s random</td></tr>
+        <tr><td>Zero-copy</td><td>sendfile() syscall bypasses user space</td><td>2x throughput, 50% CPU reduction</td></tr>
+        <tr><td>Batching</td><td>Producer batches messages before send</td><td>Amortizes network + disk overhead</td></tr>
+        <tr><td>Compression</td><td>Batch compressed (snappy/lz4/zstd)</td><td>3–5x bandwidth reduction</td></tr>
+        <tr><td>Page cache</td><td>OS page cache for recent reads</td><td>Consumers lag broker by &lt;1s = cache hit</td></tr>
+      </table>
+
+      <div class="good">✅ <strong>Why Kafka beats traditional MQs:</strong> RabbitMQ/ActiveMQ delete messages after ACK (can't replay). Kafka retains messages for days — consumers can replay, multiple groups read independently, backfill new services.</div>
+    </div>
+  </div>
+
+  <!-- Web Crawler -->
+  <div class="qa" id="webcrawler">
+    <div class="qq" onclick="toggle('webcrawler')">
+      <h3><span class="tag t-sysdesign" style="margin-right:.6rem">Design</span> Web Crawler (for Search Engine Indexing)</h3>
+      <span class="qarr">▼</span>
+    </div>
+    <div class="qa-body">
+      <h5>Requirements</h5>
+      <ul>
+        <li><strong>Functional:</strong> Crawl 1B web pages, extract links, respect robots.txt, avoid duplicate content, re-crawl updated pages</li>
+        <li><strong>Non-functional:</strong> 1B pages in 30 days = ~400 pages/sec, polite crawling (no DDoS on hosts), distributed, fault-tolerant</li>
+      </ul>
+
+      <div class="arch-diagram">
+<span class="label">Web Crawler Architecture:</span>
+
+                        <span class="box">Seed URLs</span>
+                             <span class="arrow">↓</span>
+<span class="box">URL Frontier</span> <span class="label">(Priority Queue — politeness + freshness weighted)</span>
+      <span class="arrow">│</span>
+      <span class="arrow">├──▶</span> <span class="box">DNS Resolver Cache</span>          <span class="label">(avoid repeated DNS for same host)</span>
+      <span class="arrow">├──▶</span> <span class="box">robots.txt Cache</span>            <span class="label">(per-host, cache 24h)</span>
+      <span class="arrow">└──▶</span> <span class="box">Fetch Workers (1000 threads)</span>
+                <span class="arrow">──▶</span> <span class="box">HTML Parser</span>
+                         <span class="arrow">├──▶</span> <span class="box">Link Extractor</span> <span class="arrow">──▶</span> <span class="box">URL Deduplicator</span> <span class="arrow">──▶</span> <span class="box">URL Frontier</span>
+                         <span class="arrow">└──▶</span> <span class="box">Content Fingerprinter</span>
+                                   <span class="arrow">├── duplicate? ──▶</span> <span class="label">discard</span>
+                                   <span class="arrow">└── new/changed ──▶</span> <span class="box">Content Store (S3)</span>
+                                                       <span class="arrow">──▶</span> <span class="box">Indexing Pipeline</span>
+      </div>
+
+      <h5>Key Challenges & Solutions</h5>
+      <table>
+        <tr><th>Challenge</th><th>Solution</th><th>Data Structure</th></tr>
+        <tr><td>URL deduplication (1B+ URLs)</td><td>Bloom filter (fast probabilistic check) + exact DB check on false positive</td><td>Bloom filter (10 bits/URL = 1.25 GB for 1B URLs)</td></tr>
+        <tr><td>Content deduplication</td><td>SimHash fingerprint — detect near-duplicate pages</td><td>64-bit SimHash stored in DB</td></tr>
+        <tr><td>Politeness (don't hammer a host)</td><td>Per-host rate limiting: max 1 req/sec per domain. Queue per host.</td><td>Priority queue with per-host delay</td></tr>
+        <tr><td>URL priority (important pages first)</td><td>PageRank score, update frequency, domain authority</td><td>Multi-tier priority queue</td></tr>
+        <tr><td>Re-crawl scheduling</td><td>High-change pages (news) = crawl hourly; static pages = weekly</td><td>Exponential backoff based on change frequency</td></tr>
+        <tr><td>Distributed coordination</td><td>URL frontier partitioned by host hash — each worker owns subset of hosts</td><td>Consistent hashing across worker nodes</td></tr>
+      </table>
+
+<pre><span class="cmt">// Bloom Filter for URL deduplication</span>
+<span class="kw">public class</span> <span class="type">URLBloomFilter</span> {
+    <span class="kw">private final</span> <span class="type">BitSet</span>   bits;
+    <span class="kw">private final int</span>      size;
+    <span class="kw">private static final int</span> NUM_HASH_FUNCTIONS = <span class="num">7</span>;
+
+    <span class="kw">public</span> <span class="type">URLBloomFilter</span>(<span class="kw">int</span> expectedInsertions) {
+        <span class="cmt">// Optimal size: -n*ln(p) / (ln2)^2 where p=0.01 (1% false positive)</span>
+        <span class="kw">this</span>.size = expectedInsertions * <span class="num">10</span>;  <span class="cmt">// ~10 bits per element</span>
+        bits = <span class="kw">new</span> <span class="type">BitSet</span>(size);
+    }
+
+    <span class="kw">public void</span> <span class="fn">add</span>(<span class="type">String</span> url) {
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; NUM_HASH_FUNCTIONS; i++)
+            bits.<span class="fn">set</span>(<span class="fn">hash</span>(url, i) % size);
+    }
+
+    <span class="kw">public boolean</span> <span class="fn">mightContain</span>(<span class="type">String</span> url) {
+        <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; NUM_HASH_FUNCTIONS; i++)
+            <span class="kw">if</span> (!bits.<span class="fn">get</span>(<span class="fn">hash</span>(url, i) % size)) <span class="kw">return false</span>;
+        <span class="kw">return true</span>;   <span class="cmt">// might be present (false positive possible)</span>
+    }
+}
+<span class="cmt">// 1B URLs × 10 bits = 10 billion bits = 1.25 GB — fits in memory!</span></pre>
+    </div>
+  </div>
+
+  <!-- Interview Framework -->
+  <div class="card-purple" style="margin-top:1rem">
+    <h4 style="color:#a78bfa;margin-top:0">🎯 System Design Interview Framework</h4>
+    <p style="color:#94a3b8;font-size:.84rem">Follow this structured approach in every system design interview:</p>
+    <ol style="color:#94a3b8;font-size:.84rem;padding-left:1.4rem">
+      <li style="margin-bottom:.5rem"><strong style="color:#a78bfa">Clarify Requirements (5 min)</strong> — Functional vs Non-functional. Scale, latency SLA, consistency needs, geographic distribution.</li>
+      <li style="margin-bottom:.5rem"><strong style="color:var(--accent)">Estimate Scale (2 min)</strong> — DAU, QPS (read/write ratio), storage, bandwidth. Back-of-envelope math shows engineering thinking.</li>
+      <li style="margin-bottom:.5rem"><strong style="color:var(--accent3)">High-Level Design (10 min)</strong> — Draw the major components: clients, LB, services, DB, cache, queues. Don't dive deep yet.</li>
+      <li style="margin-bottom:.5rem"><strong style="color:var(--warn)">Deep Dive (20 min)</strong> — Interviewer picks areas. Discuss DB schema, API design, algorithms, failure modes, data flow.</li>
+      <li style="margin-bottom:.5rem"><strong style="color:var(--pink)">Address Bottlenecks & Trade-offs (5 min)</strong> — Where does it break? What would you optimize? Acknowledge trade-offs made.</li>
+    </ol>
+    <div class="tip" style="margin-top:.8rem">💡 <strong>Always ask:</strong> "Is it more important to optimize for read latency or write throughput?" and "What's the acceptable consistency model?" before diving into solutions.</div>
+  </div>
+</section>
+
+</main>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function toggle(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+// Auto-open first item in each section
+document.querySelectorAll('.sec').forEach(sec => {
+  const first = sec.querySelector('.qa');
+  if (first) first.classList.add('open');
+});
+</script>
+</body>
+</html>
