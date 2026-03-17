@@ -1,11 +1,12 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DSA Master Sheet</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#04060b;--surface:#0a0f18;--card:#0e1520;--border:#162030;--p1:#00e5ff;--p2:#a78bfa;--p3:#10b981;--p4:#f59e0b;--p5:#f472b6;--p6:#fb923c;--text:#e2e8f0;--muted:#4a6174}
+:root{--bg:#04060b;--surface:#0a0f18;--card:#0e1520;--border:#162030;--p1:#00e5ff;--p2:#a78bfa;--p3:#10b981;--p4:#f59e0b;--p5:#f472b6;--p6:#fb923c;--p7:#818cf8;--text:#e2e8f0;--muted:#4a6174}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden}
@@ -104,6 +105,10 @@ h1 span{color:var(--muted)}
 .ft{font-weight:700;font-size:.81rem;margin-bottom:.2rem}
 .fd{font-size:.71rem;color:var(--muted);line-height:1.4}
 
+.p7::before{background:linear-gradient(90deg,var(--p7),#3730a3)}
+.p7 .pnum{background:rgba(129,140,248,.1);color:var(--p7)}
+.p7:hover .glow{background:radial-gradient(circle,rgba(129,140,248,.07),transparent 70%);opacity:1}
+.p7:not(.locked):hover{border-color:#243447;transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.5)}
 footer{padding:2rem;text-align:center;color:var(--muted);font-size:.76rem;border-top:1px solid var(--border)}
 footer em{color:var(--p1);font-style:normal}
 
@@ -121,9 +126,9 @@ footer em{color:var(--p1);font-style:normal}
     <h1><span>Master</span><em>DSA in Java</em></h1>
     <p class="sub">Every pattern. Every problem. Dry runs, logic building, and Java solutions &mdash; so you understand the <em style="color:var(--p4);font-style:normal">why</em>, not just the what.</p>
     <div class="hero-stats">
-      <div><div class="sn">99</div><div class="sl">Total Problems</div></div>
-      <div><div class="sn">6</div><div class="sl">Parts Total</div></div>
-      <div><div class="sn">6</div><div class="sl">Parts Ready</div></div>
+      <div><div class="sn">99</div><div class="sl">DSA Problems</div></div>
+      <div><div class="sn">6</div><div class="sl">DSA Parts</div></div>
+      <div><div class="sn">33</div><div class="sl">Design Cases</div></div>
       <div><div class="sn">20+</div><div class="sl">Patterns</div></div>
     </div>
   </div>
@@ -228,6 +233,18 @@ footer em{color:var(--p1);font-style:normal}
         <a href="dsa_part6.html" class="pp-link">Open Part 6 &#8594;</a>
       </div>
 
+      <!-- System Design -->
+      <div class="pp-card" style="border-color:rgba(129,140,248,.18)">
+        <div class="pp-top">
+          <div class="pp-name" style="color:var(--p7)">System Design</div>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:.62rem;background:rgba(129,140,248,.1);color:var(--p7);border:1px solid rgba(129,140,248,.3);padding:.12rem .45rem;border-radius:3px">FULL</span>
+        </div>
+        <div class="pp-bar-wrap"><div class="pp-bar" style="background:var(--p7);width:100%"></div></div>
+        <div class="pp-detail"><span style="color:var(--p7)">33 Case Studies</span><span>7 sections</span></div>
+        <div class="pp-topics">SOLID &middot; Creational &middot; Structural &middot; Behavioral &middot; System Design &middot; Core Concepts</div>
+        <a href="system_design.html" class="pp-link" style="color:var(--p7)">Open System Design &#8594;</a>
+      </div>
+
     </div><!-- /parts-progress -->
 
     <p style="margin-top:1.25rem;font-size:.72rem;color:var(--muted);font-family:'JetBrains Mono',monospace;border-top:1px solid var(--border);padding-top:.9rem">
@@ -238,9 +255,9 @@ footer em{color:var(--p1);font-style:normal}
 
 <!-- PARTS GRID -->
 <div class="wrap" style="padding-top:0">
-  <div class="lbl">DSA Master Sheet</div>
-  <div class="stitle">6-Part Series</div>
-  <div class="ssub">Striver-inspired. Every problem: I/O examples &middot; dry-run trace &middot; logic building &middot; Java solution &middot; complexity.</div>
+  <div class="lbl">DSA Master Sheet + System Design</div>
+  <div class="stitle">Complete Prep Kit</div>
+  <div class="ssub">Striver-inspired DSA &middot; SOLID &middot; GoF Design Patterns &middot; System Design. Every problem: I/O examples &middot; dry-run trace &middot; Java solution &middot; complexity.</div>
 
   <div class="parts-grid">
     <a href="dsa_part1.html" class="pc p1">
@@ -285,6 +302,13 @@ footer em{color:var(--p1);font-style:normal}
       <div class="ptopics">1D/2D DP &middot; Knapsack &middot; LCS &middot; LIS &middot; Coin Change &middot; State Machine &middot; Interval DP</div>
       <div class="pft"><div class="ppills"><span class="ppill">15 problems</span><span class="ppill">5 patterns</span></div><span class="parr">&#8594;</span></div>
     </a>
+    <a href="system_design.html" class="pc p7">
+      <div class="glow"></div>
+      <div class="pch"><span class="pnum">SYS DESIGN</span><span class="pst sd">&#10003; Ready</span></div>
+      <div class="ptitle">System Design &amp; Patterns</div>
+      <div class="ptopics">SOLID &middot; Creational &middot; Structural &middot; Behavioral &middot; System Design &middot; Core Concepts &middot; Case Studies</div>
+      <div class="pft"><div class="ppills"><span class="ppill">33 case studies</span><span class="ppill">7 sections</span></div><span class="parr">&#8594;</span></div>
+    </a>
   </div>
 
   <div class="lbl" style="margin-top:3rem">Every Problem Includes</div>
@@ -295,10 +319,11 @@ footer em{color:var(--p1);font-style:normal}
     <div class="feat"><div class="fi">&#9749;</div><div class="ft">Java Solution</div><div class="fd">Clean interview-ready Java with comments</div></div>
     <div class="feat"><div class="fi">&#9203;</div><div class="ft">Complexity</div><div class="fd">Time &amp; space with explanation</div></div>
     <div class="feat"><div class="fi">&#9989;</div><div class="ft">Progress Tracker</div><div class="fd">Per-problem checkboxes in each part</div></div>
+    <div class="feat"><div class="fi">&#127959;</div><div class="ft">System Design</div><div class="fd">SOLID &middot; GoF Patterns &middot; 33 case studies</div></div>
   </div>
 </div>
 
-<footer>Parts <em>1&ndash;4</em> available &nbsp;&middot;&nbsp; All 6 parts complete &nbsp;&middot;&nbsp; 99 problems</footer>
+<footer>DSA Parts <em>1&ndash;6</em> &nbsp;&middot;&nbsp; System Design &amp; Patterns &nbsp;&middot;&nbsp; 99 problems &nbsp;&middot;&nbsp; 33 case studies</footer>
 
 <script>
 // Read localStorage keys written by each part's tick() function
